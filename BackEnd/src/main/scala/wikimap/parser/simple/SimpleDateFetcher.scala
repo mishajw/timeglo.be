@@ -1,4 +1,4 @@
-package wikimap.parser
+package wikimap.parser.simple
 
 import wikimap.retriever.APIArticleRetreiver
 
@@ -7,12 +7,9 @@ import scala.util.Try
 /**
   * Created by misha on 26/12/15.
   */
-class SimpleDateFetcher {
+object SimpleDateFetcher {
 
   val aar = new APIArticleRetreiver
-
-  case class SimpleEvent(date: Date, description: String)
-  case class Date(date: Int, month: String, year: Int)
 
   val SimpleDate = " *\\[?\\[?([0-9]*)\\]?\\]? *".r
   val BCDate = " *\\[\\[([0-9]*) ?BC\\]\\] *".r
@@ -31,7 +28,7 @@ class SimpleDateFetcher {
       .flatMap(es => es)
   }
 
-  def getEventsForDate(date: Date): Seq[SimpleEvent] = {
+  private def getEventsForDate(date: Date): Seq[SimpleEvent] = {
     Try(
       aar.getTitle(s"${date.month}%20${date.date}")
         .split("==(Events|Births)==").toList(1)
