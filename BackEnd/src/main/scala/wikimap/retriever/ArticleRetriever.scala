@@ -1,4 +1,4 @@
-package wikimap
+package wikimap.retriever
 
 import java.io._
 import java.nio.channels.Channels

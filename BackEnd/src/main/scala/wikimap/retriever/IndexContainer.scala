@@ -1,4 +1,4 @@
-package wikimap
+package wikimap.retriever
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}

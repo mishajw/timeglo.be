@@ -2,6 +2,8 @@ package wikimap
 
 import java.io.PrintWriter
 
+import wikimap.parser.SimpleDateFetcher
+
 /**
   * Created by misha on 24/12/15.
   */

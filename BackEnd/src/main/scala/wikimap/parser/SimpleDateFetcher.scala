@@ -1,4 +1,6 @@
-package wikimap
+package wikimap.parser
+
+import wikimap.retriever.APIArticleRetreiver
 
 import scala.util.Try
 
