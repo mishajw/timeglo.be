@@ -12,7 +12,7 @@ object FileLocationRetriever {
     (Seq(id, name, name, name, coord, coord).mkString(sep) + ".*").r
   }
 
-  case class Coords(long: Double, lat: Double)
+  case class Coords(lat: Double, long: Double)
   case class Location(names: Seq[String], coords: Coords)
 
   var tsvFile: Seq[Location] = Seq()
@@ -22,10 +22,14 @@ object FileLocationRetriever {
     val file = Source.fromFile("res/allCountries.txt")
 
     tsvFile = file.getLines()
-//      .take(1000)
+      .take(100000)
       .map({
-        case LocationString(id, name, asciiName, otherNames, long, lat) =>
-          Some(Location(otherNames.split(",").toSeq :+ name, Coords(long.toDouble, lat.toDouble)))
+        case LocationString(id, name, asciiName, otherNames, lat, long) =>
+          Some(Location(
+            (otherNames.split(",").toSeq :+ name)
+              .map(_.toLowerCase)
+              .map(_.replaceAll("\\W", "")),
+            Coords(lat.toDouble, long.toDouble)))
         case s =>
           println(s"Couldn't parse: $s")
           None
@@ -39,4 +43,7 @@ object FileLocationRetriever {
 
     file.close()
   }
+
+  def getLocation(name: String): Coords =
+    locations(name.toLowerCase().replaceAll("\\W", ""))
 }
