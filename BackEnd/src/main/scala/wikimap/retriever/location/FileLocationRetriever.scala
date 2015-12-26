@@ -1,6 +1,7 @@
 package wikimap.retriever.location
 
 import scala.io.Source
+import scala.util.Try
 
 /**
   * Created by misha on 26/12/15.
@@ -45,5 +46,5 @@ object FileLocationRetriever {
   }
 
   def getLocation(name: String): Coords =
-    locations(name.toLowerCase().replaceAll("\\W", ""))
+    Try(locations(name.toLowerCase().replaceAll("\\W", ""))).getOrElse(Coords(0, 0))
 }
