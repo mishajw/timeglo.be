@@ -20,7 +20,7 @@ class Application extends Controller {
   def testIndexContainer = Action {
     val a = new IndexContainer
 
-    Ok(a.getCompressedPosition("AbeL").toString)
+    Ok(a.getCompressedPosition("abel").toString)
   }
 
 }
