@@ -11,7 +11,7 @@ object Tester {
   def main(args: Array[String]): Unit = {
     val dates = (new SimpleDateFetcher).run.mkString("\n")
 
-    new PrintWriter("out.txt") {
+    new PrintWriter("out/out.txt") {
       write(dates)
       close()
     }
