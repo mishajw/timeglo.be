@@ -17,5 +17,6 @@ server.pid
 .cache
 
 /BackEnd/res
+/BackEnd/out
 .idea
 
