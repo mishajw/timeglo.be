@@ -1,4 +1,4 @@
-package wikimap.parser.simple
+package wikimap.parser
 
 import wikimap.retriever.wikipedia.APIArticleRetreiver
 import wikimap.{Date, SimpleEvent}
@@ -8,7 +8,7 @@ import scala.util.Try
 /**
   * Created by misha on 26/12/15.
   */
-object SimpleDateFetcher {
+object SimpleEventExtractor {
 
   val aar = new APIArticleRetreiver
 
