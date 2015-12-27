@@ -1,6 +1,7 @@
 package wikimap.parser.simple
 
 import wikimap.retriever.wikipedia.APIArticleRetreiver
+import wikimap.{Date, SimpleEvent}
 
 import scala.util.Try
 
@@ -23,7 +24,7 @@ object SimpleDateFetcher {
   def run: Seq[SimpleEvent] = {
     (for (
       month <- months.take(3);
-      date <- (1 to 31).take(3)
+      date <- 1 to 3
     ) yield  getEventsForDate(Date(date, month, 0)))
       .flatMap(es => es)
   }
