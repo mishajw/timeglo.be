@@ -9,9 +9,6 @@ import scala.util.Try
   * Created by misha on 26/12/15.
   */
 object SimpleEventExtractor {
-
-  val aar = new APIArticleRetreiver
-
   val SimpleDate = " *\\[?\\[?([0-9]*)\\]?\\]? *".r
   val BCDate = " *\\[\\[([0-9]*) ?BC\\]\\] *".r
 
@@ -31,7 +28,8 @@ object SimpleEventExtractor {
 
   private def getEventsForDate(date: Date): Seq[SimpleEvent] = {
     Try(
-      aar.getTitle(s"${date.month}%20${date.date}")
+      APIArticleRetreiver
+        .getTitle(s"${date.month}%20${date.date}")
         .split("==(Events|Births)==").toList(1)
         .split("\n\\*").toList
         .map(_.split(" ?&ndash; ?") match {
