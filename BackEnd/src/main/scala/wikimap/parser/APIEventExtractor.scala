@@ -8,7 +8,7 @@ import scala.util.Try
 /**
   * Created by misha on 26/12/15.
   */
-object SimpleEventExtractor {
+object APIEventExtractor {
   val SimpleDate = " *\\[?\\[?([0-9]*)\\]?\\]? *".r
   val BCDate = " *\\[\\[([0-9]*) ?BC\\]\\] *".r
 
