@@ -19,8 +19,8 @@ object FileLocationRetriever {
   var tsvFile: Seq[Location] = Seq()
   var locations: Map[String, Location] = Map()
 
-  def setup() = {
-    val file = Source.fromFile("res/allCountries.txt")
+  def setup(source: String) = {
+    val file = Source.fromFile(s"res/$source")
 
     tsvFile = file.getLines()
       .flatMap(stringToLocation)
