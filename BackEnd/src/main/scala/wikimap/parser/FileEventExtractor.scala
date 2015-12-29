@@ -18,7 +18,7 @@ object FileEventExtractor {
       .toList
       .flatMap(_ match {
         case SimpleEventString(date, month, year, desc) =>
-          Some(SimpleEvent(Date(date.toInt, month, year.toInt), desc))
+          Some(SimpleEvent(Date(date.toInt, month.toInt, year.toInt), desc))
         case _ =>
           None
       })

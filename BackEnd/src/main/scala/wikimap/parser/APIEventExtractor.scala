@@ -20,8 +20,8 @@ object APIEventExtractor {
 
   def run: Seq[SimpleEvent] = {
     (for (
-      month <- months.take(3);
-      date <- 1 to 3
+      month <- 1 to months.size;
+      date <- 1 to 1
     ) yield  getEventsForDate(Date(date, month, 0)))
       .flatMap(es => es)
   }
@@ -29,7 +29,7 @@ object APIEventExtractor {
   private def getEventsForDate(date: Date): Seq[SimpleEvent] = {
     Try(
       APIArticleRetreiver
-        .getTitle(s"${date.month}%20${date.date}")
+        .getTitle(s"${months(date.month + 1)}%20${date.date}")
         .split("==(Events|Births)==").toList(1)
         .split("\n\\*").toList
         .map(_.split(" ?&ndash; ?") match {
