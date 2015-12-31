@@ -1,6 +1,7 @@
 package wikimap.parser
 
 import wikimap.retriever.wikipedia.APIArticleRetreiver
+import wikimap.util.DB
 import wikimap.{Date, SimpleEvent}
 
 import scala.util.Try
@@ -19,17 +20,23 @@ object APIEventExtractor {
     "October", "November", "December")
 
   def run: Seq[SimpleEvent] = {
+    DB.resetTables(Seq("events", "eventLocations"))
+
     (for (
-      month <- 1 to months.size;
-      date <- 1 to 1
-    ) yield  getEventsForDate(Date(date, month, 0)))
-      .flatMap(es => es)
+      month <- months.indices;
+      date <- 0 to 30
+    ) yield  {
+      println(s"$date, $month")
+      val e = getEventsForDate(Date(date, month, 0))
+      e.foreach(DB.insertEvent)
+      e
+    }).flatMap(es => es)
   }
 
   private def getEventsForDate(date: Date): Seq[SimpleEvent] = {
     Try(
       APIArticleRetreiver
-        .getTitle(s"${months(date.month + 1)}%20${date.date}")
+        .getTitle(s"${months(date.month)}%20${date.date + 1}")
         .split("==(Events|Births)==").toList(1)
         .split("\n\\*").toList
         .map(_.split(" ?&ndash; ?") match {

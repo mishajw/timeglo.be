@@ -1,5 +1,6 @@
 package wikimap.retriever.location
 
+import wikimap.util.DB
 import wikimap.{Coords, Location}
 
 import scala.io.Source
@@ -9,26 +10,19 @@ import scala.io.Source
   */
 object FileLocationRetriever {
 
-  val LocationString = {
-//    val (id, name, coord, tab8, tab4, sep) =
-//      ("(\\d*)", "([^\t]*)", "([-\\d\\.]+)", "(\t.*){8}", "(\t.*){4}", "\t")
-//    (Seq(id, name, name, name, coord, coord).mkString(sep) + ".*").r
+  val LocationString =
     List.fill(19)("([^\t]*)").mkString("\t").r
-  }
-
-  var tsvFile: Seq[Location] = Seq()
-  var locations: Map[String, Location] = Map()
 
   def setup(source: String) = {
+    DB.resetTables(Seq("locations", "locationNames"))
+
     val file = Source.fromFile(s"res/$source")
 
-    tsvFile = file.getLines()
-      .flatMap(stringToLocation)
-      .toSeq
-
-    locations = tsvFile
-      .flatMap(l => l.names.map(_ -> l))
-      .toMap
+    file.getLines()
+      .foreach(stringToLocation(_) match {
+        case Some(l) => DB.insertLocation(l)
+        case None =>
+      })
 
     file.close()
   }
@@ -37,23 +31,11 @@ object FileLocationRetriever {
     case LocationString(id, name, asciiName, otherNames, lat, long,
     _, _, _, _, _, _, _, _, pop, _*) =>
       Some(Location(
-        (name +: otherNames.split(",").toSeq).map(strip),
-//        Seq(strip(name)),
+        (name +: otherNames.split(",").toSeq).filter(_ != "").map(wikimap.strip),
         Coords(lat.toDouble, long.toDouble),
-        BigInt(pop)))
+        pop.toInt))
     case s =>
       println(s"Couldn't parse: $s")
       None
   }
-
-  def getLocation(name: String): Option[Location] = {
-    val stripped = strip(name)
-    if (locations contains stripped) {
-      Some(locations(stripped))
-    } else {
-      None
-    }
-  }
-
-  private def strip(text: String) = text.toLowerCase().replaceAll("\\W", "")
 }

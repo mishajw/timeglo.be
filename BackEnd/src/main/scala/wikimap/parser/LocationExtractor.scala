@@ -1,6 +1,7 @@
 package wikimap.parser
 
 import wikimap.retriever.location.FileLocationRetriever
+import wikimap.util.DB
 import wikimap.{Location, SimpleEvent}
 
 /**
@@ -29,7 +30,7 @@ object LocationExtractor {
     println(possible)
 
     possible
-      .flatMap(FileLocationRetriever.getLocation)
+      .flatMap(DB.getLocation)
       .sortBy(-_.population) match {
       case Nil => None
       case biggest :: _ => Some(biggest)
