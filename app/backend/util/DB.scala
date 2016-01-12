@@ -20,6 +20,8 @@ object DB {
   connection.setAutoCommit(false)
   val statement = connection.createStatement()
 
+  private val locatedEventStatement =
+    connection.prepareStatement(getLineFromFileName("src/"))
   private val insertCommands: Map[String, PreparedStatement] = Seq(
     ("events", Seq("occurs", "description")),
     ("locations", Seq("id", "latitude", "longitude", "population")),
@@ -165,7 +167,7 @@ object DB {
     insertCommands("eventLocations").executeBatch()
   }
 
-  def getLocatedEvents(): Seq[LocatedEvent] = {
+  def getLocatedEvents: Seq[LocatedEvent] = {
     val statementString = getLineFromFileName("src/main/resources/sql/event_locations.sql")
     val results = statement.executeQuery(statementString)
 
