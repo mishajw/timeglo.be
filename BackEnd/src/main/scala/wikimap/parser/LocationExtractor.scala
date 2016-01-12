@@ -19,7 +19,6 @@ object LocationExtractor {
     val start = System.currentTimeMillis()
 
     DB.getEvents
-      .take(10)
       .foreach(event => {
         println(event.date)
         extractLocation(event) match {
@@ -35,8 +34,6 @@ object LocationExtractor {
       })
 
     DB.insertAllEventLocation()
-
-    println(s"Took: ${System.currentTimeMillis() - start}")
   }
 
   def extractLocationMultiple(events: Seq[Event]) =
