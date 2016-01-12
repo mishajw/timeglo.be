@@ -1,7 +1,7 @@
 /**
   * Created by misha on 27/12/15.
   */
-package object wikimap {
+package object backend {
   case class Coords(lat: Double, long: Double)
   case class Location(names: Seq[String], coords: Coords, population: java.math.BigDecimal, id: Option[Int] = None)
 

@@ -1,5 +1,6 @@
 package controllers
 
+import java.sql.Date
 import java.text.DateFormat
 
 import play.api.mvc._
@@ -16,12 +17,12 @@ class Application extends Controller {
 
   def getEvents(startString: String, endString: String) = Action {
     try {
-      val startDate = dateFormat.parse(startString)
-      val endDate = dateFormat.parse(endString)
+      val startDate = Date.valueOf(startString)
+      val endDate = Date.valueOf(endString)
 
       Ok(s"$startDate - $endDate")
     } catch {
-      case e: java.text.ParseException =>
+      case e: IllegalArgumentException =>
         Ok(s"Couldn't parse dates. Must be in DD-MM-YYYY format")
     }
   }

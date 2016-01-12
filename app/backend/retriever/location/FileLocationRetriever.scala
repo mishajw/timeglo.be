@@ -1,7 +1,7 @@
-package wikimap.retriever.location
+package backend.retriever.location
 
-import wikimap.util.DB
-import wikimap.{Coords, Location}
+import backend.util.DB
+import backend.{Coords, Location}
 
 import scala.io.Source
 
@@ -36,7 +36,7 @@ object FileLocationRetriever {
     case LocationString(id, name, asciiName, otherNames, lat, long,
     _, _, _, _, _, _, _, _, pop, _*) =>
       Some(Location(
-        (name +: otherNames.split(",").toSeq).filter(_.nonEmpty).map(wikimap.strip),
+        (name +: otherNames.split(",").toSeq).filter(_.nonEmpty).map(backend.strip),
         Coords(lat.toDouble, long.toDouble),
         new java.math.BigDecimal(pop)))
     case s =>

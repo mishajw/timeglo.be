@@ -1,4 +1,4 @@
-package wikimap.retriever.wikipedia
+package backend.retriever.wikipedia
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}

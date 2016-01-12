@@ -1,8 +1,8 @@
-package wikimap.parser
+package backend.parser
 
-import wikimap.retriever.wikipedia.APIArticleRetreiver
-import wikimap.util.DB
-import wikimap.{Date, Event}
+import backend.retriever.wikipedia.APIArticleRetreiver
+import backend.util.DB
+import backend.{Date, Event}
 
 import scala.util.Try
 

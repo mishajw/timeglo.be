@@ -1,6 +1,6 @@
-package wikimap.parser
+package backend.parser
 
-import wikimap.{Event, Date}
+import backend.{Event, Date}
 
 import scala.io.Source
 

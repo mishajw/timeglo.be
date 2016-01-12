@@ -1,19 +1,25 @@
-package wikimap
+package backend
 
 import java.io.FileWriter
 import java.math.BigDecimal
 
-import wikimap.parser.{FileEventExtractor, APIEventExtractor, LocationExtractor}
-import wikimap.retriever.location.FileLocationRetriever
-import wikimap.util.DB
+import backend.parser.{FileEventExtractor, APIEventExtractor, LocationExtractor}
+import backend.retriever.location.FileLocationRetriever
+import backend.util.DB
 
 object Tester {
   def main(args: Array[String]): Unit = {
 //    APIEventExtractor.run
 //    FileLocationRetriever.setup("allCountries.txt")
-//    LocationExtractor.run()
+    LocationExtractor.run()
 
-//    println(DB.getLocatedEvents().mkString("\n"))
+
+//    DB.performIndexing()
+    println(DB.getLocatedEvents().mkString("\n"))
+
+//    println("Starting...")
+//    println(DB.getLocationFromNames(Seq("hello", "world", "arch", "linux", "masterrace")))
+
 
     DB.commit()
     DB.disconnect()

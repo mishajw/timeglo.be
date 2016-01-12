@@ -1,8 +1,8 @@
-package wikimap.parser
+package backend.parser
 
-import wikimap.retriever.location.FileLocationRetriever
-import wikimap.util.DB
-import wikimap.{Location, Event}
+import backend.retriever.location.FileLocationRetriever
+import backend.util.DB
+import backend.{Location, Event}
 
 /**
   * Created by misha on 26/12/15.

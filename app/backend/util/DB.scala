@@ -1,16 +1,13 @@
-package wikimap.util
+package backend.util
 
 import java.sql.{DriverManager, PreparedStatement, ResultSet}
 import java.time.LocalDate
 import java.util.Calendar
 
-import com.sun.xml.internal.fastinfoset.stax.EventLocation
+import backend._
 import org.postgresql.util.PSQLException
-import wikimap._
 
 import scala.collection.mutable.ListBuffer
-import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
 import scala.io.{BufferedSource, Source}
 
 
@@ -104,7 +101,7 @@ object DB {
   }
 
   def getLocation(name: String): Option[Location] = {
-    val stripped = wikimap.strip(name)
+    val stripped = backend.strip(name)
 
     val statementString =
       "SELECT L.latitude, L.longitude, L.population, L.id " +
@@ -136,7 +133,7 @@ object DB {
         "FROM locations L, locationNames N " +
         "WHERE L.id=N.locationID " +
         s"AND N.name=ANY(ARRAY[" +
-        names.map(n => s"'${wikimap.strip(n)}'").mkString(", ") + "]) " +
+        names.map(n => s"'${backend.strip(n)}'").mkString(", ") + "]) " +
         "ORDER BY L.population DESC " +
         "LIMIT 1;"
 

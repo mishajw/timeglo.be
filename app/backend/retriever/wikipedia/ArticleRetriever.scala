@@ -1,4 +1,4 @@
-package wikimap.retriever.wikipedia
+package backend.retriever.wikipedia
 
 import java.io._
 import java.nio.channels.Channels
