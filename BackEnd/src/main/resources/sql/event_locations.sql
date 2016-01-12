@@ -1,13 +1,18 @@
-SELECT E.occurs, E.description, N.allNames, L.latitude, L.longitude, L.population
+SELECT
+  Ev.occurs, Ev.description, Ev.latitude, Ev.longitude, Ev.population, string_agg(LN.name, ',') AS allNames
 FROM
-  locations L,
-  events E,
-  eventLocations EL,
-  (SELECT N2.locationID, string_agg(N2.name, ',') AS allNames
-    FROM locationNames N2
-    GROUP BY N2.locationID) as N
+  locationnames LN,
+  (
+    SELECT L.id, E.occurs, E.description, L.latitude, L.longitude, L.population
+    FROM
+      locations L,
+      events E,
+      eventLocations EL
+    WHERE
+      L.id = EL.locationID AND
+      E.id = EL.eventID
+  ) AS Ev
 WHERE
-  L.id = N.locationID AND
-  L.id = EL.locationID AND
-  E.id = EL.eventID
-ORDER BY E.occurs
+  Ev.id = LN.locationID
+GROUP BY
+  Ev.id, Ev.occurs, Ev.description, Ev.latitude, Ev.longitude, Ev.population;
