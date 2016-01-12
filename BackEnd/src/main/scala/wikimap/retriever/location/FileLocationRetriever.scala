@@ -19,9 +19,14 @@ object FileLocationRetriever {
     val file = Source.fromFile(s"res/$source")
 
     file.getLines()
-      .foreach(stringToLocation(_) match {
-        case Some(l) => DB.insertLocation(l)
-        case None =>
+      .zipWithIndex
+      .foreach(tup => {
+        if ((tup._2 & 4095) == 0) println(tup._2)
+        if ((tup._2 & 8191) == 0) DB.commit()
+        stringToLocation(tup._1) match {
+          case Some(l) => DB.insertLocationWithID(l, tup._2)
+          case None =>
+        }
       })
 
     file.close()
@@ -33,7 +38,7 @@ object FileLocationRetriever {
       Some(Location(
         (name +: otherNames.split(",").toSeq).filter(_ != "").map(wikimap.strip),
         Coords(lat.toDouble, long.toDouble),
-        pop.toInt))
+        new java.math.BigDecimal(pop)))
     case s =>
       println(s"Couldn't parse: $s")
       None

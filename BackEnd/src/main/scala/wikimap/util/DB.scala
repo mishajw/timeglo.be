@@ -4,7 +4,8 @@ import java.sql.{DriverManager, PreparedStatement, ResultSet}
 import java.time.LocalDate
 import java.util.Calendar
 
-import wikimap.{Coords, Date, Location, SimpleEvent}
+import com.sun.xml.internal.fastinfoset.stax.EventLocation
+import wikimap._
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.duration._
@@ -23,7 +24,7 @@ object DB {
 
   private val insertCommands: Map[String, PreparedStatement] = Seq(
     ("events", Seq("occurs", "description")),
-    ("locations", Seq("latitude", "longitude", "population")),
+    ("locations", Seq("id", "latitude", "longitude", "population")),
     ("locationNames", Seq("locationID", "name")),
     ("eventLocations", Seq("eventID", "locationID")))
     .map(tup =>
@@ -53,7 +54,7 @@ object DB {
 
   def disconnect() = connection.close()
 
-  def insertEvent(event: SimpleEvent) = {
+  def insertEvent(event: Event) = {
     val ps = insertCommands("events")
     ps.setDate(1, toSqlDate(event.date))
     ps.setString(2, event.description)
@@ -61,32 +62,37 @@ object DB {
     ps.executeUpdate()
   }
 
-  def getEvents: Seq[SimpleEvent] = {
+  def getEvents: Seq[Event] = {
     val results: ResultSet = statement.executeQuery("SELECT * FROM events;")
 
-    var events: Seq[SimpleEvent] = Seq()
+    var events = new ListBuffer[Event]()
 
     while (results.next()) {
-      events = events :+ SimpleEvent(fromSqlDate(results.getDate("occurs")), results.getString("description"))
+      events += Event(
+        fromSqlDate(results.getDate("occurs")),
+        results.getString("description"),
+        Some(results.getInt("id")))
     }
 
-    events
+    events.toSeq
   }
 
-  def insertLocation(l: Location) = {
+  def insertLocationWithID(l: Location, id: Int) = {
     val s = insertCommands("locations")
-    s.setDouble(1, l.coords.lat)
-    s.setDouble(2, l.coords.long)
-    s.setInt(3, l.population)
+
+    s.setInt(1, id)
+    s.setDouble(2, l.coords.lat)
+    s.setDouble(3, l.coords.long)
+    s.setBigDecimal(4, l.population)
 
     s.executeUpdate()
 
-    val id = {
-      val sStr: String = s"SELECT id FROM locations WHERE latitude='${l.coords.lat}' AND longitude='${l.coords.long}' AND population='${l.population}'"
-      val results = statement.executeQuery(sStr)
-      results.next()
-      results.getLong("id")
-    }
+//    val id = {
+//      val sStr: String = s"SELECT id FROM locations WHERE latitude='${l.coords.lat}' AND longitude='${l.coords.long}' AND population='${l.population}'"
+//      val results = statement.executeQuery(sStr)
+//      results.next()
+//      results.getLong("id")
+//    }
 
     l.names.foreach(n => {
       val s = insertCommands("locationNames")
@@ -99,17 +105,13 @@ object DB {
   def getLocation(name: String): Option[Location] = {
     val stripped = wikimap.strip(name)
 
-    println(stripped)
-
     val statementString =
-      "SELECT L.latitude, L.longitude, L.population " +
+      "SELECT L.latitude, L.longitude, L.population, L.id " +
       "FROM locations L, locationNames N " +
       "WHERE L.id=N.locationID " +
-      s"AND N.name='$name';"
+      s"AND N.name='$stripped';"
 
     val results = statement.executeQuery(statementString)
-
-    println(statementString)
 
     val possibleLocations = new ListBuffer[Location]()
 
@@ -117,22 +119,79 @@ object DB {
       possibleLocations += Location(
         Seq(name),
         Coords(results.getDouble("latitude"), results.getDouble("longitude")),
-        results.getInt("population"))
+        results.getBigDecimal("population"),
+        Some(results.getInt("id")))
     }
 
-    println(possibleLocations)
-
-    possibleLocations.sortBy(-_.population).toList match {
+    possibleLocations.sortBy(_.population.negate()).toList match {
       case Nil => None
       case x :: xs => Some(x)
     }
+  }
+
+  def getLocationFromNames(names: Seq[String]): Option[Location] = {
+    val statementString =
+      "SELECT L.latitude, L.longitude, L.population, L.id, N.name " +
+        "FROM locations L, locationNames N " +
+        "WHERE L.id=N.locationID " +
+        s"AND (" +
+        names.map(n => s"N.name='${wikimap.strip(n)}'").mkString(" OR ") + ")" +
+        "ORDER BY L.population DESC " +
+        "LIMIT 1;"
+
+    val results = statement.executeQuery(statementString)
+
+    val possibleLocations = new ListBuffer[Location]()
+
+    if (results.next()) {
+      Some(Location(
+        Seq(results.getString("name")),
+        Coords(results.getDouble("latitude"), results.getDouble("longitude")),
+        results.getBigDecimal("population"),
+        Some(results.getInt("id"))))
+    } else {
+      None
+    }
+  }
+
+  def batchEventLocation(locationID: Int, eventID: Int) = {
+    val ps = insertCommands("eventLocations")
+
+    ps.setInt(1, eventID)
+    ps.setInt(2, locationID)
+
+    ps.addBatch()
+  }
+
+  def insertAllEventLocation() = {
+    insertCommands("eventLocations").executeBatch()
+  }
+
+  def getLocatedEvents(): Seq[LocatedEvent] = {
+    val statementString = getLineFromFileName("src/main/resources/sql/event_locations.sql")
+    val results = statement.executeQuery(statementString)
+
+    val locatedEvents = new ListBuffer[LocatedEvent]()
+
+    while (results.next()) {
+      locatedEvents += LocatedEvent(
+        Event(
+          fromSqlDate(results.getDate("occurs")),
+          results.getString("description")),
+        Location(
+          results.getString("allNames").split(",").toSeq,
+          Coords(results.getFloat("latitude"), results.getFloat("longitude")),
+          results.getBigDecimal("population")))
+    }
+
+    locatedEvents.toSeq
   }
 
   private def toSqlDate(d: Date) = {
     val cal = Calendar.getInstance()
     cal.set(Calendar.YEAR, d.year)
     cal.set(Calendar.MONTH, d.month)
-    cal.set(Calendar.DAY_OF_MONTH, d.date)
+    cal.set(Calendar.DAY_OF_MONTH, d.date + 1)
 
     new java.sql.Date(cal.getTime.getTime)
   }
@@ -147,4 +206,16 @@ object DB {
     .getLines().toList
     .mkString("\n")
     .split("\n\n").toList
+
+  private def getLineFromFileName(fileName: String): String = {
+    try {
+      val file = Source.fromFile(fileName)
+      val line = getLinesFromFile(file).head
+      file.close()
+      line
+    } catch {
+      case e: Throwable =>
+        println(s"Couldn't open file $fileName"); ""
+    }
+  }
 }

@@ -2,7 +2,7 @@ package wikimap.parser
 
 import wikimap.retriever.location.FileLocationRetriever
 import wikimap.util.DB
-import wikimap.{Location, SimpleEvent}
+import wikimap.{Location, Event}
 
 /**
   * Created by misha on 26/12/15.
@@ -13,10 +13,36 @@ object LocationExtractor {
   private val NounSingle = "([A-Z][a-z]+)".r
   private val Link = "\\[\\[([^\\[[\\]]]+)\\]\\]".r
 
-  def extractLocationMultiple(events: Seq[SimpleEvent]) =
+  def run() = {
+    DB.resetTables(Seq("eventLocations"))
+
+    val start = System.currentTimeMillis()
+
+    DB.getEvents
+      .take(10)
+      .foreach(event => {
+        println(event.date)
+        extractLocation(event) match {
+          case Some(location) =>
+            (location.id, event.id) match {
+              case (Some(lid), Some(eid)) =>
+                DB.batchEventLocation(lid, eid)
+              case _ =>
+                println(s"IDs not set for location and/or event:\n$event\n$location")
+            }
+          case None =>
+        }
+      })
+
+    DB.insertAllEventLocation()
+
+    println(s"Took: ${System.currentTimeMillis() - start}")
+  }
+
+  def extractLocationMultiple(events: Seq[Event]) =
     events.map(extractLocation)
 
-  def extractLocation(event: SimpleEvent): Option[Location] = {
+  def extractLocation(event: Event): Option[Location] = {
     val desc = event.description
     val links = extractLinksFromText(desc)
     val linkNouns = links.flatMap(extractSingleNounsFromText)
@@ -27,14 +53,7 @@ object LocationExtractor {
     val possible: Seq[String] =
       links ++ linkNouns ++ nouns ++ linkNounGroups ++ nounGroups
 
-    println(possible)
-
-    possible
-      .flatMap(DB.getLocation)
-      .sortBy(-_.population) match {
-      case Nil => None
-      case biggest :: _ => Some(biggest)
-    }
+    DB.getLocationFromNames(possible)
   }
 
   def extractLinksFromText(text: String): Seq[String] = {

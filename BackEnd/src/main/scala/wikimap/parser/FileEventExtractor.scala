@@ -1,6 +1,6 @@
 package wikimap.parser
 
-import wikimap.{SimpleEvent, Date}
+import wikimap.{Event, Date}
 
 import scala.io.Source
 
@@ -11,14 +11,14 @@ object FileEventExtractor {
 
   val SimpleEventString = "SimpleEvent\\(Date\\((\\d+),([A-Za-z]+),([\\d-]+)\\),(.*)\\)".r
 
-  def run(path: String = "out/out.txt"): Seq[SimpleEvent] = {
+  def run(path: String = "out/out.txt"): Seq[Event] = {
     val file = Source.fromFile(path)
 
     val events = file.getLines()
       .toList
       .flatMap(_ match {
         case SimpleEventString(date, month, year, desc) =>
-          Some(SimpleEvent(Date(date.toInt, month.toInt, year.toInt), desc))
+          Some(Event(Date(date.toInt, month.toInt, year.toInt), desc))
         case _ =>
           None
       })
