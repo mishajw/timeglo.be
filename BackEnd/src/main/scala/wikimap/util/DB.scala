@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.util.Calendar
 
 import com.sun.xml.internal.fastinfoset.stax.EventLocation
+import org.postgresql.util.PSQLException
 import wikimap._
 
 import scala.collection.mutable.ListBuffer
@@ -189,6 +190,18 @@ object DB {
     }
 
     locatedEvents.toSeq
+  }
+
+  def performIndexing() = {
+    val file = Source.fromFile("src/main/resources/sql/index.sql")
+
+    getLinesFromFile(file)
+      .foreach(l => try {
+        statement.executeUpdate(l)
+      } catch {
+        case e: PSQLException =>
+          println(s"Couldn't create index, because it already exists:\n$l")
+      })
   }
 
   private def toSqlDate(d: Date) = {

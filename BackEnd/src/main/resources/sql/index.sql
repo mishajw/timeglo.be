@@ -1,0 +1,5 @@
+CREATE INDEX name_idx       ON locationNames    (name);
+
+CREATE INDEX occurs_idx     ON events           (occurs);
+
+CREATE INDEX n_locid_idx    ON locationNames    (locationID);
