@@ -36,7 +36,7 @@ object FileLocationRetriever {
     case LocationString(id, name, asciiName, otherNames, lat, long,
     _, _, _, _, _, _, _, _, pop, _*) =>
       Some(Location(
-        (name +: otherNames.split(",").toSeq).filter(_ != "").map(wikimap.strip),
+        (name +: otherNames.split(",").toSeq).filter(_.nonEmpty).map(wikimap.strip),
         Coords(lat.toDouble, long.toDouble),
         new java.math.BigDecimal(pop)))
     case s =>
