@@ -134,12 +134,16 @@ object DB {
       "SELECT L.latitude, L.longitude, L.population, L.id, N.name " +
         "FROM locations L, locationNames N " +
         "WHERE L.id=N.locationID " +
-        s"AND (" +
-        names.map(n => s"N.name='${wikimap.strip(n)}'").mkString(" OR ") + ")" +
+        s"AND N.name=ANY(ARRAY[" +
+        names.map(n => s"'${wikimap.strip(n)}'").mkString(", ") + "]) " +
         "ORDER BY L.population DESC " +
         "LIMIT 1;"
 
+    println(statementString)
+
     val results = statement.executeQuery(statementString)
+
+    println("execed")
 
     val possibleLocations = new ListBuffer[Location]()
 
