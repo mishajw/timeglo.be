@@ -140,11 +140,7 @@ object DB {
         "ORDER BY L.population DESC " +
         "LIMIT 1;"
 
-    println(statementString)
-
     val results = statement.executeQuery(statementString)
-
-    println("execed")
 
     val possibleLocations = new ListBuffer[Location]()
 
@@ -196,11 +192,16 @@ object DB {
     val file = Source.fromFile("src/main/resources/sql/index.sql")
 
     getLinesFromFile(file)
-      .foreach(l => try {
-        statement.executeUpdate(l)
-      } catch {
-        case e: PSQLException =>
-          println(s"Couldn't create index, because it already exists:\n$l")
+      .foreach(l => {
+        val save = connection.setSavepoint()
+        try {
+          statement.executeUpdate(l)
+        } catch {
+          case e: PSQLException =>
+            connection.rollback(save)
+            println(s"Couldn't create index, because it already exists:\n$l")
+            println(e)
+        }
       })
   }
 
