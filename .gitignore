@@ -16,8 +16,6 @@ server.pid
 /dist/
 .cache
 
-/BackEnd/res
-/BackEnd/out
 .idea
 /target
 
