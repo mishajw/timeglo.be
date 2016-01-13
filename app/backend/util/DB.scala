@@ -21,7 +21,8 @@ object DB {
   val statement = connection.createStatement()
 
   private val locatedEventStatement =
-    connection.prepareStatement(getLineFromFileName("src/"))
+    connection.prepareStatement(getLineFromFileName("res/sql/event_locations.sql"))
+    connection.prepareStatement(getLineFromFileName("res/sql/event_locations.sql"))
   private val insertCommands: Map[String, PreparedStatement] = Seq(
     ("events", Seq("occurs", "description")),
     ("locations", Seq("id", "latitude", "longitude", "population")),
@@ -38,7 +39,7 @@ object DB {
 
   def resetTables(tables: Seq[String] = tableNames) = {
     Seq("drop", "tables") .foreach(f => {
-      val file = Source.fromFile(s"src/main/resources/sql/$f.sql")
+      val file = Source.fromFile(s"res/sql/$f.sql")
 
       getLinesFromFile(file)
         .foreach(l => {
@@ -167,9 +168,10 @@ object DB {
     insertCommands("eventLocations").executeBatch()
   }
 
-  def getLocatedEvents: Seq[LocatedEvent] = {
-    val statementString = getLineFromFileName("src/main/resources/sql/event_locations.sql")
-    val results = statement.executeQuery(statementString)
+  def getLocatedEvents(start: java.sql.Date, end: java.sql.Date): Seq[LocatedEvent] = {
+    locatedEventStatement.setDate(1, start)
+    locatedEventStatement.setDate(2, end)
+    val results = locatedEventStatement.executeQuery()
 
     val locatedEvents = new ListBuffer[LocatedEvent]()
 
@@ -188,7 +190,7 @@ object DB {
   }
 
   def performIndexing() = {
-    val file = Source.fromFile("src/main/resources/sql/index.sql")
+    val file = Source.fromFile("res/sql/index.sql")
 
     getLinesFromFile(file)
       .foreach(l => {
