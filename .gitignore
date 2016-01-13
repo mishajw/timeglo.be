@@ -16,6 +16,11 @@ server.pid
 /dist/
 .cache
 
+# IntelliJ / Play! stuff
 .idea
 /target
+
+# Ignore large resources
+/res/allCountries.txt
+/res/nationalities.json
 
