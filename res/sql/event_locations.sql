@@ -11,7 +11,7 @@ FROM
     WHERE
       L.id = EL.locationID AND
       E.id = EL.eventID AND
-      ? < E.occurs AND E.occurs < ?
+      ? =< E.occurs AND E.occurs =< ?
   ) AS Ev
 WHERE
   Ev.id = LN.locationID
