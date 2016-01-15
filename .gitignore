@@ -19,6 +19,7 @@ server.pid
 # IntelliJ / Play! stuff
 .idea
 /target
+/out
 
 # Ignore large resources
 /res/allCountries.txt

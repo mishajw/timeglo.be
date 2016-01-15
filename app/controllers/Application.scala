@@ -47,7 +47,7 @@ class Application extends Controller {
   }
 
   private def stringifyJson(json: JValue) =
-    JsonMethods.compact(JsonMethods.render(json))
+    JsonMethods.pretty(JsonMethods.render(json))
 
   private def errorJson(errorMsg: String) = BadRequest(stringifyJson(JObject(List(
     "error" -> JString(errorMsg))
