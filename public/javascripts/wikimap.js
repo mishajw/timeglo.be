@@ -50,4 +50,32 @@ $.ajax("/getEvents/23.04.1999/23.04.2000", {
 
 function handleEvents(events) {
     console.log(events);
+
+    var formatted = {
+        type: "Topology",
+        objects: {
+            events: {
+                type: "MultiPoint",
+                coordinates: []
+            }
+        },
+        arcs: [],
+        transform: {
+            scale: [1, 1],
+            translate: [0, 0]
+        }
+    };
+
+    events.forEach(function(e) {
+        formatted.objects.events.coordinates
+            .push([e.location.lat, e.location.long]);
+    });
+
+    console.log(formatted);
+
+    svg.append("path")
+        .datum(topojson.feature(formatted, formatted.objects.events))
+        .attr("class", "points")
+        .attr("fill", "red")
+        .attr("d", path);
 }
