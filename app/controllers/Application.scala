@@ -33,7 +33,7 @@ class Application extends Controller {
     JArray(DB.getLocatedEvents(startDate, endDate)
       .map(le => {
         JObject(List(
-          "date" -> JString(le.event.date.toString),
+          "date" -> JString(s"${le.event.date.date}-${le.event.date.month}-${le.event.date.year}"),
           "desc" -> JString(le.event.description),
           "location" -> JObject(List(
             "name" -> JString(le.location.formattedName),
