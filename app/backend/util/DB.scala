@@ -183,6 +183,16 @@ object DB {
       })
   }
 
+  def getDateRange: Option[(java.sql.Date, java.sql.Date)] = {
+    val results = statement.executeQuery(getLineFromFileName("res/sql/date_range.sql"))
+
+    if (results.next()) {
+      Some(results.getDate("earliest_date"), results.getDate("latest_date"))
+    } else {
+      None
+    }
+  }
+
   private def toSqlDate(d: Date) = {
     val cal = Calendar.getInstance()
     cal.set(Calendar.YEAR, d.year)
@@ -195,7 +205,6 @@ object DB {
   private def fromSqlDate(d: java.sql.Date): Date = {
     val localDate: LocalDate = d.toLocalDate
     Date(localDate.getDayOfMonth, localDate.getMonthValue, localDate.getYear)
-    //TODO ensure BC works
   }
 
   private def getLinesFromFile(file: BufferedSource) = file

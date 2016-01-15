@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.Calendar
+
 import backend.util.DB
 import org.json4s._
 import org.json4s.jackson.JsonMethods
@@ -26,6 +28,43 @@ class Application extends Controller {
     } catch {
       case e: java.text.ParseException =>
         errorJson(s"Not a valid format for a date. Must be in format ${dateFormatString.toUpperCase()}")
+    }
+  }
+
+  def getDateRange = Action {
+    DB.getDateRange match {
+      case Some(tup) =>
+        val (start, end) = tup
+
+        def getParts(d: java.sql.Date) = {
+          val cal = Calendar.getInstance()
+          cal.setTime(d)
+          ( cal.get(Calendar.DAY_OF_MONTH),
+            cal.get(Calendar.MONTH),
+            cal.get(Calendar.ERA) match {
+              case 0 => -cal.get(Calendar.YEAR)
+              case 1 =>  cal.get(Calendar.YEAR)
+            })
+        }
+
+        val (startParts, endParts) = (getParts(start), getParts(end))
+
+        val json = JObject(List(
+          "startDate" -> JObject(List(
+            "date" -> JInt(startParts._1),
+            "month" -> JInt(startParts._2),
+            "year" -> JInt(startParts._3)
+          )),
+          "endDate" -> JObject(List(
+            "date" -> JInt(endParts._1),
+            "month" -> JInt(endParts._2),
+            "year" -> JInt(endParts._3)
+          ))
+        ))
+
+        Ok(stringifyJson(json))
+      case None =>
+        errorJson("Couldn't get first and last dates.")
     }
   }
 
