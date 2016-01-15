@@ -2,7 +2,7 @@
 // Container for the visualisation
 var $container = $("#wikimap-d3");
 
-/* D3 VARIABLES */
+// D3 VARIABLES
 var width = $container.width(),
     height = $container.height();
 
@@ -27,17 +27,18 @@ var svg = d3.select("#wikimap-d3").append("svg")
     .attr("height", height);
 
 
-/* OTHER GLOBALS */
+// OTHER GLOBALS
 var $svg = $container.find("svg");
 var $tooltip = $container.find("#tooltip");
 var isMouseDown = false;
+var tooltipHasMouse = false;
 var mouseDownLocation = {x: 0, y: 0};
 var mouseLocation = {x: 0, y: 0};
 var globeRotation = {x: 670, y: 400};
 var globeRotIncrement = 30;
 updateRotation();
 
-/* LOADING DATA */
+// LOADING DATA
 d3.json("/assets/res/world-110m.json", function(error, world) {
     if (error) throw error;
 
@@ -47,7 +48,7 @@ d3.json("/assets/res/world-110m.json", function(error, world) {
         .attr("d", path);
 });
 
-$.ajax("/getEvents/23.04.2014/23.04.2015", {
+$.ajax("/getEvents/23.04.0/23.04.2015", {
     type: "GET",
     success: function(e) {
         handleEvents($.parseJSON(e));
@@ -59,7 +60,7 @@ $.ajax("/getEvents/23.04.2014/23.04.2015", {
 });
 
 
-/* MOUSE/KEYBOARD EVENTS */
+// MOUSE/KEYBOARD EVENTS
 $svg.on("mousemove", function(e) {
     mouseLocation.x = e.clientX;
     mouseLocation.y = e.clientY;
@@ -99,6 +100,14 @@ function eventMouseOut(d) {
     $tooltip.fadeOut();
 }
 
+$tooltip.on("mouseover", function() {
+    tooltipHasMouse = true;
+});
+
+$tooltip.on("mouseout", function() {
+    tooltipHasMouse = false;
+});
+
 $(document).keydown(function(e) {
     switch (e.which) {
         case 37:
@@ -121,7 +130,7 @@ $(document).keydown(function(e) {
 });
 
 
-/* OTHER FUNCTIONS */
+// OTHER FUNCTIONS
 function handleEvents(events) {
     console.log("Handling events");
 
@@ -153,6 +162,7 @@ function handleEvents(events) {
             .datum(topojson.feature(topojsonObject, topojsonObject.objects.events))
             .attr("class", "points")
             .attr("fill", "red")
+            .attr("opacity", 0.5)
             .on("mouseover", function(e) {
                 eventMouseOver(e.geometry.coordinates[0][2]);
             })
@@ -179,8 +189,16 @@ function getText(e) {
 
     var desc =
         "<div class='event-desc'>" +
-            e.desc +
+            formatDescription(e.desc) +
         "</div>";
 
     return date + desc;
+}
+
+function formatDescription(desc) {
+    var regex1 = /\[\[([^\[\|\]]*)\|([^\[\|\]]*)\]\]/g;
+    var regex2 = /\[\[([^\[\|\]]*)\]\]/g;
+    return desc
+        .replace(regex1, "<a href='http://en.wikipedia.org/wiki/$1'>$2</a>")
+        .replace(regex2, "<a href='http://en.wikipedia.org/wiki/$1'>$1</a>");
 }
