@@ -21,4 +21,14 @@
     border-radius: 5px;
     padding: 10px;
     background-color: #DDD;
+
+    text-align: center;
+}
+
+.event-date {
+    font-weight: bold;
+}
+
+.event-desc {
+    text-align: justify;
 }

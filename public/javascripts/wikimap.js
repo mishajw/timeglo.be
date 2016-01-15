@@ -87,8 +87,7 @@ $svg.on("mouseup", function(e) {
 });
 
 function eventMouseOver(d) {
-    console.log(d.desc);
-    $tooltip.text(d.desc);
+    $tooltip.html(getText(d));
     $tooltip.show();
     $tooltip.css({
         left: mouseLocation.x - ($tooltip.width() / 2),
@@ -168,4 +167,18 @@ function handleEvents(events) {
 function updateRotation() {
     projection.rotate([λ(globeRotation.x), φ(globeRotation.y)]);
     svg.selectAll("path").attr("d", path);
+}
+
+function getText(e) {
+    var date =
+        "<div class='event-date'>" +
+            e.date +
+        "</div>";
+
+    var desc =
+        "<div class='event-desc'>" +
+            e.desc +
+        "</div>";
+
+    return date + desc;
 }
