@@ -6,6 +6,7 @@ CREATE TABLE events (
 
 CREATE TABLE locations (
   id              SERIAL PRIMARY KEY,
+  name            TEXT,
   latitude        REAL,
   longitude       REAL,
   population      BIGINT
@@ -20,5 +21,6 @@ CREATE TABLE locationNames (
 CREATE TABLE eventLocations (
   id              SERIAL PRIMARY KEY,
   eventID         INT REFERENCES events,
-  locationID      INT REFERENCES locations
+  locationID      INT REFERENCES locations,
+  nameID          INT REFERENCES locationNames
 );

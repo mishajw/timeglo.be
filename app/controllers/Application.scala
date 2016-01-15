@@ -36,7 +36,8 @@ class Application extends Controller {
           "date" -> JString(le.event.date.toString),
           "desc" -> JString(le.event.description),
           "location" -> JObject(List(
-            "names" -> JArray(le.location.names.map(JString).toList),
+            "name" -> JString(le.location.formattedName),
+            "matchedName" -> JString(le.matchedName),
             "lat" -> JDouble(le.location.coords.lat),
             "long" -> JDouble(le.location.coords.long),
             "population" -> JString(le.location.population.toString)

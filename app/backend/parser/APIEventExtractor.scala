@@ -3,6 +3,7 @@ package backend.parser
 import backend.retriever.wikipedia.APIArticleRetreiver
 import backend.util.DB
 import backend.{Date, Event}
+import play.api.Logger
 
 import scala.util.Try
 
@@ -10,6 +11,8 @@ import scala.util.Try
   * Created by misha on 26/12/15.
   */
 object APIEventExtractor {
+  private val log = Logger(getClass)
+
   val SimpleDate = " *\\[?\\[?([0-9]*)\\]?\\]? *".r
   val BCDate = " *\\[\\[([0-9]*) ?BC\\]\\] *".r
 
@@ -26,7 +29,7 @@ object APIEventExtractor {
       month <- months.indices;
       date <- 0 to 30
     ) yield  {
-      println(s"$date, $month")
+      log.debug(s"Getting date: $date/$month")
       val e = getEventsForDate(Date(date, month, 0))
       e.foreach(DB.insertEvent)
       e

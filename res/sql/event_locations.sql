@@ -1,19 +1,11 @@
-SELECT
-  Ev.occurs, Ev.description, Ev.latitude, Ev.longitude, Ev.population, string_agg(LN.name, ',') AS allNames
+SELECT L.id, L.name, N.name AS matchedName, E.occurs, E.description, L.latitude, L.longitude, L.population
 FROM
-  locationnames LN,
-  (
-    SELECT L.id, E.occurs, E.description, L.latitude, L.longitude, L.population
-    FROM
-      locations L,
-      events E,
-      eventLocations EL
-    WHERE
-      L.id = EL.locationID AND
-      E.id = EL.eventID AND
-      ? =< E.occurs AND E.occurs =< ?
-  ) AS Ev
+  locations L,
+  events E,
+  locationNames N,
+  eventLocations EL
 WHERE
-  Ev.id = LN.locationID
-GROUP BY
-  Ev.id, Ev.occurs, Ev.description, Ev.latitude, Ev.longitude, Ev.population;
+  L.id = EL.locationID AND
+  E.id = EL.eventID AND
+  N.id = EL.nameID AND
+  ? < E.occurs AND E.occurs < ?;

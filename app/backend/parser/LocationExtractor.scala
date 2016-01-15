@@ -1,13 +1,14 @@
 package backend.parser
 
-import backend.retriever.location.FileLocationRetriever
 import backend.util.DB
-import backend.{Location, Event}
+import backend.{Event, Location}
+import play.api.Logger
 
 /**
   * Created by misha on 26/12/15.
   */
 object LocationExtractor {
+  private val log = Logger(getClass)
 
   private val NounGroup = "([A-Z][a-z]+ ?){2,}".r
   private val NounSingle = "([A-Z][a-z]+)".r
@@ -16,30 +17,27 @@ object LocationExtractor {
   def run() = {
     DB.resetTables(Seq("eventLocations"))
 
-    val start = System.currentTimeMillis()
-
     DB.getEvents
       .foreach(event => {
-        println(event.date)
+        log.debug(s"Getting location for: ${event.date}")
         extractLocation(event) match {
-          case Some(location) =>
-            (location.id, event.id) match {
+          case Some(tup) =>
+            log.debug("Found!")
+            (tup._1.id, event.id) match {
               case (Some(lid), Some(eid)) =>
-                DB.batchEventLocation(lid, eid)
+                DB.batchEventLocation(lid, eid, tup._2)
               case _ =>
-                println(s"IDs not set for location and/or event:\n$event\n$location")
+                println(s"IDs not set for location and/or event:\n$event\n${tup._1}")
             }
           case None =>
+            log.debug("Couldn't find.")
         }
       })
 
     DB.insertAllEventLocation()
   }
 
-  def extractLocationMultiple(events: Seq[Event]) =
-    events.map(extractLocation)
-
-  def extractLocation(event: Event): Option[Location] = {
+  def extractLocation(event: Event): Option[(Location, Int)] = {
     val desc = event.description
     val links = extractLinksFromText(desc)
     val linkNouns = links.flatMap(extractSingleNounsFromText)
@@ -50,7 +48,9 @@ object LocationExtractor {
     val possible: Seq[String] =
       links ++ linkNouns ++ nouns ++ linkNounGroups ++ nounGroups
 
-    DB.getLocationFromNames(possible)
+    log.debug(s"${event.description} =>\n\t$possible")
+
+    DB.getLocationFromNames(possible.map(backend.strip))
   }
 
   def extractLinksFromText(text: String): Seq[String] = {

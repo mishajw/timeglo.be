@@ -6,6 +6,7 @@ import java.util.Calendar
 
 import backend._
 import org.postgresql.util.PSQLException
+import play.api.Logger
 
 import scala.collection.mutable.ListBuffer
 import scala.io.{BufferedSource, Source}
@@ -15,6 +16,8 @@ import scala.io.{BufferedSource, Source}
   * Created by misha on 28/12/15.
   */
 object DB {
+  private val log = Logger(getClass)
+
   Class.forName("org.postgresql.Driver")
   val connection = DriverManager.getConnection("jdbc:postgresql://localhost/wikimap", "misha", "")
   connection.setAutoCommit(false)
@@ -22,12 +25,14 @@ object DB {
 
   private val locatedEventStatement =
     connection.prepareStatement(getLineFromFileName("res/sql/event_locations.sql"))
-    connection.prepareStatement(getLineFromFileName("res/sql/event_locations.sql"))
+  private val locationFromNamesStatement =
+    connection.prepareStatement(getLineFromFileName("res/sql/location_from_names.sql"))
+
   private val insertCommands: Map[String, PreparedStatement] = Seq(
     ("events", Seq("occurs", "description")),
-    ("locations", Seq("id", "latitude", "longitude", "population")),
+    ("locations", Seq("id", "name", "latitude", "longitude", "population")),
     ("locationNames", Seq("locationID", "name")),
-    ("eventLocations", Seq("eventID", "locationID")))
+    ("eventLocations", Seq("eventID", "locationID", "nameID")))
     .map(tup =>
       tup._1 -> connection.prepareStatement(
         s"INSERT INTO ${tup._1}" +
@@ -38,6 +43,8 @@ object DB {
   private lazy val tableNames: Seq[String] = insertCommands.keySet.toSeq
 
   def resetTables(tables: Seq[String] = tableNames) = {
+    log.warn(s"Dropping tables: ${tables.mkString(", ")}")
+
     Seq("drop", "tables") .foreach(f => {
       val file = Source.fromFile(s"res/sql/$f.sql")
 
@@ -51,7 +58,10 @@ object DB {
     })
   }
 
-  def commit() = connection.commit()
+  def commit() = {
+    log.debug("Committing changes to database")
+    connection.commit()
+  }
 
   def disconnect() = connection.close()
 
@@ -82,20 +92,14 @@ object DB {
     val s = insertCommands("locations")
 
     s.setInt(1, id)
-    s.setDouble(2, l.coords.lat)
-    s.setDouble(3, l.coords.long)
-    s.setBigDecimal(4, l.population)
+    s.setString(2, l.formattedName)
+    s.setDouble(3, l.coords.lat)
+    s.setDouble(4, l.coords.long)
+    s.setBigDecimal(5, l.population)
 
     s.executeUpdate()
 
-//    val id = {
-//      val sStr: String = s"SELECT id FROM locations WHERE latitude='${l.coords.lat}' AND longitude='${l.coords.long}' AND population='${l.population}'"
-//      val results = statement.executeQuery(sStr)
-//      results.next()
-//      results.getLong("id")
-//    }
-
-    l.names.foreach(n => {
+    l.matchedNames.foreach(n => {
       val s = insertCommands("locationNames")
       s.setLong(1, id)
       s.setString(2, n)
@@ -103,69 +107,39 @@ object DB {
     })
   }
 
-  def getLocation(name: String): Option[Location] = {
-    val stripped = backend.strip(name)
+  def getLocationFromNames(names: Seq[String]): Option[(Location, Int)] = {
+    locationFromNamesStatement.setArray(1, connection.createArrayOf("varchar", names.toArray))
 
-    val statementString =
-      "SELECT L.latitude, L.longitude, L.population, L.id " +
-      "FROM locations L, locationNames N " +
-      "WHERE L.id=N.locationID " +
-      s"AND N.name='$stripped';"
+    val results = locationFromNamesStatement.executeQuery()
 
-    val results = statement.executeQuery(statementString)
-
-    val possibleLocations = new ListBuffer[Location]()
-
-    while (results.next()) {
-      possibleLocations += Location(
-        Seq(name),
-        Coords(results.getDouble("latitude"), results.getDouble("longitude")),
-        results.getBigDecimal("population"),
-        Some(results.getInt("id")))
-    }
-
-    possibleLocations.sortBy(_.population.negate()).toList match {
-      case Nil => None
-      case x :: xs => Some(x)
-    }
-  }
-
-  def getLocationFromNames(names: Seq[String]): Option[Location] = {
-    val statementString =
-      "SELECT L.latitude, L.longitude, L.population, L.id, N.name " +
-        "FROM locations L, locationNames N " +
-        "WHERE L.id=N.locationID " +
-        s"AND N.name=ANY(ARRAY[" +
-        names.map(n => s"'${backend.strip(n)}'").mkString(", ") + "]) " +
-        "ORDER BY L.population DESC " +
-        "LIMIT 1;"
-
-    val results = statement.executeQuery(statementString)
-
-    val possibleLocations = new ListBuffer[Location]()
+//    val possibleLocations = new ListBuffer[Location]()
 
     if (results.next()) {
-      Some(Location(
-        Seq(results.getString("name")),
-        Coords(results.getDouble("latitude"), results.getDouble("longitude")),
-        results.getBigDecimal("population"),
-        Some(results.getInt("id"))))
+      Some(
+        Location(
+          results.getString("name"),
+          Seq(results.getString("foundName")),
+          Coords(results.getDouble("latitude"), results.getDouble("longitude")),
+          results.getBigDecimal("population"),
+          Some(results.getInt("id"))),
+        results.getInt("nameID"))
     } else {
       None
     }
   }
 
-  def batchEventLocation(locationID: Int, eventID: Int) = {
+  def batchEventLocation(locationID: Int, eventID: Int, nameID: Int) = {
     val ps = insertCommands("eventLocations")
 
     ps.setInt(1, eventID)
     ps.setInt(2, locationID)
+    ps.setInt(3, nameID)
 
     ps.addBatch()
   }
 
   def insertAllEventLocation() = {
-    insertCommands("eventLocations").executeBatch()
+     insertCommands("eventLocations").executeBatch()
   }
 
   def getLocatedEvents(start: java.sql.Date, end: java.sql.Date): Seq[LocatedEvent] = {
@@ -181,9 +155,11 @@ object DB {
           fromSqlDate(results.getDate("occurs")),
           results.getString("description")),
         Location(
-          results.getString("allNames").split(",").toSeq,
+          results.getString("name"),
+          Seq(results.getString("matchedName")),
           Coords(results.getFloat("latitude"), results.getFloat("longitude")),
-          results.getBigDecimal("population")))
+          results.getBigDecimal("population")),
+        results.getString("matchedName"))
     }
 
     locatedEvents.toSeq
@@ -196,12 +172,13 @@ object DB {
       .foreach(l => {
         val save = connection.setSavepoint()
         try {
+          log.debug(s"Trying to create index:\n$l")
           statement.executeUpdate(l)
+          log.debug("Done.")
         } catch {
           case e: PSQLException =>
             connection.rollback(save)
-            println(s"Couldn't create index, because it already exists:\n$l")
-            println(e)
+            log.warn(s"Couldn't create index, because it already exists.")
         }
       })
   }
