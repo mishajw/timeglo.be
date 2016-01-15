@@ -36,7 +36,10 @@ var mouseDownLocation = {x: 0, y: 0};
 var mouseLocation = {x: 0, y: 0};
 var globeRotation = {x: 670, y: 400};
 var globeRotIncrement = 30;
+var startYear = 2012, endYear = 2014;
+
 updateRotation();
+setupSlider();
 
 // LOADING DATA
 d3.json("/assets/res/world-110m.json", function(error, world) {
@@ -126,7 +129,7 @@ $(document).keydown(function(e) {
 
 
 // OTHER FUNCTIONS
-function updateWithRange(startYear, endYear) {
+function updateWithRange() {
     console.log("Getting points for " + startYear + " to " + endYear);
 
     $.ajax("/getEvents/1.1." + startYear + "/1.1." + endYear + 10, {
@@ -183,6 +186,25 @@ function handleEvents(events) {
             })
             .attr("d", path);
     });
+}
+
+function setupSlider() {
+    var slider = $("#range-slider");
+    slider.slider({
+        range: true,
+        min: 0,
+        max: 2015,
+        values: [75, 300],
+        slide: function(event, ui) {
+            $("#range-label").text(ui.values[0] + " to " + ui.values[1]);
+            startYear = ui.values[0];
+            endYear = ui.values[1];
+        }
+    });
+    $("#range-label").text( "$" + slider.slider( "values", 0 ) +
+        " - $" + slider.slider( "values", 1 ) );
+
+    $("#range-button").click(updateWithRange);
 }
 
 function updateRotation() {

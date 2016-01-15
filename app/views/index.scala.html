@@ -1,8 +1,18 @@
 @main("Wiki Map", Seq("//d3js.org/d3.v3.min.js", "//d3js.org/topojson.v1.js")) {
     <h1>Wiki Map</h1>
+
+    <div>
+        <span id="range-title">Date range:</span>
+        <span id="range-label"></span>
+        <div id="range-slider"></div>
+        <button id="range-button">Update</button>
+    </div>
+
+
     <div id="wikimap-d3">
         <div id="tooltip"></div>
     </div>
-    <input type="range">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="@routes.Assets.versioned("javascripts/wikimap.js")" type="text/javascript"></script>
 }
