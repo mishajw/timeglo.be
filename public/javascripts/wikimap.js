@@ -165,6 +165,9 @@ function handleEvents(events) {
 }
 
 function updateRotation() {
+    if (globeRotation.y > 800) globeRotation.y = 800;
+    if (globeRotation.y < 0)   globeRotation.y = 0;
+
     projection.rotate([λ(globeRotation.x), φ(globeRotation.y)]);
     svg.selectAll("path").attr("d", path);
 }
