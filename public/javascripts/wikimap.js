@@ -1,10 +1,13 @@
 
+// Container for the visualisation
+var $container = $("#wikimap-d3");
+
 /* D3 VARIABLES */
-var width = 960,
-    height = 500;
+var width = $container.width(),
+    height = $container.height();
 
 var projection = d3.geo.orthographic()
-    .scale(250)
+    .scale(height / 2)
     .translate([width / 2, height / 2])
     .clipAngle(90);
 
@@ -25,11 +28,12 @@ var svg = d3.select("#wikimap-d3").append("svg")
 
 
 /* OTHER GLOBALS */
-var $svg = $("#wikimap-d3");
+var $svg = $container.find("svg");
 var isMouseDown = false;
 var mouseDownLocation = {x: 0, y: 0};
-var globeRotation = {x: 0, y: 0};
-
+var globeRotation = {x: 670, y: 400};
+var globeRotIncrement = 30;
+updateRotation();
 
 /* LOADING DATA */
 d3.json("/assets/res/world-110m.json", function(error, world) {
@@ -41,7 +45,7 @@ d3.json("/assets/res/world-110m.json", function(error, world) {
         .attr("d", path);
 });
 
-$.ajax("/getEvents/23.04.1999/23.04.2000", {
+$.ajax("/getEvents/23.04.2014/23.04.2015", {
     type: "GET",
     success: function(e) {
         handleEvents($.parseJSON(e));
@@ -53,7 +57,7 @@ $.ajax("/getEvents/23.04.1999/23.04.2000", {
 });
 
 
-/* MOUSE EVENTS */
+/* MOUSE/KEYBOARD EVENTS */
 $svg.on("mousemove", function(e) {
     if (!isMouseDown) return;
 
@@ -78,14 +82,34 @@ $svg.on("mouseup", function(e) {
 });
 
 function eventMouseOver(d) {
-    console.log(d);
+    console.log(d.desc);
 }
+
+$(document).keydown(function(e) {
+    switch (e.which) {
+        case 37:
+            globeRotation.x += globeRotIncrement;
+            break;
+        case 38:
+            globeRotation.y += globeRotIncrement;
+            break;
+        case 39:
+            globeRotation.x -= globeRotIncrement;
+            break;
+        case 40:
+            globeRotation.y -= globeRotIncrement;
+            break;
+        default:
+            break;
+    }
+
+    updateRotation();
+});
 
 
 /* OTHER FUNCTIONS */
 function handleEvents(events) {
-    console.log(events);
-
+    console.log("Handling events")
     var topojsonObject = {
         type: "Topology",
         objects: {

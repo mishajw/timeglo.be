@@ -1,0 +1,9 @@
+#wikimap-d3 {
+    width: 100%;
+    height: 800px;
+}
+
+#wikimap-d3 svg {
+    width: 100%;
+    height: 100%;
+}
