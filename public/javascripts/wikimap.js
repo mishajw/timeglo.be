@@ -96,8 +96,7 @@ function eventMouseOver(d) {
 }
 
 function eventMouseOut(d) {
-    $tooltip.hide();
-    $.text("");
+    $tooltip.fadeOut();
 }
 
 $(document).keydown(function(e) {
