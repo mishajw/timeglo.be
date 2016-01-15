@@ -1,3 +1,7 @@
+* {
+    font-family: Helvetica, sans-serif;
+}
+
 #wikimap-d3 {
     width: 100%;
     height: 800px;
@@ -6,4 +10,15 @@
 #wikimap-d3 svg {
     width: 100%;
     height: 100%;
+}
+
+#tooltip {
+    display: none;
+    position: absolute;
+
+    width: 300px;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #DDD;
 }

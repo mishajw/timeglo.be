@@ -29,8 +29,10 @@ var svg = d3.select("#wikimap-d3").append("svg")
 
 /* OTHER GLOBALS */
 var $svg = $container.find("svg");
+var $tooltip = $container.find("#tooltip");
 var isMouseDown = false;
 var mouseDownLocation = {x: 0, y: 0};
+var mouseLocation = {x: 0, y: 0};
 var globeRotation = {x: 670, y: 400};
 var globeRotIncrement = 30;
 updateRotation();
@@ -59,6 +61,9 @@ $.ajax("/getEvents/23.04.2014/23.04.2015", {
 
 /* MOUSE/KEYBOARD EVENTS */
 $svg.on("mousemove", function(e) {
+    mouseLocation.x = e.clientX;
+    mouseLocation.y = e.clientY;
+
     if (!isMouseDown) return;
 
     globeRotation.x += e.clientX - mouseDownLocation.x;
@@ -83,6 +88,17 @@ $svg.on("mouseup", function(e) {
 
 function eventMouseOver(d) {
     console.log(d.desc);
+    $tooltip.text(d.desc);
+    $tooltip.show();
+    $tooltip.css({
+        left: mouseLocation.x - ($tooltip.width() / 2),
+        top: mouseLocation.y
+    });
+}
+
+function eventMouseOut(d) {
+    $tooltip.hide();
+    $.text("");
 }
 
 $(document).keydown(function(e) {
@@ -109,7 +125,8 @@ $(document).keydown(function(e) {
 
 /* OTHER FUNCTIONS */
 function handleEvents(events) {
-    console.log("Handling events")
+    console.log("Handling events");
+
     var topojsonObject = {
         type: "Topology",
         objects: {
@@ -139,8 +156,10 @@ function handleEvents(events) {
             .attr("class", "points")
             .attr("fill", "red")
             .on("mouseover", function(e) {
-                // Take out the original information
                 eventMouseOver(e.geometry.coordinates[0][2]);
+            })
+            .on("mouseout", function(e) {
+                eventMouseOut(e.geometry.coordinates[0][2]);
             })
             .attr("d", path);
     });

@@ -1,5 +1,7 @@
 @main("Wiki Map", Seq("//d3js.org/d3.v3.min.js", "//d3js.org/topojson.v1.js")) {
     <h1>Wiki Map</h1>
-    <div id="wikimap-d3"></div>
+    <div id="wikimap-d3">
+        <div id="tooltip"></div>
+    </div>
     <script src="@routes.Assets.versioned("javascripts/wikimap.js")" type="text/javascript"></script>
 }
