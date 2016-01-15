@@ -48,16 +48,7 @@ d3.json("/assets/res/world-110m.json", function(error, world) {
         .attr("d", path);
 });
 
-$.ajax("/getEvents/23.04.0/23.04.2015", {
-    type: "GET",
-    success: function(e) {
-        handleEvents($.parseJSON(e));
-    },
-    error: function(e) {
-        console.log("Couldn't get events.");
-        console.log(e);
-    }
-});
+updateWithRange(2010, 2012);
 
 
 // MOUSE/KEYBOARD EVENTS
@@ -122,7 +113,11 @@ $(document).keydown(function(e) {
         case 40:
             globeRotation.y -= globeRotIncrement;
             break;
+        case 27:
+            getNextPoints();
+            break;
         default:
+            console.log(e.which);
             break;
     }
 
@@ -131,8 +126,25 @@ $(document).keydown(function(e) {
 
 
 // OTHER FUNCTIONS
+function updateWithRange(startYear, endYear) {
+    console.log("Getting points for " + startYear + " to " + endYear);
+
+    $.ajax("/getEvents/1.1." + startYear + "/1.1." + endYear + 10, {
+        type: "GET",
+        success: function(e) {
+            handleEvents($.parseJSON(e));
+        },
+        error: function(e) {
+            console.log("Couldn't get events.");
+            console.log(e);
+        }
+    });
+}
+
 function handleEvents(events) {
     console.log("Handling events");
+
+    svg.selectAll(".points").remove();
 
     var topojsonObject = {
         type: "Topology",
