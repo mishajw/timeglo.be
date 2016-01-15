@@ -1,4 +1,5 @@
 
+/* D3 VARIABLES */
 var width = 960,
     height = 500;
 
@@ -18,16 +19,19 @@ var φ = d3.scale.linear()
     .domain([0, height])
     .range([90, -90]);
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#wikimap-d3").append("svg")
     .attr("width", width)
     .attr("height", height);
 
-svg.on("mousemove", function() {
-    var p = d3.mouse(this);
-    projection.rotate([λ(p[0]), φ(p[1])]);
-    svg.selectAll("path").attr("d", path);
-});
 
+/* OTHER GLOBALS */
+var $svg = $("#wikimap-d3");
+var isMouseDown = false;
+var mouseDownLocation = {x: 0, y: 0};
+var globeRotation = {x: 0, y: 0};
+
+
+/* LOADING DATA */
 d3.json("/assets/res/world-110m.json", function(error, world) {
     if (error) throw error;
 
@@ -48,10 +52,41 @@ $.ajax("/getEvents/23.04.1999/23.04.2000", {
     }
 });
 
+
+/* MOUSE EVENTS */
+$svg.on("mousemove", function(e) {
+    if (!isMouseDown) return;
+
+    globeRotation.x += e.clientX - mouseDownLocation.x;
+    globeRotation.y += e.clientY - mouseDownLocation.y;
+
+    mouseDownLocation.x = e.clientX;
+    mouseDownLocation.y = e.clientY;
+
+    updateRotation();
+});
+
+$svg.on("mousedown", function(e) {
+    isMouseDown = true;
+
+    mouseDownLocation.x = e.clientX;
+    mouseDownLocation.y = e.clientY;
+});
+
+$svg.on("mouseup", function(e) {
+    isMouseDown = false;
+});
+
+function eventMouseOver(d) {
+    console.log(d);
+}
+
+
+/* OTHER FUNCTIONS */
 function handleEvents(events) {
     console.log(events);
 
-    var formatted = {
+    var topojsonObject = {
         type: "Topology",
         objects: {
             events: {
@@ -67,15 +102,27 @@ function handleEvents(events) {
     };
 
     events.forEach(function(e) {
-        formatted.objects.events.coordinates
-            .push([e.location.lat, e.location.long]);
+        // Set the topojson object to have details for this event
+        topojsonObject.objects.events.coordinates = [[
+            e.location.long,
+            e.location.lat,
+            // Inject into coordinates so we can get the data back later
+            e
+        ]];
+
+        svg.append("path")
+            .datum(topojson.feature(topojsonObject, topojsonObject.objects.events))
+            .attr("class", "points")
+            .attr("fill", "red")
+            .on("mouseover", function(e) {
+                // Take out the original information
+                eventMouseOver(e.geometry.coordinates[0][2]);
+            })
+            .attr("d", path);
     });
+}
 
-    console.log(formatted);
-
-    svg.append("path")
-        .datum(topojson.feature(formatted, formatted.objects.events))
-        .attr("class", "points")
-        .attr("fill", "red")
-        .attr("d", path);
+function updateRotation() {
+    projection.rotate([λ(globeRotation.x), φ(globeRotation.y)]);
+    svg.selectAll("path").attr("d", path);
 }
