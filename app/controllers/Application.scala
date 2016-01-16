@@ -5,8 +5,11 @@ import java.util.Calendar
 import backend.util.DB
 import org.json4s._
 import org.json4s.jackson.JsonMethods
+import play.api.Logger
 import play.api.mvc._
 class Application extends Controller {
+
+  private val log = Logger(getClass)
 
   private val dateFormatString: String = "dd.MM.yyyy"
   private val dateFormat = new java.text.SimpleDateFormat(dateFormatString)
@@ -16,9 +19,13 @@ class Application extends Controller {
   }
 
   def getEvents(startString: String, endString: String) = Action {
+    log.debug(s"Asked for events from $startString to $endString")
+
     try {
       val startDate = new java.sql.Date(dateFormat.parse(startString).getTime)
       val endDate = new java.sql.Date(dateFormat.parse(endString).getTime)
+
+      log.debug(s"Parsed dates as $startDate and $endDate")
 
       if (startDate.before(endDate)) {
         Ok(stringifyJson(getEventsInJson(startDate, endDate)))
@@ -32,6 +39,8 @@ class Application extends Controller {
   }
 
   def getDateRange = Action {
+    log.debug("Asked for date range")
+
     DB.getDateRange match {
       case Some(tup) =>
         val (start, end) = tup
@@ -88,7 +97,10 @@ class Application extends Controller {
   private def stringifyJson(json: JValue) =
     JsonMethods.pretty(JsonMethods.render(json))
 
-  private def errorJson(errorMsg: String) = BadRequest(stringifyJson(JObject(List(
-    "error" -> JString(errorMsg))
-  )))
+  private def errorJson(errorMsg: String) = {
+    log.warn(s"Giving user error: $errorMsg")
+    BadRequest(stringifyJson(JObject(List(
+      "error" -> JString(errorMsg))
+    )))
+  }
 }

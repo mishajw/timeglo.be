@@ -31,6 +31,7 @@ object BackendOrganiser {
   }
 
   def main(args: Array[String]) {
-    BackendOrganiser.runAll()
+//    BackendOrganiser.runAll()
+    log.info("BO")
   }
 }
