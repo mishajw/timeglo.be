@@ -59,6 +59,7 @@ $(function() {
         svg.append("path")
             .datum(topojson.feature(world, world.objects.land))
             .attr("class", "land")
+            .attr("fill", "#333")
             .attr("d", path);
     });
     updateWithRange();
@@ -98,10 +99,16 @@ $(function() {
             left: mouseLocation.x - ($tooltip.width() / 2),
             top: mouseLocation.y
         });
+
+        svg.select("#" + d.pointID)
+            .attr("stroke-width", "5px");
     }
 
     function eventMouseOut(d) {
         $tooltip.fadeOut();
+
+        svg.select("#" + d.pointID)
+            .attr("stroke-width", "0px");
     }
 
     $tooltip.on("mouseover", function() {
@@ -179,7 +186,9 @@ $(function() {
             }
         };
 
-        events.forEach(function(e) {
+        events.forEach(function(e, i) {
+            e.pointID = "point" + i;
+
             // Set the topojson object to have details for this event
             topojsonObject.objects.events.coordinates = [[
                 e.location.long,
@@ -191,7 +200,9 @@ $(function() {
             svg.append("path")
                 .datum(topojson.feature(topojsonObject, topojsonObject.objects.events))
                 .attr("class", "points")
-                .attr("fill", "red")
+                .attr("id", e.pointID)
+                .attr("fill", "#99ccff")
+                .attr("stroke", "white")
                 .attr("opacity", 0.5)
                 .on("mouseover", function(e) {
                     eventMouseOver(e.geometry.coordinates[0][2]);
