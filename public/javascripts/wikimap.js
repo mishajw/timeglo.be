@@ -42,7 +42,7 @@ $(function() {
     var globeRotIncrement = 30;
 
     // OTHER
-    var startYear = 2012, endYear = 2014;
+    var defaultYears = [2010, 2015];
 
     updateRotation();
     $.ajax("/getDateRange", {
@@ -152,9 +152,9 @@ $(function() {
 
     // OTHER FUNCTIONS
     function updateWithRange() {
-        console.log("Getting points for " + parseInt(startYear) + " to " + parseInt(endYear));
+        var years = getScaledYears();
 
-        $.ajax("/getEvents/1.1." + parseInt(startYear) + "/1.1." + parseInt(endYear), {
+        $.ajax("/getEvents/1.1." + years[0] + "/1.1." + years[1], {
             type: "GET",
             success: function(e) {
                 handleEvents($.parseJSON(e));
@@ -216,21 +216,16 @@ $(function() {
 
     function setupSlider(min, max) {
         function updateLabel() {
-            $("#range-label").text(
-                $slider.slider("values", 0) + " to " +
-                $slider.slider("values", 1));
+            var years = getScaledYears();
+            $("#range-label").text(years[0] + " to " + years[1]);
         }
 
         $slider.slider({
             range: true,
             min: min,
             max: max,
-            values: [max - 1, max],
-            slide: function(event, ui) {
-                updateLabel();
-                startYear = ui.values[0];
-                endYear = ui.values[1];
-            }
+            values: defaultYears,
+            slide: updateLabel
         });
 
         updateLabel();
@@ -279,5 +274,16 @@ $(function() {
             .replace(matchedRegex, "<b>$1</b>")
             .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1'>$1</a>")
             .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1'>$2</a>");
+    }
+
+    function getScaledYears() {
+        try {
+            var val1 = $slider.slider("values", 0);
+            var val2 = $slider.slider("values", 1);
+
+            return [val1, val2];
+        } catch (err) {
+            return defaultYears;
+        }
     }
 });
