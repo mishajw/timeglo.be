@@ -136,7 +136,6 @@ $(function() {
                 projection.scale(projection.scale() * 1.2);
                 break;
             default:
-                console.log(e.which);
                 break;
         }
 
