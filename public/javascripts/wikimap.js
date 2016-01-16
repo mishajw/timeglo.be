@@ -26,7 +26,6 @@ $(function() {
         .attr("width", width)
         .attr("height", height);
 
-
     // JQUERY VARS
     var $svg = $container.find("svg");
     var $tooltip = $container.find("#tooltip");
@@ -129,6 +128,12 @@ $(function() {
                 break;
             case 27:
                 getNextPoints();
+                break;
+            case 189:
+                projection.scale(projection.scale() / 1.2);
+                break;
+            case 187:
+                projection.scale(projection.scale() * 1.2);
                 break;
             default:
                 console.log(e.which);
@@ -237,19 +242,32 @@ $(function() {
                 e.date +
             "</div>";
 
-        var desc =
-            "<div class='event-desc'>" +
-                formatDescription(e.desc) +
+        var location =
+            "<div class='event-location'>" +
+            e.location.name +
             "</div>";
 
-        return date + desc;
+        var desc =
+            "<div class='event-desc'>" +
+                formatDescription(e.desc, e.location.matchedName) +
+            "</div>";
+
+        return location + date + desc;
     }
 
-    function formatDescription(desc) {
-        var regex1 = /\[\[([^\[\|\]]*)\|([^\[\|\]]*)\]\]/g;
-        var regex2 = /\[\[([^\[\|\]]*)\]\]/g;
+    function formatDescription(desc, matched) {
+        var linkRegex = /\[\[([^\[\|\]]*)\]\]/g;
+        var linkWithBarRegex = /\[\[([^\[\|\]]*)\|([^\[\|\]]*)\]\]/g;
+
+        var matchedFormatted = "";
+        for (var i = 0; i < matched.length; i++) {
+            matchedFormatted += matched.charAt(i) + (i == matched.length - 1 ? "" : "\\W?");
+        }
+        var matchedRegex = new RegExp("(" + matchedFormatted + ")", "i");
+
         return desc
-            .replace(regex1, "<a href='http://en.wikipedia.org/wiki/$1'>$2</a>")
-            .replace(regex2, "<a href='http://en.wikipedia.org/wiki/$1'>$1</a>");
+            .replace(matchedRegex, "<b>$1</b>")
+            .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1'>$1</a>")
+            .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1'>$2</a>");
     }
 });
