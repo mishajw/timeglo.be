@@ -142,9 +142,9 @@ $(function() {
 
     // OTHER FUNCTIONS
     function updateWithRange() {
-        console.log("Getting points for " + startYear + " to " + endYear);
+        console.log("Getting points for " + parseInt(startYear) + " to " + parseInt(endYear));
 
-        $.ajax("/getEvents/1.1." + startYear + "/1.1." + endYear + 10, {
+        $.ajax("/getEvents/1.1." + parseInt(startYear) + "/1.1." + parseInt(endYear), {
             type: "GET",
             success: function(e) {
                 handleEvents($.parseJSON(e));
