@@ -63,7 +63,7 @@ $(function() {
             .attr("d", path);
     });
     updateWithRange();
-
+    $svg.fadeIn(1000);
 
     // MOUSE/KEYBOARD EVENTS
     $svg.on("mousemove", function(e) {
