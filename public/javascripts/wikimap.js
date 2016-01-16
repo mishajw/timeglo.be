@@ -27,19 +27,31 @@ var svg = d3.select("#wikimap-d3").append("svg")
     .attr("height", height);
 
 
-// OTHER GLOBALS
+// JQUERY VARS
 var $svg = $container.find("svg");
 var $tooltip = $container.find("#tooltip");
+var $slider = $("#range-slider");
+
+// MOUSE VARS
 var isMouseDown = false;
 var tooltipHasMouse = false;
 var mouseDownLocation = {x: 0, y: 0};
 var mouseLocation = {x: 0, y: 0};
+
+// GLOBE VARS
 var globeRotation = {x: 670, y: 400};
 var globeRotIncrement = 30;
+
+// OTHER
 var startYear = 2012, endYear = 2014;
 
 updateRotation();
-setupSlider();
+$.ajax("/getDateRange", {
+    success: function(e) {
+        var json = $.parseJSON(e);
+        setupSlider(json.startDate.year, json.endDate.year);
+    }
+});
 
 // LOADING DATA
 d3.json("/assets/res/world-110m.json", function(error, world) {
@@ -188,21 +200,26 @@ function handleEvents(events) {
     });
 }
 
-function setupSlider() {
-    var slider = $("#range-slider");
-    slider.slider({
+function setupSlider(min, max) {
+    function updateLabel() {
+        $("#range-label").text(
+            $slider.slider("values", 0) + " to " +
+            $slider.slider("values", 1));
+    }
+
+    $slider.slider({
         range: true,
-        min: 0,
-        max: 2015,
-        values: [75, 300],
+        min: min,
+        max: max,
+        values: [max - 1, max],
         slide: function(event, ui) {
-            $("#range-label").text(ui.values[0] + " to " + ui.values[1]);
+            updateLabel();
             startYear = ui.values[0];
             endYear = ui.values[1];
         }
     });
-    $("#range-label").text( "$" + slider.slider( "values", 0 ) +
-        " - $" + slider.slider( "values", 1 ) );
+
+    updateLabel();
 
     $("#range-button").click(updateWithRange);
 }
