@@ -6,8 +6,14 @@ $(function() {
     var width = $container.width(),
         height = $container.height();
 
+    // GLOBE VARS
+    var globeRotation = {x: 670, y: 400};
+    var globeRotIncrement = 30;
+    var globeZoom = height / 2;
+    var globeZoomIncrement = 1.2;
+
     var projection = d3.geo.orthographic()
-        .scale(height / 2)
+        .scale(globeZoom)
         .translate([width / 2, height / 2])
         .clipAngle(90);
 
@@ -36,10 +42,6 @@ $(function() {
     var tooltipHasMouse = false;
     var mouseDownLocation = {x: 0, y: 0};
     var mouseLocation = {x: 0, y: 0};
-
-    // GLOBE VARS
-    var globeRotation = {x: 670, y: 400};
-    var globeRotIncrement = 30;
 
     // OTHER
     var defaultYears = [2010, 2015];
@@ -137,16 +139,17 @@ $(function() {
                 getNextPoints();
                 break;
             case 189:
-                projection.scale(projection.scale() / 1.2);
+                globeZoom /= globeZoomIncrement;
                 break;
             case 187:
-                projection.scale(projection.scale() * 1.2);
+                globeZoom *= globeZoomIncrement;
                 break;
             default:
                 break;
         }
 
         updateRotation();
+        updateZoom();
     });
 
 
@@ -239,6 +242,10 @@ $(function() {
 
         projection.rotate([λ(globeRotation.x), φ(globeRotation.y)]);
         svg.selectAll("path").attr("d", path);
+    }
+
+    function updateZoom() {
+        projection.scale(globeScale);
     }
 
     function getText(e) {
