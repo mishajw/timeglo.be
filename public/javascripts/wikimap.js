@@ -245,7 +245,7 @@ $(function() {
     }
 
     function updateZoom() {
-        projection.scale(globeScale);
+        projection.scale(globeZoom);
     }
 
     function getText(e) {
