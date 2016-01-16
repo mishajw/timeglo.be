@@ -62,8 +62,7 @@ $(function() {
             .attr("class", "land")
             .attr("d", path);
     });
-
-    updateWithRange(2010, 2012);
+    updateWithRange();
 
 
     // MOUSE/KEYBOARD EVENTS
