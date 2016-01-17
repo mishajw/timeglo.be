@@ -107,6 +107,11 @@ $(function() {
         isMouseDown = false;
     });
 
+    $svg.on("mousedrag", function(e) {
+        e.preventDefault();
+        return false;
+    });
+
     function eventMouseOver(d) {
         $tooltip.html(getText(d));
 
