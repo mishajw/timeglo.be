@@ -20,6 +20,7 @@ $(function() {
 
     var globeMaxEvents = 0;
     var globeMaxPointSize = 50;
+    var globeMinPointSize = 2;
 
     var projection = d3.geo.orthographic()
         .scale(globeZoom)
@@ -234,8 +235,8 @@ $(function() {
                 })
                 .attr("d", path.pointRadius(function(d) {
                     try {
-                        return (d.geometry.coordinates[0][2].events.length / globeMaxEvents) *
-                                globeMaxPointSize *
+                        return ((d.geometry.coordinates[0][2].events.length / globeMaxEvents) *
+                                (globeMaxPointSize - globeMinPointSize) + globeMinPointSize) *
                                 (parseFloat(globeZoom) / 400.0);
                     } catch (err) {
                         return 1;
