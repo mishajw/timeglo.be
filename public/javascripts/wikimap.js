@@ -16,6 +16,7 @@ $(function() {
     var globeZoom = height / 2;
     var desGlobeZoom = globeZoom;
     var globeZoomCatchUp = 0.2;
+    var globeZoomMax = 6000, globeZoomMin = 300;
 
     var globeMaxEvents = 0;
     var globeMaxPointSize = 50;
@@ -263,6 +264,8 @@ $(function() {
     }
 
     function updateZoom() {
+        if (globeZoom > globeZoomMax) { globeZoom = globeZoomMax; desGlobeZoom = globeZoomMax; }
+        if (globeZoom < globeZoomMin) { globeZoom = globeZoomMin; desGlobeZoom = globeZoomMin; }
         projection.scale(globeZoom);
     }
 
