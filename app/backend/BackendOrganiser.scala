@@ -1,6 +1,6 @@
 package backend
 
-import backend.parser.{APIEventExtractor, LocationExtractor}
+import backend.parser.{NationalityExtractor, APIEventExtractor, LocationExtractor}
 import backend.retriever.location.FileLocationRetriever
 import backend.util.DB
 import play.api.Logger
@@ -9,19 +9,24 @@ object BackendOrganiser {
   private val log = Logger(getClass)
 
   def runAll(): Unit = {
-//    log.info("Getting events...")
-//    APIEventExtractor.run
-//    DB.performIndexing()
-//    DB.commit()
+    log.info("Getting events...")
+    APIEventExtractor.run
+    DB.performIndexing()
+    DB.commit()
 
-//    log.info("Getting locations...")
-//    FileLocationRetriever.setup("allCountries.txt")
-//    DB.performIndexing()
-//    DB.commit()
+    log.info("Getting locations...")
+    FileLocationRetriever.setup("allCountries.txt")
+    DB.performIndexing()
+    DB.commit()
+
+    log.info("Getting nationalities...")
+    NationalityExtractor.run()
+    DB.performIndexing()
+    DB.commit()
 
     log.info("Extracting locations...")
     LocationExtractor.run()
-//    DB.performIndexing()
+    DB.performIndexing()
     DB.commit()
 
     log.info("Disconnecting...")
@@ -31,7 +36,6 @@ object BackendOrganiser {
   }
 
   def main(args: Array[String]) {
-//    BackendOrganiser.runAll()
-    log.info("BO")
+    BackendOrganiser.runAll()
   }
 }
