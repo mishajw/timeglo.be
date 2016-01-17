@@ -130,9 +130,6 @@ $(function() {
             case 40:
                 globeRotation.y -= globeRotIncrement;
                 break;
-            case 27:
-                getNextPoints();
-                break;
             case 189:
                 globeZoom /= globeZoomIncrement;
                 break;
@@ -143,8 +140,8 @@ $(function() {
                 break;
         }
 
-        updateRotation();
         updateZoom();
+        updateRotation();
     });
 
 
