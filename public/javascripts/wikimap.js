@@ -134,16 +134,16 @@ $(function() {
     $(document).keydown(function(e) {
         switch (e.which) {
             case 37:
-                desGlobeRotation.x += globeRotIncrement / (globeZoom);
+                desGlobeRotation.x += globeRotIncrement / globeZoom;
                 break;
             case 38:
-                desGlobeRotation.y += globeRotIncrement / (globeZoom);
+                desGlobeRotation.y += globeRotIncrement / globeZoom;
                 break;
             case 39:
-                desGlobeRotation.x -= globeRotIncrement / (globeZoom);
+                desGlobeRotation.x -= globeRotIncrement / globeZoom;
                 break;
             case 40:
-                desGlobeRotation.y -= globeRotIncrement / (globeZoom);
+                desGlobeRotation.y -= globeRotIncrement / globeZoom;
                 break;
             case 189:
                 desGlobeZoom /= globeZoomIncrement;
