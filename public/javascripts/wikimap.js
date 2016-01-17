@@ -127,10 +127,8 @@ $(function() {
     }
 
     function eventMouseOut(d) {
-        //$tooltip.fadeOut();
-
         svg.select("#" + d.pointID)
-            .attr("stroke-width", "0px");
+            .attr("stroke-width", "1px");
     }
 
     $(document).keydown(function(e) {
