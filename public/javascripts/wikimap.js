@@ -227,7 +227,13 @@ $(function() {
                 .on("mouseout", function(e) {
                     eventMouseOut(e.geometry.coordinates[0][2]);
                 })
-                .attr("d", path);
+                .attr("d", path.pointRadius(function(d) {
+                    try {
+                        return d.geometry.coordinates[0][2].events.length * (parseFloat(globeZoom) / 400.0);
+                    } catch (err) {
+                        return 1;
+                    }
+                }));
         }
     }
 
