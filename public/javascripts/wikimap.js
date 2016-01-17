@@ -246,13 +246,9 @@ $(function() {
                 .attr("id", eventObject.pointID)
                 .attr("fill", function(eo) {
                     try {
-                        console.log(globeMaxPopulation);
                         var population = eo.geometry.coordinates[0][2].events[0].location.population;
-                        console.log(population);
                         var value = (Math.sqrt(population) / Math.sqrt(globeMaxPopulation)) * 255;
-                        var color = d3.rgb(255 - value, value, 0);
-                        console.log(color);
-                        return color;
+                        return d3.rgb(255 - value, value, 0);
                     } catch (err) {
                         console.log(err);
                     }
