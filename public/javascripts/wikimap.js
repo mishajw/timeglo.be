@@ -101,10 +101,16 @@ $(function() {
 
         mouseDownLocation.x = e.clientX;
         mouseDownLocation.y = e.clientY;
+
+        e.preventDefault();
+        return false;
     });
 
     $svg.on("mouseup", function(e) {
         isMouseDown = false;
+        
+        e.preventDefault();
+        return false;
     });
 
     $svg.on("mousedrag", function(e) {
