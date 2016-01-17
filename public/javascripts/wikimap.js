@@ -35,7 +35,8 @@ $(function() {
     // JQUERY VARS
     var $svg = $container.find("svg");
     var $tooltip = $("#tooltip");
-    var $slider = $("#range-slider");
+    var $startDate = $("input[name=start-date]");
+    var $endDate = $("input[name=end-date]");
 
     // MOUSE VARS
     var isMouseDown = false;
@@ -46,6 +47,8 @@ $(function() {
     // OTHER
     var defaultYears = [2010, 2015];
 
+    $startDate.val(defaultYears[0]);
+    $endDate.val(defaultYears[1]);
     updateRotation();
     $.ajax("/getDateRange", {
         success: function(e) {
@@ -234,14 +237,6 @@ $(function() {
             $("#range-label").text(years[0] + " to " + years[1]);
         }
 
-        $slider.slider({
-            range: true,
-            min: min,
-            max: max,
-            values: defaultYears,
-            slide: updateLabel
-        });
-
         updateLabel();
 
         $("#range-button").click(updateWithRange);
@@ -301,8 +296,8 @@ $(function() {
 
     function getScaledYears() {
         try {
-            var val1 = $slider.slider("values", 0);
-            var val2 = $slider.slider("values", 1);
+            var val1 = $startDate.val();
+            var val2 = $endDate.val();
 
             return [val1, val2];
         } catch (err) {
