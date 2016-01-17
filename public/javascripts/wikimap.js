@@ -13,10 +13,10 @@ $(function() {
     var globeRotCatchUp = 0.3;
 
     var globeZoomIncrement = 1.2;
-    var globeZoom = height / 2;
+    var globeZoom = 1;
     var desGlobeZoom = globeZoom;
     var globeZoomCatchUp = 0.2;
-    var globeZoomMax = 6000, globeZoomMin = 300;
+    var globeZoomMax = 6000 / 400, globeZoomMin = 300 / 400;
 
     var globeMaxEvents = 0;
     var globeMaxPopulation = 0;
@@ -86,8 +86,8 @@ $(function() {
 
         if (!isMouseDown) return;
 
-        globeRotation.x += (e.clientX - mouseDownLocation.x) / (globeZoom / 400);
-        globeRotation.y += (e.clientY - mouseDownLocation.y) / (globeZoom / 400);
+        globeRotation.x += (e.clientX - mouseDownLocation.x) / (globeZoom);
+        globeRotation.y += (e.clientY - mouseDownLocation.y) / (globeZoom);
 
         desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
 
@@ -134,16 +134,16 @@ $(function() {
     $(document).keydown(function(e) {
         switch (e.which) {
             case 37:
-                desGlobeRotation.x += globeRotIncrement / (globeZoom / 400);
+                desGlobeRotation.x += globeRotIncrement / (globeZoom);
                 break;
             case 38:
-                desGlobeRotation.y += globeRotIncrement / (globeZoom / 400);
+                desGlobeRotation.y += globeRotIncrement / (globeZoom);
                 break;
             case 39:
-                desGlobeRotation.x -= globeRotIncrement / (globeZoom / 400);
+                desGlobeRotation.x -= globeRotIncrement / (globeZoom);
                 break;
             case 40:
-                desGlobeRotation.y -= globeRotIncrement / (globeZoom / 400);
+                desGlobeRotation.y -= globeRotIncrement / (globeZoom);
                 break;
             case 189:
                 desGlobeZoom /= globeZoomIncrement;
@@ -267,7 +267,7 @@ $(function() {
                     try {
                         return ((d.geometry.coordinates[0][2].events.length / globeMaxEvents) *
                                 (globeMaxPointSize - globeMinPointSize) + globeMinPointSize) *
-                                (parseFloat(globeZoom) / 400.0);
+                                (parseFloat(globeZoom));
                     } catch (err) {
                         return 1;
                     }
@@ -297,7 +297,7 @@ $(function() {
     function updateZoom() {
         if (globeZoom > globeZoomMax) { globeZoom = globeZoomMax; desGlobeZoom = globeZoomMax; }
         if (globeZoom < globeZoomMin) { globeZoom = globeZoomMin; desGlobeZoom = globeZoomMin; }
-        projection.scale(globeZoom);
+        projection.scale(globeZoom * 400);
     }
 
     function getText(eventsObject) {
@@ -361,7 +361,7 @@ $(function() {
             globeRotation.x += (desGlobeRotation.x - globeRotation.x) * globeRotCatchUp;
             globeRotation.y += (desGlobeRotation.y - globeRotation.y) * globeRotCatchUp;
 
-            if (Math.abs(globeZoom - desGlobeZoom) < 1 &&
+            if (Math.abs(globeZoom - desGlobeZoom) < 0.01 &&
                 Math.abs(globeRotation.x - desGlobeRotation.x) < 1 &&
                 Math.abs(globeRotation.y - desGlobeRotation.y) < 1) clearInterval(schedule);
 
