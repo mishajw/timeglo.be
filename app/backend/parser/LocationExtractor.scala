@@ -14,6 +14,8 @@ object LocationExtractor {
   private val NounSingle = "([A-Z][a-z]+)".r
   private val Link = "\\[\\[([^\\[[\\]]]+)\\]\\]".r
 
+  private val shortWords = "is and at the to the with be of a in that have it for not on with he as".split(" ")
+
   def run() = {
     DB.resetTables(Seq("eventLocations"))
 
@@ -46,11 +48,13 @@ object LocationExtractor {
     val nounGroups = extractNounGroupsFromText(desc)
 
     val possible: Seq[String] =
-      links ++ linkNouns ++ nouns ++ linkNounGroups ++ nounGroups
+      (links ++ linkNouns ++ nouns ++ linkNounGroups ++ nounGroups)
+      .map(backend.strip)
+      .filter(w => !shortWords.contains(w))
 
     log.debug(s"${event.description} =>\n\t$possible")
 
-    DB.getLocationFromNames(possible.map(backend.strip))
+    DB.getLocationFromNames(possible)
   }
 
   def extractLinksFromText(text: String): Seq[String] = {

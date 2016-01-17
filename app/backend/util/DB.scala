@@ -193,6 +193,13 @@ object DB {
     }
   }
 
+  def insertName(id: Int, name: String): Unit = {
+    val ps = insertCommands("locationNames")
+    ps.setInt(1, id)
+    ps.setString(2, name)
+    ps.executeUpdate()
+  }
+
   private def toSqlDate(d: Date) = {
     val cal = Calendar.getInstance()
     cal.set(Calendar.YEAR, d.year)
