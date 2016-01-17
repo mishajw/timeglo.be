@@ -83,8 +83,8 @@ $(function() {
 
         if (!isMouseDown) return;
 
-        globeRotation.x += e.clientX - mouseDownLocation.x;
-        globeRotation.y += e.clientY - mouseDownLocation.y;
+        globeRotation.x += (e.clientX - mouseDownLocation.x) / (globeZoom / 400);
+        globeRotation.y += (e.clientY - mouseDownLocation.y) / (globeZoom / 400);
 
         desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
 
@@ -122,16 +122,16 @@ $(function() {
     $(document).keydown(function(e) {
         switch (e.which) {
             case 37:
-                desGlobeRotation.x += globeRotIncrement;
+                desGlobeRotation.x += globeRotIncrement / (globeZoom / 400);
                 break;
             case 38:
-                desGlobeRotation.y += globeRotIncrement;
+                desGlobeRotation.y += globeRotIncrement / (globeZoom / 400);
                 break;
             case 39:
-                desGlobeRotation.x -= globeRotIncrement;
+                desGlobeRotation.x -= globeRotIncrement / (globeZoom / 400);
                 break;
             case 40:
-                desGlobeRotation.y -= globeRotIncrement;
+                desGlobeRotation.y -= globeRotIncrement / (globeZoom / 400);
                 break;
             case 189:
                 desGlobeZoom /= globeZoomIncrement;
