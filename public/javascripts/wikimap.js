@@ -19,6 +19,7 @@ $(function() {
     var globeZoomMax = 6000, globeZoomMin = 300;
 
     var globeMaxEvents = 0;
+    var globeMaxPopulation = 0;
     var globeMaxPointSize = 50;
     var globeMinPointSize = 2;
 
@@ -108,7 +109,7 @@ $(function() {
 
     $svg.on("mouseup", function(e) {
         isMouseDown = false;
-        
+
         e.preventDefault();
         return false;
     });
@@ -207,13 +208,21 @@ $(function() {
             }
         });
 
-        // Get the max amount of events
+        // Get the max population / amount of events
         globeMaxEvents = 0;
         for (var coord in groupedEvents) {
             if (groupedEvents[coord].length > globeMaxEvents) {
                 globeMaxEvents = groupedEvents[coord].length;
             }
         }
+
+        // Get the max population
+        globeMaxPopulation = 0;
+        events.forEach(function(e) {
+            if (e.location.population > globeMaxPopulation) {
+                globeMaxPopulation = e.location.population;
+            }
+        });
 
         var index = 0;
         for (var coord in groupedEvents) {
@@ -235,7 +244,19 @@ $(function() {
                 .datum(topojson.feature(topojsonObject, topojsonObject.objects.events))
                 .attr("class", "points")
                 .attr("id", eventObject.pointID)
-                .attr("fill", "#99ccff")
+                .attr("fill", function(eo) {
+                    try {
+                        console.log(globeMaxPopulation);
+                        var population = eo.geometry.coordinates[0][2].events[0].location.population;
+                        console.log(population);
+                        var value = (Math.sqrt(population) / Math.sqrt(globeMaxPopulation)) * 255;
+                        var color = d3.rgb(255 - value, value, 0);
+                        console.log(color);
+                        return color;
+                    } catch (err) {
+                        console.log(err);
+                    }
+                })
                 .attr("stroke", "white")
                 .attr("opacity", 0.9)
                 .on("mouseover", function(e) {
