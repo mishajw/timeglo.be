@@ -181,21 +181,40 @@ $(function() {
             }
         };
 
-        events.forEach(function(e, i) {
-            e.pointID = "point" + i;
+        // Group the events
+        var groupedEvents = {};
+
+        events.forEach(function(e) {
+            var coords = [e.location.long, e.location.lat];
+            if (groupedEvents[coords]) {
+                groupedEvents[coords].push(e);
+            } else {
+                groupedEvents[coords] = [e];
+            }
+        });
+
+        console.log(groupedEvents);
+
+        var index = 0;
+        for (var coord in groupedEvents) {
+            var parsedCoords = coord.split(",");
+            var eventObject = {
+                events: groupedEvents[coord],
+                pointID: "point" + (index ++)
+            };
 
             // Set the topojson object to have details for this event
             topojsonObject.objects.events.coordinates = [[
-                e.location.long,
-                e.location.lat,
+                parseInt(parsedCoords[0]),
+                parseInt(parsedCoords[1]),
                 // Inject into coordinates so we can get the data back later
-                e
+                eventObject
             ]];
 
             svg.append("path")
                 .datum(topojson.feature(topojsonObject, topojsonObject.objects.events))
                 .attr("class", "points")
-                .attr("id", e.pointID)
+                .attr("id", eventObject.pointID)
                 .attr("fill", "#99ccff")
                 .attr("stroke", "white")
                 .attr("opacity", 0.5)
@@ -206,7 +225,7 @@ $(function() {
                     eventMouseOut(e.geometry.coordinates[0][2]);
                 })
                 .attr("d", path);
-        });
+        }
     }
 
     function setupSlider(min, max) {
@@ -240,23 +259,28 @@ $(function() {
         projection.scale(globeZoom);
     }
 
-    function getText(e) {
-        var date =
-            "<div class='event-date'>" +
-                e.date +
-            "</div>";
+    function getText(eventsObject) {
+        var fullText = "";
 
-        var location =
-            "<div class='event-location'>" +
-            e.location.name +
-            "</div>";
+        eventsObject.events.forEach(function(e, i) {
+            if (i == 0)
+                fullText +=
+                    "<div class='event-location'>" +
+                        e.location.name +
+                    "</div>";
 
-        var desc =
-            "<div class='event-desc'>" +
-                formatDescription(e.desc, e.location.matchedName) +
-            "</div>";
+            fullText +=
+                "<div class='event-date'>" +
+                    e.date +
+                "</div>";
 
-        return location + date + desc;
+            fullText +=
+                "<div class='event-desc'>" +
+                    formatDescription(e.desc, e.location.matchedName) +
+                "</div>";
+        });
+
+        return fullText;
     }
 
     function formatDescription(desc, matched) {
