@@ -31,6 +31,13 @@ body {
     text-align: justify;
 }
 
+.event-location {
+    font-size: 120%;
+    font-weight: bold;
+
+    border-bottom: 1px solid #777;
+}
+
 #sidebar {
     position: absolute;
     top: 20px;
