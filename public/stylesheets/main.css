@@ -14,14 +14,7 @@
 }
 
 #tooltip {
-    display: none;
-    position: absolute;
-
-    width: 300px;
-    border: 1px solid black;
-    border-radius: 5px;
     padding: 10px;
-    background-color: #DDD;
 
     text-align: center;
 }

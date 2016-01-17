@@ -34,7 +34,7 @@ $(function() {
 
     // JQUERY VARS
     var $svg = $container.find("svg");
-    var $tooltip = $container.find("#tooltip");
+    var $tooltip = $("#tooltip");
     var $slider = $("#range-slider");
 
     // MOUSE VARS
@@ -96,30 +96,22 @@ $(function() {
 
     function eventMouseOver(d) {
         $tooltip.html(getText(d));
-        $tooltip.show();
-        $tooltip.css({
-            left: mouseLocation.x - ($tooltip.width() / 2),
-            top: mouseLocation.y
-        });
+        //$tooltip.show();
+        //$tooltip.css({
+        //    left: mouseLocation.x - ($tooltip.width() / 2),
+        //    top: mouseLocation.y
+        //});
 
         svg.select("#" + d.pointID)
             .attr("stroke-width", "5px");
     }
 
     function eventMouseOut(d) {
-        $tooltip.fadeOut();
+        //$tooltip.fadeOut();
 
         svg.select("#" + d.pointID)
             .attr("stroke-width", "0px");
     }
-
-    $tooltip.on("mouseover", function() {
-        tooltipHasMouse = true;
-    });
-
-    $tooltip.on("mouseout", function() {
-        tooltipHasMouse = false;
-    });
 
     $(document).keydown(function(e) {
         switch (e.which) {
