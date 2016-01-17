@@ -11,6 +11,8 @@ $(function() {
     var globeRotIncrement = 30;
     var globeZoom = height / 2;
     var globeZoomIncrement = 1.2;
+    var globeMaxEvents = 0;
+    var globeMaxPointSize = 50;
 
     var projection = d3.geo.orthographic()
         .scale(globeZoom)
@@ -183,7 +185,6 @@ $(function() {
 
         // Group the events
         var groupedEvents = {};
-
         events.forEach(function(e) {
             var coords = [e.location.long, e.location.lat];
             if (groupedEvents[coords]) {
@@ -193,7 +194,13 @@ $(function() {
             }
         });
 
-        console.log(groupedEvents);
+        // Get the max amount of events
+        globeMaxEvents = 0;
+        for (var coord in groupedEvents) {
+            if (groupedEvents[coord].length > globeMaxEvents) {
+                globeMaxEvents = groupedEvents[coord].length;
+            }
+        }
 
         var index = 0;
         for (var coord in groupedEvents) {
@@ -226,7 +233,9 @@ $(function() {
                 })
                 .attr("d", path.pointRadius(function(d) {
                     try {
-                        return d.geometry.coordinates[0][2].events.length * (parseFloat(globeZoom) / 400.0);
+                        return (d.geometry.coordinates[0][2].events.length / globeMaxEvents) *
+                                globeMaxPointSize *
+                                (parseFloat(globeZoom) / 400.0);
                     } catch (err) {
                         return 1;
                     }
