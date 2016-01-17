@@ -7,10 +7,16 @@ $(function() {
         height = $container.height();
 
     // GLOBE VARS
-    var globeRotation = {x: 670, y: 400};
     var globeRotIncrement = 30;
-    var globeZoom = height / 2;
+    var globeRotation = {x: 670, y: 400};
+    var desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
+    var globeRotCatchUp = 0.3;
+
     var globeZoomIncrement = 1.2;
+    var globeZoom = height / 2;
+    var desGlobeZoom = globeZoom;
+    var globeZoomCatchUp = 0.2;
+
     var globeMaxEvents = 0;
     var globeMaxPointSize = 50;
 
@@ -121,29 +127,28 @@ $(function() {
     $(document).keydown(function(e) {
         switch (e.which) {
             case 37:
-                globeRotation.x += globeRotIncrement;
+                desGlobeRotation.x += globeRotIncrement;
                 break;
             case 38:
-                globeRotation.y += globeRotIncrement;
+                desGlobeRotation.y += globeRotIncrement;
                 break;
             case 39:
-                globeRotation.x -= globeRotIncrement;
+                desGlobeRotation.x -= globeRotIncrement;
                 break;
             case 40:
-                globeRotation.y -= globeRotIncrement;
+                desGlobeRotation.y -= globeRotIncrement;
                 break;
             case 189:
-                globeZoom /= globeZoomIncrement;
+                desGlobeZoom /= globeZoomIncrement;
                 break;
             case 187:
-                globeZoom *= globeZoomIncrement;
+                desGlobeZoom *= globeZoomIncrement;
                 break;
             default:
                 break;
         }
 
-        updateZoom();
-        updateRotation();
+        updateTransformations();
     });
 
 
@@ -316,4 +321,21 @@ $(function() {
             return defaultYears;
         }
     }
+
+    function updateTransformations() {
+        var schedule = setInterval(function() {
+            globeZoom += (desGlobeZoom - globeZoom) * globeZoomCatchUp;
+            globeRotation.x += (desGlobeRotation.x - globeRotation.x) * globeRotCatchUp;
+            globeRotation.y += (desGlobeRotation.y - globeRotation.y) * globeRotCatchUp;
+
+            if (Math.abs(globeZoom - desGlobeZoom) < 1 &&
+                Math.abs(globeRotation.x - desGlobeRotation.x) < 1 &&
+                Math.abs(globeRotation.y - desGlobeRotation.y) < 1) clearInterval(schedule);
+
+            updateZoom();
+            updateRotation();
+        });
+    }
+
+    updateTransformations();
 });
