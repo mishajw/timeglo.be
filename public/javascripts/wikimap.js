@@ -209,9 +209,7 @@ $(function() {
 
             // Format the date
             var split = e.date.split("-");
-            console.log(e.date);
             e.date = new Date(parseInt(split[2]), parseInt(split[1]) - 1, parseInt(split[0]));
-            console.log(e.date);
         });
 
         // Get the max population / amount of events
@@ -306,6 +304,10 @@ $(function() {
 
     function getText(eventsObject) {
         var fullText = "";
+
+        eventsObject.events.sort(function(a, b) {
+            return a.date.getTime() - b.date.getTime();
+        });
 
         eventsObject.events.forEach(function(e, i) {
             if (i == 0)
