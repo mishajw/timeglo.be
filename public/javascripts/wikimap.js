@@ -334,8 +334,8 @@ $(function() {
 
         return desc
             .replace(matchedRegex, "<b>$1</b>")
-            .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1'>$1</a>")
-            .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1'>$2</a>");
+            .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$1</a>")
+            .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$2</a>");
     }
 
     function getScaledYears() {
