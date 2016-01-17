@@ -1,21 +1,17 @@
 @main("Wiki Map", Seq("//d3js.org/d3.v3.min.js", "//d3js.org/topojson.v1.js")) {
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
-                <div class="sect">
-                    <div id="selector">
-                        <span id="range-title">Date range:</span>
-                        <input name="start-date" class="date-input" type="number" placeholder="Start">
-                        <span> to </span>
-                        <input name="end-date" class="date-input" type="number" placeholder="End">
-                        <button id="range-button" class="btn btn-large">Update</button>
-                    </div>
-                    <div id="tooltip"></div>
+            <div id="sidebar">
+                <div id="selector">
+                    <span id="range-title">Date range:</span>
+                    <input name="start-date" class="date-input" type="number" placeholder="Start">
+                    <span> to </span>
+                    <input name="end-date" class="date-input" type="number" placeholder="End">
+                    <button id="range-button" class="btn btn-large">Update</button>
                 </div>
+                <div id="tooltip"></div>
             </div>
-            <div class="col-md-8">
-                <div class="sect" id="wikimap-d3"></div>
-            </div>
+            <div id="wikimap-d3"></div>
         </div>
     </div>
 

@@ -27,11 +27,18 @@
     text-align: justify;
 }
 
-.sect {
-    border: 1px solid black;
+#sidebar {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 30%;
+
+    background-color: #DDD;
+    opacity: 0.9;
+
+    border: 1px solid #333;
     border-radius: 5px;
-    margin: 10px;
-    padding: 10px;
+    padding: 20px;
 }
 
 .date-input {
