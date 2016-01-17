@@ -54,6 +54,7 @@ $(function() {
     // OTHER
     var defaultYears = [2010, 2015];
 
+    // Setup
     $startDate.val(defaultYears[0]);
     $endDate.val(defaultYears[1]);
     updateRotation();
@@ -63,8 +64,6 @@ $(function() {
             setupSlider(json.startDate.year, json.endDate.year);
         }
     });
-
-    // LOADING DATA
     d3.json("/assets/res/world-110m.json", function(error, world) {
         if (error) throw error;
 
@@ -87,10 +86,12 @@ $(function() {
         globeRotation.x += e.clientX - mouseDownLocation.x;
         globeRotation.y += e.clientY - mouseDownLocation.y;
 
+        desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
+
         mouseDownLocation.x = e.clientX;
         mouseDownLocation.y = e.clientY;
 
-        updateRotation();
+        updateTransformations();
     });
 
     $svg.on("mousedown", function(e) {
