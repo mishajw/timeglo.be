@@ -220,7 +220,7 @@ $(function() {
                 .attr("id", eventObject.pointID)
                 .attr("fill", "#99ccff")
                 .attr("stroke", "white")
-                .attr("opacity", 0.5)
+                .attr("opacity", 0.9)
                 .on("mouseover", function(e) {
                     eventMouseOver(e.geometry.coordinates[0][2]);
                 })
