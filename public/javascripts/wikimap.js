@@ -197,15 +197,21 @@ $(function() {
             }
         };
 
-        // Group the events
         var groupedEvents = {};
         events.forEach(function(e) {
+            // Put it int a group
             var coords = [e.location.long, e.location.lat];
             if (groupedEvents[coords]) {
                 groupedEvents[coords].push(e);
             } else {
                 groupedEvents[coords] = [e];
             }
+
+            // Format the date
+            var split = e.date.split("-");
+            console.log(e.date);
+            e.date = new Date(parseInt(split[2]), parseInt(split[1]) - 1, parseInt(split[0]));
+            console.log(e.date);
         });
 
         // Get the max population / amount of events
@@ -310,7 +316,7 @@ $(function() {
 
             fullText +=
                 "<div class='event-date'>" +
-                    e.date +
+                    formatDate(e.date) +
                 "</div>";
 
             fullText +=
@@ -362,6 +368,10 @@ $(function() {
             updateZoom();
             updateRotation();
         });
+    }
+
+    function formatDate(d) {
+        return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
     }
 
     updateTransformations();
