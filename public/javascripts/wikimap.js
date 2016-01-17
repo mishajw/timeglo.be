@@ -48,7 +48,6 @@ $(function() {
 
     // MOUSE VARS
     var isMouseDown = false;
-    var tooltipHasMouse = false;
     var mouseDownLocation = {x: 0, y: 0};
     var mouseLocation = {x: 0, y: 0};
 
