@@ -22,7 +22,7 @@ $(function() {
 
     var projection = d3.geo.orthographic()
         .scale(globeZoom)
-        .translate([width / 2, height / 2])
+        .translate([width * 0.65, height / 2])
         .clipAngle(90);
 
     var path = d3.geo.path()
