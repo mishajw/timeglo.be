@@ -107,11 +107,6 @@ $(function() {
 
     function eventMouseOver(d) {
         $tooltip.html(getText(d));
-        //$tooltip.show();
-        //$tooltip.css({
-        //    left: mouseLocation.x - ($tooltip.width() / 2),
-        //    top: mouseLocation.y
-        //});
 
         svg.select("#" + d.pointID)
             .attr("stroke-width", "5px");
