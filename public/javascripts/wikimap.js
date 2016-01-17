@@ -91,7 +91,7 @@ $(function() {
         mouseDownLocation.x = e.clientX;
         mouseDownLocation.y = e.clientY;
 
-        updateTransformations();
+        updateRotation();
     });
 
     $svg.on("mousedown", function(e) {
