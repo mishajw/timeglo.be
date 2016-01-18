@@ -131,11 +131,14 @@ $(function() {
 
     function eventMouseOver(d) {
         var location = getLocationForEvents(d);
+        
         $tooltip.html(
             location.name +
                 "<span class='event-amount'>" +
-                d.events.length + " events | Population of " +
-                formatNumber(location.population) +
+                d.events.length + (d.events.length != 1 ? " events" : " event") +
+                (location.population && location.population > 0 ?
+                    " | Population of " + formatNumber(location.population) :
+                    "") +
             "</span>");
         $tooltip.fadeIn();
 
@@ -413,6 +416,8 @@ $(function() {
         } else if (x > 1000) {
             return (x / 1000)       .toFixed(2) + " thousand";
         }
+
+        return x;
     }
 
     updateTransformations();
