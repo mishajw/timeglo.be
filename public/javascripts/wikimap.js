@@ -85,6 +85,11 @@ $(function() {
         mouseLocation.x = e.clientX;
         mouseLocation.y = e.clientY;
 
+        $tooltip.css({
+            top: mouseLocation.y,
+            left: mouseLocation.x
+        });
+
         if (!isMouseDown) return;
 
         globeRotation.x += (e.clientX - mouseDownLocation.x) / (globeZoom);
@@ -127,10 +132,6 @@ $(function() {
     function eventMouseOver(d) {
         var location = getLocationForEvents(d);
         $tooltip.html(location.name);
-        $tooltip.css({
-            top: mouseLocation.y,
-            left: mouseLocation.x
-        });
         $tooltip.fadeIn();
 
         svg.select("#" + d.pointID)
