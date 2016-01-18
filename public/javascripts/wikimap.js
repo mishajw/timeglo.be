@@ -131,7 +131,12 @@ $(function() {
 
     function eventMouseOver(d) {
         var location = getLocationForEvents(d);
-        $tooltip.html(location.name);
+        $tooltip.html(
+            location.name +
+                "<span class='event-amount'>" +
+                d.events.length + " events | Population of " +
+                formatNumber(location.population) +
+            "</span>");
         $tooltip.fadeIn();
 
         svg.select("#" + d.pointID)
@@ -397,6 +402,16 @@ $(function() {
             return eo.events[0].location;
         } else {
             return undefined;
+        }
+    }
+
+    function formatNumber(x) {
+        if (x > 1000000000) {
+            return (x / 1000000000) .toFixed(2) + " billion";
+        } else if (x > 1000000) {
+            return (x / 1000000)    .toFixed(2) + " million";
+        } else if (x > 1000) {
+            return (x / 1000)       .toFixed(2) + " thousand";
         }
     }
 
