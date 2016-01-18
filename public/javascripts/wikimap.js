@@ -131,7 +131,7 @@ $(function() {
 
     function eventMouseOver(d) {
         var location = getLocationForEvents(d);
-        
+
         $tooltip.html(
             location.name +
                 "<span class='event-amount'>" +
@@ -147,7 +147,6 @@ $(function() {
     }
 
     function eventMouseOut(d) {
-        $tooltip.html("");
         $tooltip.hide();
 
         svg.select("#" + d.pointID)
