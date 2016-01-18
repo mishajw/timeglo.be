@@ -10,6 +10,6 @@ $(function() {
     $("#sidebar")
         .css("height", height * 0.9);
 
-    $("#tooltip")
+    $("#infobox")
         .css("height", height * 0.85);
 });
