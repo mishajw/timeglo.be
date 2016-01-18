@@ -86,8 +86,8 @@ $(function() {
         mouseLocation.y = e.clientY;
 
         $tooltip.css({
-            top: mouseLocation.y,
-            left: mouseLocation.x
+            top: mouseLocation.y - $tooltip.height() / 2,
+            left: mouseLocation.x + 15
         });
 
         if (!isMouseDown) return;
