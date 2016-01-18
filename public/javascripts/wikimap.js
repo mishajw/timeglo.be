@@ -46,6 +46,7 @@ $(function() {
     // JQUERY VARS
     var $svg = $container.find("svg");
     var $infobox = $("#infobox");
+    var $tooltip = $("#tooltip");
     var $startDate = $("input[name=start-date]");
     var $endDate = $("input[name=end-date]");
 
@@ -119,14 +120,27 @@ $(function() {
         return false;
     });
 
-    function eventMouseOver(d) {
+    function eventMouseClick(d) {
         $infobox.html(getText(d));
+    }
+
+    function eventMouseOver(d) {
+        var location = getLocationForEvents(d);
+        $tooltip.html(location.name);
+        $tooltip.css({
+            top: mouseLocation.y,
+            left: mouseLocation.x
+        });
+        $tooltip.fadeIn();
 
         svg.select("#" + d.pointID)
             .attr("stroke-width", "5px");
     }
 
     function eventMouseOut(d) {
+        $tooltip.html("");
+        $tooltip.hide();
+
         svg.select("#" + d.pointID)
             .attr("stroke-width", "1px");
     }
@@ -257,6 +271,9 @@ $(function() {
                 })
                 .attr("stroke", "white")
                 .attr("opacity", 0.9)
+                .on("click", function(e) {
+                    eventMouseClick(e.geometry.coordinates[0][2]);
+                })
                 .on("mouseover", function(e) {
                     eventMouseOver(e.geometry.coordinates[0][2]);
                 })
@@ -372,6 +389,14 @@ $(function() {
 
     function formatDate(d) {
         return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+    }
+
+    function getLocationForEvents(eo) {
+        if (eo.events && eo.events.length > 0 && eo.events[0].location) {
+            return eo.events[0].location;
+        } else {
+            return undefined;
+        }
     }
 
     updateTransformations();

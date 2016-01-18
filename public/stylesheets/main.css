@@ -56,3 +56,8 @@ body {
 .date-input {
     width: 75px;
 }
+
+#tooltip {
+    position: absolute;
+    display: none;
+}
