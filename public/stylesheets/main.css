@@ -18,7 +18,7 @@ body {
     display: none;
 }
 
-#tooltip {
+#infobox {
     padding: 10px;
     text-align: center;
     overflow: auto;

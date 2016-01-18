@@ -45,7 +45,7 @@ $(function() {
 
     // JQUERY VARS
     var $svg = $container.find("svg");
-    var $tooltip = $("#tooltip");
+    var $infobox = $("#infobox");
     var $startDate = $("input[name=start-date]");
     var $endDate = $("input[name=end-date]");
 
@@ -120,7 +120,7 @@ $(function() {
     });
 
     function eventMouseOver(d) {
-        $tooltip.html(getText(d));
+        $infobox.html(getText(d));
 
         svg.select("#" + d.pointID)
             .attr("stroke-width", "5px");
