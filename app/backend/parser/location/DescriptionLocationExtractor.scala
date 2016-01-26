@@ -7,7 +7,7 @@ import play.api.Logger
 /**
   * Created by misha on 26/12/15.
   */
-object LocationExtractor {
+object DescriptionLocationExtractor {
   private val log = Logger(getClass)
 
   private val NounGroup = "([A-Z][a-z]+ ?){2,}".r
