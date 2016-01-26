@@ -1,4 +1,4 @@
-package backend.parser
+package backend.parser.location
 
 import backend.util.DB
 import backend.{Event, Location}
