@@ -1,19 +1,31 @@
 package backend.parser.location
 
-import backend.retriever.wikipedia.APIArticleRetreiver
+import java.sql.DriverManager
+
+import backend.{Coords, SimpleLocation}
 import backend.util.DB
-import org.eclipse.mylyn.wikitext.core.parser.MarkupParser
-import org.eclipse.mylyn.wikitext.core.util.ServiceLocator
+import play.api.Logger
+
+import scala.io.Source
 
 /**
   * Created by misha on 26/01/16.
   */
 object LinkLocationExtractor {
-  private val parser = new MarkupParser()
+  private val log = Logger(getClass)
+
+  Class.forName("com.mysql.jdbc.Driver")
+  val connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/wikipedia", "root", "")
+  connection.setAutoCommit(false)
+  val statement = connection.createStatement()
+
+  val statementGetCoords = connection.prepareStatement({
+    val f = Source.fromFile("res/mysql/get_coords.sql")
+    val s = f.mkString
+    f.close() ; s
+  })
 
   private val linkRegex = "\\[\\[[^\\[\\]]*\\]\\]".r
-  private val infoBoxStartRegex = "\\{\\{Infobox".r
-  private val coordinateRegex = "\\| (coordinates|latitude|longitude) *=.*".r
 
   def run() = {
     // For every event...
@@ -28,32 +40,26 @@ object LinkLocationExtractor {
             .substring(2, s.length - 2)
             .split("\\|").head
             .replace(" ", "_"))
-          // Get the article...
-          .map(APIArticleRetreiver.getTitle)
-          .flatMap(a => {
-            infoBoxStartRegex.findAllIn(a).matchData.foreach(md => {
-              var bracketCount = 0
-              val start = md.start
-              var end = start
-
-              do {
-                a.substring(end, end + 2) match {
-                  case "{{" => bracketCount += 1
-                  case "}}" => bracketCount -= 1
-                  case _ =>
-                }
-
-                end += 1[]
-              } while (bracketCount > 0)
-              end += 1
-
-              println(a.substring(start, end))
-            })
-
-            ""
-          })
+          // Try to convert to coords
+          .flatMap(getLocationFromDB)
       )
       .map(_.mkString(", "))
       .mkString("\n"))
+  }
+
+  private def getLocationFromDB(name: String): Option[SimpleLocation] = {
+    statementGetCoords.setString(1, name)
+    val results = statementGetCoords.executeQuery()
+
+    if (results.next()) {
+      Some(SimpleLocation(
+        results.getString("gt_name"),
+        Coords(
+          results.getDouble("gt_lat"),
+          results.getDouble("gt_lon"))
+      ))
+    } else {
+      None
+    }
   }
 }
