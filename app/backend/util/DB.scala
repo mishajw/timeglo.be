@@ -18,15 +18,17 @@ import scala.io.{BufferedSource, Source}
 object DB {
   private val log = Logger(getClass)
 
+  private val sqlPath: String = "res/sql"
+
   Class.forName("org.postgresql.Driver")
   val connection = DriverManager.getConnection("jdbc:postgresql://localhost/wikimap", "misha", "")
   connection.setAutoCommit(false)
   val statement = connection.createStatement()
-
+  
   private val locatedEventStatement =
-    connection.prepareStatement(getLineFromFileName("res/sql/event_locations.sql"))
+    connection.prepareStatement(getLineFromFileName(sqlPath + "/event_locations.sql"))
   private val locationFromNamesStatement =
-    connection.prepareStatement(getLineFromFileName("res/sql/location_from_names.sql"))
+    connection.prepareStatement(getLineFromFileName(sqlPath + "/location_from_names.sql"))
 
   private val insertCommands: Map[String, PreparedStatement] = Seq(
     ("events", Seq("occurs", "description")),
@@ -46,7 +48,7 @@ object DB {
     log.warn(s"Dropping tables: ${tables.mkString(", ")}")
 
     Seq("drop", "tables") .foreach(f => {
-      val file = Source.fromFile(s"res/sql/$f.sql")
+      val file = Source.fromFile(s"$sqlPath/$f.sql")
 
       getLinesFromFile(file)
         .foreach(l => {
@@ -166,7 +168,7 @@ object DB {
   }
 
   def performIndexing() = {
-    val file = Source.fromFile("res/sql/index.sql")
+    val file = Source.fromFile(sqlPath + "/index.sql")
 
     getLinesFromFile(file)
       .foreach(l => {
@@ -184,7 +186,7 @@ object DB {
   }
 
   def getDateRange: Option[(java.sql.Date, java.sql.Date)] = {
-    val results = statement.executeQuery(getLineFromFileName("res/sql/date_range.sql"))
+    val results = statement.executeQuery(getLineFromFileName(sqlPath + "/date_range.sql"))
 
     if (results.next()) {
       Some(results.getDate("earliest_date"), results.getDate("latest_date"))
