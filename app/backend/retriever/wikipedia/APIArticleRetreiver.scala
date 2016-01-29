@@ -22,6 +22,9 @@ object APIArticleRetreiver {
       JField("revisions", JArray(revisions)) <- page;
       JObject(revision) <- revisions;
       JField("*", JString(content)) <- revision
-    ) yield content).head
+    ) yield content) match {
+      case Nil => ""
+      case (x: String) :: xs => x
+    }
   }
 }
