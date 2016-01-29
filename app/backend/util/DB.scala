@@ -18,13 +18,13 @@ import scala.io.{BufferedSource, Source}
 object DB {
   private val log = Logger(getClass)
 
-  private val sqlPath: String = "res/sql"
+  private val sqlPath: String = "res/postgres"
 
   Class.forName("org.postgresql.Driver")
   val connection = DriverManager.getConnection("jdbc:postgresql://localhost/wikimap", "misha", "")
   connection.setAutoCommit(false)
   val statement = connection.createStatement()
-  
+
   private val locatedEventStatement =
     connection.prepareStatement(getLineFromFileName(sqlPath + "/event_locations.sql"))
   private val locationFromNamesStatement =
