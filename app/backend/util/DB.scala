@@ -27,6 +27,8 @@ object DB {
 
   private val wikiLocatedEventStatement =
     connection.prepareStatement(getLineFromFileName(sqlPath + "/wiki_event_locations.sql"))
+  private val keywordSearchStatement =
+    connection.prepareStatement(getLineFromFileName(sqlPath + "/keyword_search.sql"))
   private val locationFromWikiStatement =
     connection.prepareStatement(getLineFromFileName(sqlPath + "/wiki_get_loc_id.sql"))
 
@@ -150,6 +152,29 @@ object DB {
     wikiLocatedEventStatement.setDate(2, end)
 
     val results = wikiLocatedEventStatement.executeQuery()
+
+    val les = new ListBuffer[LocatedEvent]
+
+    while (results.next()) {
+      les += LocatedEvent(
+        Event(
+          fromSqlDate(results.getDate("occurs")),
+          results.getString("description")),
+        SimpleLocation(
+          results.getString("name"),
+          Coords(results.getFloat("latitude"), results.getFloat("longitude")),
+          results.getString("type")
+        )
+      )
+    }
+
+    les.toSeq
+  }
+
+  def keywordSearch(term: String) = {
+    keywordSearchStatement.setString(1, term)
+
+    val results = keywordSearchStatement.executeQuery()
 
     val les = new ListBuffer[LocatedEvent]
 
