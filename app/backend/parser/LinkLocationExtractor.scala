@@ -1,4 +1,4 @@
-package backend.parser.location
+package backend.parser
 
 import backend.util.DB
 import play.api.Logger

@@ -84,11 +84,9 @@ class Application extends Controller {
           "date" -> JString(s"${le.event.date.date}-${le.event.date.month}-${le.event.date.year}"),
           "desc" -> JString(le.event.description),
           "location" -> JObject(List(
-            "name" -> JString(le.location.formattedName),
-            "matchedName" -> JString(le.matchedName),
+            "name" -> JString(le.location.name),
             "lat" -> JDouble(le.location.coords.lat),
-            "long" -> JDouble(le.location.coords.long),
-            "population" -> JString(le.location.population.toString)
+            "long" -> JDouble(le.location.coords.long)
           ))
         ))
       }).toList)

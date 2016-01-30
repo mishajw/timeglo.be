@@ -25,12 +25,8 @@ object DB {
   connection.setAutoCommit(false)
   val statement = connection.createStatement()
 
-  private val locatedEventStatement =
-    connection.prepareStatement(getLineFromFileName(sqlPath + "/event_locations.sql"))
   private val wikiLocatedEventStatement =
     connection.prepareStatement(getLineFromFileName(sqlPath + "/wiki_event_locations.sql"))
-  private val locationFromNamesStatement =
-    connection.prepareStatement(getLineFromFileName(sqlPath + "/location_from_names.sql"))
   private val locationFromWikiStatement =
     connection.prepareStatement(getLineFromFileName(sqlPath + "/wiki_get_loc_id.sql"))
 
@@ -96,83 +92,6 @@ object DB {
     events.toSeq
   }
 
-  def insertLocationWithID(l: Location, id: Int) = {
-    val s = insertCommands("locations")
-
-    s.setInt(1, id)
-    s.setString(2, l.formattedName)
-    s.setDouble(3, l.coords.lat)
-    s.setDouble(4, l.coords.long)
-    s.setBigDecimal(5, l.population)
-
-    s.executeUpdate()
-
-    l.matchedNames.foreach(n => {
-      val s = insertCommands("locationNames")
-      s.setLong(1, id)
-      s.setString(2, n)
-      s.executeUpdate()
-    })
-  }
-
-  def getLocationFromNames(names: Seq[String]): Option[(Location, Int)] = {
-    locationFromNamesStatement.setArray(1, connection.createArrayOf("varchar", names.toArray))
-
-    val results = locationFromNamesStatement.executeQuery()
-
-//    val possibleLocations = new ListBuffer[Location]()
-
-    if (results.next()) {
-      Some(
-        Location(
-          results.getString("name"),
-          Seq(results.getString("foundName")),
-          Coords(results.getDouble("latitude"), results.getDouble("longitude")),
-          results.getBigDecimal("population"),
-          Some(results.getInt("id"))),
-        results.getInt("nameID"))
-    } else {
-      None
-    }
-  }
-
-  def batchEventLocation(locationID: Int, eventID: Int, nameID: Int) = {
-    val ps = insertCommands("eventLocations")
-
-    ps.setInt(1, eventID)
-    ps.setInt(2, locationID)
-    ps.setInt(3, nameID)
-
-    ps.addBatch()
-  }
-
-  def insertAllEventLocation() = {
-     insertCommands("eventLocations").executeBatch()
-  }
-
-  def getLocatedEvents(start: java.sql.Date, end: java.sql.Date): Seq[LocatedEvent] = {
-    locatedEventStatement.setDate(1, start)
-    locatedEventStatement.setDate(2, end)
-    val results = locatedEventStatement.executeQuery()
-
-    val locatedEvents = new ListBuffer[LocatedEvent]()
-
-    while (results.next()) {
-      locatedEvents += LocatedEvent(
-        Event(
-          fromSqlDate(results.getDate("occurs")),
-          results.getString("description")),
-        Location(
-          results.getString("name"),
-          Seq(results.getString("matchedName")),
-          Coords(results.getFloat("latitude"), results.getFloat("longitude")),
-          results.getBigDecimal("population")),
-        results.getString("matchedName"))
-    }
-
-    locatedEvents.toSeq
-  }
-
   def performIndexing() = {
     val file = Source.fromFile(sqlPath + "/index.sql")
 
@@ -199,13 +118,6 @@ object DB {
     } else {
       None
     }
-  }
-
-  def insertName(id: Int, name: String): Unit = {
-    val ps = insertCommands("locationNames")
-    ps.setInt(1, id)
-    ps.setString(2, name)
-    ps.executeUpdate()
   }
 
   def getLocationFromWiki(name: String): Option[Int] = {
@@ -246,12 +158,9 @@ object DB {
         Event(
           fromSqlDate(results.getDate("occurs")),
           results.getString("description")),
-        Location(
+        SimpleLocation(
           results.getString("name"),
-          Seq("abc"),
-          Coords(results.getFloat("latitude"), results.getFloat("longitude")),
-          new java.math.BigDecimal(0)),
-        "xyz"
+          Coords(results.getFloat("latitude"), results.getFloat("longitude")))
       )
     }
 
