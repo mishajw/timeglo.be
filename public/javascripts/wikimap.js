@@ -19,7 +19,6 @@ $(function() {
     var globeZoomMax = 6000 / 400, globeZoomMin = 300 / 400;
 
     var globeMaxEvents = 0;
-    var globeMaxPopulation = 0;
     var globeMaxPointSize = 50;
     var globeMinPointSize = 2;
 
@@ -136,9 +135,6 @@ $(function() {
             location.name +
                 "<span class='event-amount'>" +
                 d.events.length + (d.events.length != 1 ? " events" : " event") +
-                (location.population && location.population > 0 ?
-                    " | Population of " + formatNumber(location.population) :
-                    "") +
             "</span>");
         $tooltip.fadeIn();
 
@@ -232,21 +228,13 @@ $(function() {
             e.date = new Date(parseInt(split[2]), parseInt(split[1]) - 1, parseInt(split[0]));
         });
 
-        // Get the max population / amount of events
+        // Get the max amount of events
         globeMaxEvents = 0;
         for (var coord in groupedEvents) {
             if (groupedEvents[coord].length > globeMaxEvents) {
                 globeMaxEvents = groupedEvents[coord].length;
             }
         }
-
-        // Get the max population
-        globeMaxPopulation = 0;
-        events.forEach(function(e) {
-            if (e.location.population > globeMaxPopulation) {
-                globeMaxPopulation = e.location.population;
-            }
-        });
 
         var index = 0;
         for (var coord in groupedEvents) {
@@ -269,13 +257,7 @@ $(function() {
                 .attr("class", "points")
                 .attr("id", eventObject.pointID)
                 .attr("fill", function(eo) {
-                    try {
-                        var population = eo.geometry.coordinates[0][2].events[0].location.population;
-                        var value = (Math.sqrt(population) / Math.sqrt(globeMaxPopulation)) * 255;
-                        return d3.rgb(255 - value, value, 0);
-                    } catch (err) {
-                        console.log(err);
-                    }
+                    // TODO find fill
                 })
                 .attr("stroke", "white")
                 .attr("opacity", 0.9)
@@ -346,25 +328,20 @@ $(function() {
 
             fullText +=
                 "<div class='event-desc'>" +
-                    formatDescription(e.desc, e.location.matchedName) +
+                    formatDescription(e.desc) +
                 "</div>";
         });
 
         return fullText;
     }
 
-    function formatDescription(desc, matched) {
+    function formatDescription(desc) {
         var linkRegex = /\[\[([^\[\|\]]*)\]\]/g;
         var linkWithBarRegex = /\[\[([^\[\|\]]*)\|([^\[\|\]]*)\]\]/g;
 
-        var matchedFormatted = "";
-        for (var i = 0; i < matched.length; i++) {
-            matchedFormatted += matched.charAt(i) + (i == matched.length - 1 ? "" : "\\W?");
-        }
-        var matchedRegex = new RegExp("(" + matchedFormatted + ")", "i");
+        // TODO bold matched text
 
         return desc
-            .replace(matchedRegex, "<b>$1</b>")
             .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$1</a>")
             .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$2</a>");
     }
