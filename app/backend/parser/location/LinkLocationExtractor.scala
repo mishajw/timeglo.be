@@ -29,22 +29,22 @@ object LinkLocationExtractor {
 
   def run() = {
     // For every event...
-    println(DB.getEvents
-      .reverse
-      .take(10)
-      .map(e =>
+    DB.getEvents
+      .foreach(e => {
         // Get every link...
-        (linkRegex findAllIn e.description)
+        val coords = (linkRegex findAllIn e.description)
           // Format as a link...
           .map(s => s
             .substring(2, s.length - 2)
-            .split("\\|").head
-            .replace(" ", "_"))
+            .split("\\|").head)
+          .flatMap(e => Seq(
+            e.replace(" ", "_"),
+            e.replace(" ", "")))
           // Try to convert to coords
           .flatMap(getLocationFromDB)
-      )
-      .map(_.mkString(", "))
-      .mkString("\n"))
+
+        log.info(s"${e.description.replace("\n", "")} =>\n${coords.mkString(", ")}")
+      })
   }
 
   private def getLocationFromDB(name: String): Option[SimpleLocation] = {
@@ -52,8 +52,12 @@ object LinkLocationExtractor {
     val results = statementGetCoords.executeQuery()
 
     if (results.next()) {
+      val geoName: String = results.getString("geo_name")
       Some(SimpleLocation(
-        results.getString("gt_name"),
+        geoName match {
+          case "" => results.getString("page_name")
+          case n => n
+        },
         Coords(
           results.getDouble("gt_lat"),
           results.getDouble("gt_lon"))
