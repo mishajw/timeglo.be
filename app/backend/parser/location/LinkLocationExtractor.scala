@@ -14,17 +14,6 @@ import scala.io.Source
 object LinkLocationExtractor {
   private val log = Logger(getClass)
 
-  Class.forName("com.mysql.jdbc.Driver")
-  val connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/wikipedia", "root", "")
-  connection.setAutoCommit(false)
-  val statement = connection.createStatement()
-
-  val statementGetCoords = connection.prepareStatement({
-    val f = Source.fromFile("res/mysql/get_coords.sql")
-    val s = f.mkString
-    f.close() ; s
-  })
-
   private val linkRegex = "\\[\\[[^\\[\\]]*\\]\\]".r
 
   def run() = {
@@ -41,29 +30,9 @@ object LinkLocationExtractor {
             e.replace(" ", "_"),
             e.replace(" ", "")))
           // Try to convert to coords
-          .flatMap(getLocationFromDB)
+          .flatMap(DB.getLocationFromWiki)
 
         log.info(s"${e.description.replace("\n", "")} =>\n${coords.mkString(", ")}")
       })
-  }
-
-  private def getLocationFromDB(name: String): Option[SimpleLocation] = {
-    statementGetCoords.setString(1, name)
-    val results = statementGetCoords.executeQuery()
-
-    if (results.next()) {
-      val geoName: String = results.getString("geo_name")
-      Some(SimpleLocation(
-        geoName match {
-          case "" => results.getString("page_name")
-          case n => n
-        },
-        Coords(
-          results.getDouble("gt_lat"),
-          results.getDouble("gt_lon"))
-      ))
-    } else {
-      None
-    }
   }
 }

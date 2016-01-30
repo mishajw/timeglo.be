@@ -29,6 +29,9 @@ object DB {
     connection.prepareStatement(getLineFromFileName(sqlPath + "/event_locations.sql"))
   private val locationFromNamesStatement =
     connection.prepareStatement(getLineFromFileName(sqlPath + "/location_from_names.sql"))
+  private val locationFromWikiStatement =
+    connection.prepareStatement(getLineFromFileName(sqlPath + "/get_coords.sql"))
+
 
   private val insertCommands: Map[String, PreparedStatement] = Seq(
     ("events", Seq("occurs", "description")),
@@ -200,6 +203,26 @@ object DB {
     ps.setInt(1, id)
     ps.setString(2, name)
     ps.executeUpdate()
+  }
+
+  def getLocationFromWiki(name: String): Option[SimpleLocation] = {
+    locationFromWikiStatement.setString(1, name)
+    val results = locationFromWikiStatement.executeQuery()
+
+    if (results.next()) {
+      val geoName: String = results.getString("geo_name")
+      Some(SimpleLocation(
+        geoName match {
+          case "" => results.getString("page_name")
+          case n => n
+        },
+        Coords(
+          results.getDouble("gt_lat"),
+          results.getDouble("gt_lon"))
+      ))
+    } else {
+      None
+    }
   }
 
   private def toSqlDate(d: Date) = {
