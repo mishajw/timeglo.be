@@ -1,7 +1,6 @@
 package backend
 
-import backend.parser.{NationalityExtractor, APIEventExtractor, LocationExtractor}
-import backend.retriever.location.FileLocationRetriever
+import backend.parser.{APIEventExtractor, LinkLocationExtractor}
 import backend.util.DB
 import play.api.Logger
 
@@ -14,18 +13,8 @@ object BackendOrganiser {
     DB.performIndexing()
     DB.commit()
 
-    log.info("Getting locations...")
-    FileLocationRetriever.setup("allCountries.txt")
-    DB.performIndexing()
-    DB.commit()
-
-    log.info("Getting nationalities...")
-    NationalityExtractor.run()
-    DB.performIndexing()
-    DB.commit()
-
     log.info("Extracting locations...")
-    LocationExtractor.run()
+    LinkLocationExtractor.run()
     DB.performIndexing()
     DB.commit()
 
