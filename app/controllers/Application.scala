@@ -2,6 +2,7 @@ package controllers
 
 import java.util.Calendar
 
+import backend.LocatedEvent
 import backend.util.DB
 import org.json4s._
 import org.json4s.jackson.JsonMethods
@@ -18,7 +19,7 @@ class Application extends Controller {
     Ok(views.html.index())
   }
 
-  def getEvents(startString: String, endString: String) = Action {
+  def getEventsInDateRange(startString: String, endString: String) = Action {
     log.debug(s"Asked for events from $startString to $endString")
 
     try {
@@ -28,7 +29,11 @@ class Application extends Controller {
       log.debug(s"Parsed dates as $startDate and $endDate")
 
       if (startDate.before(endDate)) {
-        Ok(stringifyJson(getEventsInJson(startDate, endDate)))
+        Ok(
+          stringifyJson(
+            eventsToJson(
+              DB.getWikiLocatedEvents
+              (startDate, endDate))))
       } else {
         errorJson("Start date must be before end date")
       }
@@ -36,6 +41,10 @@ class Application extends Controller {
       case e: java.text.ParseException =>
         errorJson(s"Not a valid format for a date. Must be in format ${dateFormatString.toUpperCase()}")
     }
+  }
+
+  def getEventsByKeyword(keywords: String) = Action {
+    Ok(stringifyJson(eventsToJson(DB.keywordSearch(keywords))))
   }
 
   def getDateRange = Action {
@@ -77,20 +86,19 @@ class Application extends Controller {
     }
   }
 
-  private def getEventsInJson(startDate: java.sql.Date, endDate: java.sql.Date) = {
-    JArray(DB.getWikiLocatedEvents(startDate, endDate)
-      .map(le => {
-        JObject(List(
-          "date" -> JString(s"${le.event.date.date}-${le.event.date.month}-${le.event.date.year}"),
-          "desc" -> JString(le.event.description),
-          "location" -> JObject(List(
-            "name" -> JString(le.location.name.replace("_", " ")),
-            "lat" -> JDouble(le.location.coords.lat),
-            "long" -> JDouble(le.location.coords.long),
-            "type" -> JString(le.location.locationType)
-          ))
+  private def eventsToJson(events: Seq[LocatedEvent]) = {
+    JArray(events.map(le => {
+      JObject(List(
+        "date" -> JString(s"${le.event.date.date}-${le.event.date.month}-${le.event.date.year}"),
+        "desc" -> JString(le.event.description),
+        "location" -> JObject(List(
+          "name" -> JString(le.location.name.replace("_", " ")),
+          "lat" -> JDouble(le.location.coords.lat),
+          "long" -> JDouble(le.location.coords.long),
+          "type" -> JString(le.location.locationType)
         ))
-      }).toList)
+      ))
+    }).toList)
   }
 
   private def stringifyJson(json: JValue) =

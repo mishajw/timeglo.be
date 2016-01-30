@@ -4,7 +4,8 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /getEvents/:start/:end      controllers.Application.getEvents(start, end)
+GET     /getEvents/:start/:end      controllers.Application.getEventsInDateRange(start, end)
+GET     /getEvents/:search          controllers.Application.getEventsByKeyword(search)
 GET     /getDateRange               controllers.Application.getDateRange
 
 # Map static resources from the /public folder to the /assets URL path
