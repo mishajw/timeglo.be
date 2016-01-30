@@ -78,7 +78,7 @@ class Application extends Controller {
   }
 
   private def getEventsInJson(startDate: java.sql.Date, endDate: java.sql.Date) = {
-    JArray(DB.getLocatedEvents(startDate, endDate)
+    JArray(DB.getWikiLocatedEvents(startDate, endDate)
       .map(le => {
         JObject(List(
           "date" -> JString(s"${le.event.date.date}-${le.event.date.month}-${le.event.date.year}"),

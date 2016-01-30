@@ -24,3 +24,9 @@ CREATE TABLE eventLocations (
   locationID      INT REFERENCES locations,
   nameID          INT REFERENCES locationNames
 );
+
+CREATE TABLE wikiEventLocations (
+  id              SERIAL PRIMARY KEY,
+  eventID         INT REFERENCES events,
+  locationID      INT REFERENCES geo_tags
+);

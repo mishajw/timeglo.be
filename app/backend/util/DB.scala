@@ -27,17 +27,20 @@ object DB {
 
   private val locatedEventStatement =
     connection.prepareStatement(getLineFromFileName(sqlPath + "/event_locations.sql"))
+  private val wikiLocatedEventStatement =
+    connection.prepareStatement(getLineFromFileName(sqlPath + "/wiki_event_locations.sql"))
   private val locationFromNamesStatement =
     connection.prepareStatement(getLineFromFileName(sqlPath + "/location_from_names.sql"))
   private val locationFromWikiStatement =
-    connection.prepareStatement(getLineFromFileName(sqlPath + "/get_coords.sql"))
+    connection.prepareStatement(getLineFromFileName(sqlPath + "/wiki_get_loc_id.sql"))
 
 
   private val insertCommands: Map[String, PreparedStatement] = Seq(
     ("events", Seq("occurs", "description")),
     ("locations", Seq("id", "name", "latitude", "longitude", "population")),
     ("locationNames", Seq("locationID", "name")),
-    ("eventLocations", Seq("eventID", "locationID", "nameID")))
+    ("eventLocations", Seq("eventID", "locationID", "nameID")),
+    ("wikiEventLocations", Seq("eventID", "locationID")))
     .map(tup =>
       tup._1 -> connection.prepareStatement(
         s"INSERT INTO ${tup._1}" +
@@ -205,24 +208,54 @@ object DB {
     ps.executeUpdate()
   }
 
-  def getLocationFromWiki(name: String): Option[SimpleLocation] = {
+  def getLocationFromWiki(name: String): Option[Int] = {
     locationFromWikiStatement.setString(1, name)
     val results = locationFromWikiStatement.executeQuery()
 
     if (results.next()) {
-      val geoName: String = results.getString("geo_name")
-      Some(SimpleLocation(
-        geoName match {
-          case "" => results.getString("page_name")
-          case n => n
-        },
-        Coords(
-          results.getDouble("gt_lat"),
-          results.getDouble("gt_lon"))
-      ))
+      Some(results.getInt("gt_id"))
     } else {
       None
     }
+  }
+
+  def batchWikiEventLocation(eventID: Int, locationIDs: Seq[Int]) = {
+    val ps = insertCommands("wikiEventLocations")
+    ps.setInt(1, eventID)
+
+    locationIDs.foreach(locationID => {
+      ps.setInt(2, locationID)
+      ps.addBatch()
+    })
+  }
+
+  def insertAllWikiEventLocation() = {
+    insertCommands("wikiEventLocations").executeBatch()
+  }
+
+  def getWikiLocatedEvents(start: java.sql.Date, end: java.sql.Date): Seq[LocatedEvent] = {
+    wikiLocatedEventStatement.setDate(1, start)
+    wikiLocatedEventStatement.setDate(2, end)
+
+    val results = wikiLocatedEventStatement.executeQuery()
+
+    val les = new ListBuffer[LocatedEvent]
+
+    while (results.next()) {
+      les += LocatedEvent(
+        Event(
+          fromSqlDate(results.getDate("occurs")),
+          results.getString("description")),
+        Location(
+          results.getString("name"),
+          Seq("abc"),
+          Coords(results.getFloat("latitude"), results.getFloat("longitude")),
+          new java.math.BigDecimal(0)),
+        "xyz"
+      )
+    }
+
+    les.toSeq
   }
 
   private def toSqlDate(d: Date) = {
