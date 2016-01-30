@@ -219,7 +219,7 @@ $(function() {
     }
 
     function handleEvents(events) {
-        console.log("Handling events");
+        $infobox.html("");
 
         svg.selectAll(".points").remove();
 
