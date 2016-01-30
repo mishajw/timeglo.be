@@ -137,7 +137,10 @@ $(function() {
             location.name +
                 "<span class='event-amount'>" +
                 d.events.length + (d.events.length != 1 ? " events" : " event") +
-                " | " + capitalise(getLocationForEvents(d).type) +
+                (
+                    location.type && location.type != "" ?
+                    " | " + capitalise(location.type) : ""
+                ) +
             "</span>");
         $tooltip.fadeIn();
 
