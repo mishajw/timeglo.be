@@ -50,6 +50,8 @@ $(function() {
     var $tooltip = $("#tooltip");
     var $startDate = $("input[name=start-date]");
     var $endDate = $("input[name=end-date]");
+    var $searchButton = $("#search-button");
+    var $searchBox = $("#search-box");
 
     // MOUSE VARS
     var isMouseDown = false;
@@ -182,8 +184,25 @@ $(function() {
         updateTransformations();
     });
 
+    $searchButton.click(function() {
+        updateWithSearch();
+    });
 
     // OTHER FUNCTIONS
+    function updateWithSearch() {
+        var keywords = $searchBox.val();
+        $.ajax("/getEvents/" + keywords, {
+            type: "GET",
+            success: function(e) {
+                handleEvents($.parseJSON(e));
+            },
+            error: function(e) {
+                console.log("Couldn't get events.");
+                console.log(e);
+            }
+        });
+    }
+
     function updateWithRange() {
         var years = getScaledYears();
 
