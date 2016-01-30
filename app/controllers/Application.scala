@@ -80,11 +80,12 @@ class Application extends Controller {
   private def getEventsInJson(startDate: java.sql.Date, endDate: java.sql.Date) = {
     JArray(DB.getWikiLocatedEvents(startDate, endDate)
       .map(le => {
+        log.debug(le.location.locationType)
         JObject(List(
           "date" -> JString(s"${le.event.date.date}-${le.event.date.month}-${le.event.date.year}"),
           "desc" -> JString(le.event.description),
           "location" -> JObject(List(
-            "name" -> JString(le.location.name),
+            "name" -> JString(le.location.name.replace("_", " ")),
             "lat" -> JDouble(le.location.coords.lat),
             "long" -> JDouble(le.location.coords.long),
             "type" -> JString(le.location.locationType)
