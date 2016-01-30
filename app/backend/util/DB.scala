@@ -160,7 +160,9 @@ object DB {
           results.getString("description")),
         SimpleLocation(
           results.getString("name"),
-          Coords(results.getFloat("latitude"), results.getFloat("longitude")))
+          Coords(results.getFloat("latitude"), results.getFloat("longitude")),
+          results.getString("type")
+        )
       )
     }
 

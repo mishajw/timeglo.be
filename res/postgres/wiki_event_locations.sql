@@ -5,6 +5,7 @@ SELECT
      THEN P.page_title
      ELSE L.gt_name
    END) AS name,
+  L.gt_type AS type,
   L.gt_lat AS latitude, L.gt_lon AS longitude
 FROM
   events E,

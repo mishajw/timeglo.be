@@ -86,7 +86,8 @@ class Application extends Controller {
           "location" -> JObject(List(
             "name" -> JString(le.location.name),
             "lat" -> JDouble(le.location.coords.lat),
-            "long" -> JDouble(le.location.coords.long)
+            "long" -> JDouble(le.location.coords.long),
+            "type" -> JString(le.location.locationType)
           ))
         ))
       }).toList)

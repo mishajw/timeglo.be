@@ -3,7 +3,7 @@
   */
 package object backend {
   case class Coords(lat: Double, long: Double)
-  case class SimpleLocation(name: String, coords: Coords)
+  case class SimpleLocation(name: String, coords: Coords, locationType: String)
 
   case class Event(date: Date, description: String, id: Option[Int] = None)
   case class Date(date: Int, month: Int, year: Int)

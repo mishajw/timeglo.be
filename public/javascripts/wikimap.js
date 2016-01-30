@@ -6,6 +6,8 @@ $(function() {
     var width = $container.width(),
         height = $container.height();
 
+    var colors = d3.scale.category10();
+
     // GLOBE VARS
     var globeRotIncrement = 30;
     var globeRotation = {x: 670, y: 400};
@@ -135,6 +137,7 @@ $(function() {
             location.name +
                 "<span class='event-amount'>" +
                 d.events.length + (d.events.length != 1 ? " events" : " event") +
+                " | " + capitalise(getLocationForEvents(d).type) +
             "</span>");
         $tooltip.fadeIn();
 
@@ -257,7 +260,8 @@ $(function() {
                 .attr("class", "points")
                 .attr("id", eventObject.pointID)
                 .attr("fill", function(eo) {
-                    // TODO find fill
+                    var type = getLocationForEvents(eo.geometry.coordinates[0][2]).type;
+                    return colors(type);
                 })
                 .attr("stroke", "white")
                 .attr("opacity", 0.9)
@@ -394,6 +398,10 @@ $(function() {
         }
 
         return x;
+    }
+
+    function capitalise(s) {
+        return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
     updateTransformations();
