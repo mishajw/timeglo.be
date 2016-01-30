@@ -347,6 +347,8 @@ $(function() {
                         e.location.name +
                     "</div>";
 
+            fullText += "<div class='event-container'>";
+
             fullText +=
                 "<div class='event-date'>" +
                     formatDate(e.date) +
@@ -356,6 +358,8 @@ $(function() {
                 "<div class='event-desc'>" +
                     formatDescription(e.desc) +
                 "</div>";
+
+            fullText += "</div>";
         });
 
         return fullText;

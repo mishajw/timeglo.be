@@ -11,5 +11,5 @@ $(function() {
         .css("height", height * 0.9);
 
     $("#infobox")
-        .css("height", height * 0.85);
+        .css("height", height * 0.75);
 });

@@ -24,19 +24,29 @@ body {
     overflow: auto;
 }
 
+#infobox, #options {
+    background-color: #DDD;
+    opacity: 0.9;
+
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 10px;
+}
+
 .event-date {
     font-weight: bold;
 }
 
 .event-desc {
-    text-align: justify;
+    text-align: left;
 }
 
 .event-location {
-    font-size: 120%;
+    font-size: 160%;
     font-weight: bold;
 
-    border-bottom: 1px solid #777;
+    margin-bottom: 20px;
 }
 
 #sidebar {
@@ -44,17 +54,12 @@ body {
     top: 20px;
     left: 20px;
     width: 30%;
-
-    background-color: #DDD;
-    opacity: 0.9;
-
-    border: 1px solid #333;
-    border-radius: 5px;
-    padding: 20px;
 }
 
 .date-input {
     width: 75px;
+    font-size: 130%;
+    text-align: center;
 }
 
 #tooltip {
@@ -70,4 +75,28 @@ body {
     display: block;
     font-size: 80%;
     border-top: 1px solid #333;
+}
+
+#search-sect {
+    padding: 10px;
+}
+
+#search-box, #search-button {
+    font-size: 130%;
+}
+
+#search-box {
+    width: 75%;
+}
+
+#options {
+    text-align: center;
+}
+
+.event-container {
+    margin: 20px 0px;
+}
+
+#range-button {
+    font-size: 130%;
 }
