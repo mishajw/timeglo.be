@@ -8,8 +8,11 @@ $(function() {
         .css("height", height);
 
     $("#sidebar")
-        .css("height", height * 0.9);
+        .css("height", height);
+
+    //$("#options")
+    //    .css("height", height * 0.20);
 
     $("#infobox")
-        .css("height", height * 0.75);
+        .css("height", height - $("#options").height() - 100);
 });

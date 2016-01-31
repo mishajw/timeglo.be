@@ -3,16 +3,17 @@
         <div class="row">
             <div id="sidebar">
                 <div id="options">
+                    <div id="range-sect">
+                        <span class="range-text" id="range-title">From</span>
+                        <input name="start-date" class="date-input" type="number" placeholder="Start">
+                        <span class="range-text"> to </span>
+                        <input name="end-date" class="date-input" type="number" placeholder="End">
+                        <button id="range-button" class="btn btn-large">Go</button>
+                    </div>
+                    @*<div id="options-or">or...</div>*@
                     <div id="search-sect">
                         <input id="search-box" type="text" placeholder="Search">
                         <button id="search-button">Go</button>
-                    </div>
-                    <div id="range-sect">
-                        <span id="range-title">Date range:</span>
-                        <input name="start-date" class="date-input" type="number" placeholder="Start">
-                        <span> to </span>
-                        <input name="end-date" class="date-input" type="number" placeholder="End">
-                        <button id="range-button" class="btn btn-large">Go</button>
                     </div>
                 </div>
                 <div id="infobox">

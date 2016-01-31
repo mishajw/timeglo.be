@@ -2,24 +2,26 @@
     text-align: center;
 }
 
+#options input, #options span, #options div, #options button {
+    font-size: 110%;
+}
+
 .date-input {
     width: 75px;
-    font-size: 130%;
     text-align: center;
 }
 
 #search-sect {
-    padding: 10px;
-}
+    margin-top: 10px;
+    border-top: 1px solid #333;
 
-#search-box, #search-button {
-    font-size: 130%;
+    padding: 10px;
 }
 
 #search-box {
     width: 75%;
 }
 
-#range-button {
-    font-size: 130%;
+#options-or {
+    margin: 5px;
 }
