@@ -1,0 +1,24 @@
+#infobox {
+    padding: 10px;
+    text-align: center;
+    overflow: auto;
+}
+
+.event-container {
+    margin: 20px 0;
+}
+
+.event-date {
+    font-weight: bold;
+}
+
+.event-desc {
+    text-align: left;
+}
+
+.event-location {
+    font-size: 160%;
+    font-weight: bold;
+
+    margin-bottom: 20px;
+}
