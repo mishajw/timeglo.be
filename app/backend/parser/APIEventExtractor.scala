@@ -23,7 +23,7 @@ object APIEventExtractor {
     "October", "November", "December")
 
   def run: Seq[Event] = {
-    DB.resetTables(Seq("events", "eventLocations"))
+    DB.resetTables(Seq("events"))
 
     (for (
       month <- months.indices;
