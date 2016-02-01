@@ -129,6 +129,10 @@ $(function() {
         return false;
     });
 
+    $svg.on("mouseout", function(e) {
+        isMouseDown = false;
+    });
+
     function eventMouseClick(d) {
         $infobox.html(getText(d));
     }
