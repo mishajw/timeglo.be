@@ -269,26 +269,32 @@ $(function() {
             e.date = new Date(parseInt(split[2]), parseInt(split[1]) - 1, parseInt(split[0]));
         });
 
-        // Get the max amount of events
-        globeMaxEvents = 0;
-        for (var coord in groupedEvents) {
-            if (groupedEvents[coord].length > globeMaxEvents) {
-                globeMaxEvents = groupedEvents[coord].length;
-            }
+        // Convert it into a list:
+        groupedEventsList = [];
+        for (coord in groupedEvents) {
+            groupedEventsList.push(groupedEvents[coord]);
         }
+        // Sort that list by events:
+        groupedEventsList.sort(function(a, b) {
+            return b.length - a.length;
+        });
+
+        // Get the max amount of events
+        globeMaxEvents = groupedEventsList[0].length;
 
         var index = 0;
-        for (var coord in groupedEvents) {
-            var parsedCoords = coord.split(",");
+        for (var i = 0; i < groupedEventsList.length; i++) {
+            var events = groupedEventsList[i];
+
             var eventObject = {
-                events: groupedEvents[coord],
-                pointID: "point" + (index ++)
+                events: events,
+                pointID: "point" + i
             };
 
             // Set the topojson object to have details for this event
             topojsonObject.objects.events.coordinates = [[
-                parseInt(parsedCoords[0]),
-                parseInt(parsedCoords[1]),
+                parseInt(events[0].location.long),
+                parseInt(events[0].location.lat),
                 // Inject into coordinates so we can get the data back later
                 eventObject
             ]];
