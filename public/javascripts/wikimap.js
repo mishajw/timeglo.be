@@ -5,8 +5,8 @@ $(function() {
     // D3 VARIABLES
     var width = $container.width(),
         height = $container.height();
-
     var colors = d3.scale.category10();
+    var lastScroll = 0;
 
     // GLOBE VARS
     var globeRotIncrement = 30;
@@ -18,7 +18,8 @@ $(function() {
     var globeZoom = 1;
     var desGlobeZoom = globeZoom;
     var globeZoomCatchUp = 0.2;
-    var globeZoomMax = 6000 / 400, globeZoomMin = 300 / 400;
+    //var globeZoomMax = 6000 / 400, globeZoomMin = 300 / 400;
+    var globeZoomMax = 6, globeZoomMin = 1;
 
     var globeMaxEvents = 0;
     var globeMaxPointSize = 50;
@@ -171,12 +172,12 @@ $(function() {
             case 40:
                 desGlobeRotation.y -= globeRotIncrement / globeZoom;
                 break;
-            case 189:
-                desGlobeZoom /= globeZoomIncrement;
-                break;
-            case 187:
-                desGlobeZoom *= globeZoomIncrement;
-                break;
+            //case 189:
+            //    desGlobeZoom /= globeZoomIncrement;
+            //    break;
+            //case 187:
+            //    desGlobeZoom *= globeZoomIncrement;
+            //    break;
             default:
                 break;
         }
@@ -186,6 +187,17 @@ $(function() {
 
     $searchButton.click(function() {
         updateWithSearch();
+    });
+
+    $(function() {
+        var zoomListener = d3.behavior.zoom()
+            .scaleExtent([globeZoomMin, globeZoomMax])
+            .on("zoom", function() {
+                desGlobeZoom = d3.event.scale;
+                updateTransformations();
+            });
+
+        svg.call(zoomListener)
     });
 
     // OTHER FUNCTIONS
