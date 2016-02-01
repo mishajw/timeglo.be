@@ -145,7 +145,7 @@ $(function() {
                     " | " + capitalise(location.type) : ""
                 ) +
             "</span>");
-        $tooltip.fadeIn();
+        $tooltip.show();
 
         svg.select("#" + d.pointID)
             .attr("stroke-width", "5px");
