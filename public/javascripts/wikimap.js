@@ -284,17 +284,17 @@ $(function() {
 
         var index = 0;
         for (var i = 0; i < groupedEventsList.length; i++) {
-            var events = groupedEventsList[i];
+            var group = groupedEventsList[i];
 
             var eventObject = {
-                events: events,
+                events: group,
                 pointID: "point" + i
             };
 
             // Set the topojson object to have details for this event
             topojsonObject.objects.events.coordinates = [[
-                parseInt(events[0].location.long),
-                parseInt(events[0].location.lat),
+                parseInt(group[0].location.long),
+                parseInt(group[0].location.lat),
                 // Inject into coordinates so we can get the data back later
                 eventObject
             ]];
