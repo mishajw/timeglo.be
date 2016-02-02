@@ -1,4 +1,5 @@
-$(function() {
+function Graph() {
+//$(function() {
     // Container for the visualisation
     var $container = $("#wikimap-d3");
 
@@ -6,7 +7,6 @@ $(function() {
     var width = $container.width(),
         height = $container.height();
     var colors = d3.scale.category10();
-    var lastScroll = 0;
 
     // GLOBE VARS
     var globeRotIncrement = 30;
@@ -423,4 +423,20 @@ $(function() {
     }
 
     updateTransformations();
+
+    // PUBLIC FUNCTIONS
+
+    this.updateScale = function() {
+        width = $container.width();
+        height = $container.height();
+        projection.translate([width * 0.65, height / 2]);
+
+        console.log("hm");
+    }
+}
+
+var graph;
+
+$(function() {
+    graph = new Graph();
 });

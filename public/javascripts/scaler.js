@@ -1,18 +1,29 @@
 $(function() {
-    var $window = $(window);
-    var width = $window.width();
-    var height = $window.height();
+    function handleResize() {
+        var $window = $(window);
+        var width = $window.width();
+        var height = $window.height();
 
-    $("#wikimap-d3")
-        .css("width", width)
-        .css("height", height);
+        $("#wikimap-d3")
+            .width(width)
+            .height(height);
 
-    $("#sidebar")
-        .css("height", height);
+        $("#sidebar")
+            .height(height);
 
-    //$("#options")
-    //    .css("height", height * 0.20);
+        //$("#options-container")
+        //    .css("height", height * 0.20);
 
-    $("#infobox")
-        .css("height", height - $("#options").height() - 100);
+        $("#infobox-container")
+            .height(height - $("#options-container").height());
+
+        $("#infobox")
+            .height($("#infobox-container").height() * 0.85);
+
+        if (graph) graph.updateScale();
+    }
+
+    $(window).resize(handleResize);
+
+    handleResize();
 });
