@@ -75,7 +75,9 @@ $(function() {
         if (error) throw error;
 
         svg.append("path")
-            .datum(topojson.feature(world, world.objects.land))
+            .datum(topojson.feature(world, world.objects.countries))
+            .attr("stroke", "#666")
+            .attr("stroke-width", "0.5px")
             .attr("class", "land")
             .attr("fill", "#333")
             .attr("d", path);
