@@ -14,7 +14,6 @@ $(function() {
     var desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
     var globeRotCatchUp = 0.3;
 
-    var globeZoomIncrement = 1.2;
     var globeZoom = 1;
     var desGlobeZoom = globeZoom;
     var globeZoomCatchUp = 0.2;
@@ -157,33 +156,6 @@ $(function() {
         svg.select("#" + d.pointID)
             .attr("stroke-width", "1px");
     }
-
-    $(document).keydown(function(e) {
-        switch (e.which) {
-            case 37:
-                desGlobeRotation.x += globeRotIncrement / globeZoom;
-                break;
-            case 38:
-                desGlobeRotation.y += globeRotIncrement / globeZoom;
-                break;
-            case 39:
-                desGlobeRotation.x -= globeRotIncrement / globeZoom;
-                break;
-            case 40:
-                desGlobeRotation.y -= globeRotIncrement / globeZoom;
-                break;
-            //case 189:
-            //    desGlobeZoom /= globeZoomIncrement;
-            //    break;
-            //case 187:
-            //    desGlobeZoom *= globeZoomIncrement;
-            //    break;
-            default:
-                break;
-        }
-
-        updateTransformations();
-    });
 
     $searchButton.click(function() {
         updateWithSearch();
