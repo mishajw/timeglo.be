@@ -252,7 +252,6 @@ function Graph() {
         // Get the max amount of events
         globeMaxEvents = groupedEventsList[0].length;
 
-        var index = 0;
         for (var i = 0; i < groupedEventsList.length; i++) {
             var group = groupedEventsList[i];
 
@@ -300,7 +299,7 @@ function Graph() {
         }
     }
 
-    function setupSlider(min, max) {
+    function setupSlider() {
         function updateLabel() {
             var years = getScaledYears();
             $("#range-label").text(years[0] + " to " + years[1]);
