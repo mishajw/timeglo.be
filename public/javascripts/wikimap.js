@@ -430,8 +430,6 @@ function Graph() {
         width = $container.width();
         height = $container.height();
         projection.translate([width * 0.65, height / 2]);
-
-        console.log("hm");
     }
 }
 
