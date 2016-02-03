@@ -89,7 +89,7 @@ class Application extends Controller {
   private def eventsToJson(events: Seq[LocatedEvent]) = {
     JArray(events.map(le => {
       JObject(List(
-        "date" -> JString(s"${le.event.date.date}-${le.event.date.month}-${le.event.date.year}"),
+        "date" -> JString(s"${le.event.date.date}.${le.event.date.month}.${le.event.date.year}"),
         "desc" -> JString(le.event.description),
         "location" -> JObject(List(
           "name" -> JString(le.location.name.replace("_", " ")),

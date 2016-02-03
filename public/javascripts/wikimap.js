@@ -235,8 +235,12 @@ function Graph() {
             }
 
             // Format the date
-            var split = e.date.split("-");
-            e.date = new Date(parseInt(split[2]), parseInt(split[1]) - 1, parseInt(split[0]));
+            var split = e.date.split(".");
+
+            e.date = new Date();
+            e.date.setDate(split[0]);
+            e.date.setMonth(parseInt(split[1]) - 1);
+            e.date.setFullYear(split[2]);
         });
 
         // Convert it into a list:
@@ -394,7 +398,7 @@ function Graph() {
     }
 
     function formatDate(d) {
-        return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+        return d.getDate() + "/" + (d.getMonth() + 1) + "/" + (d.getFullYear() > 0 ? d.getFullYear() : -d.getFullYear() + " BC");
     }
 
     function getLocationForEvents(eo) {

@@ -212,7 +212,7 @@ object DB {
 
   private def fromSqlDate(d: java.sql.Date): Date = {
     val localDate: LocalDate = d.toLocalDate
-    
+
     Date(localDate.getDayOfMonth, localDate.getMonthValue, {
       if (d.before(jesusWasBorn))
         -localDate.getYear
