@@ -32,6 +32,13 @@ object DB {
   private val locationFromWikiStatement =
     connection.prepareStatement(getLineFromFileName(sqlPath + "/wiki_get_loc_id.sql"))
 
+  private val jesusWasBorn: java.util.Date = {
+    val cal = Calendar.getInstance()
+    cal.set(Calendar.YEAR, 0)
+    cal.set(Calendar.MONTH, 0)
+    cal.set(Calendar.DAY_OF_MONTH, 0)
+    cal.getTime
+  }
 
   private val insertCommands: Map[String, PreparedStatement] = Seq(
     ("events", Seq("occurs", "description")),
@@ -205,7 +212,13 @@ object DB {
 
   private def fromSqlDate(d: java.sql.Date): Date = {
     val localDate: LocalDate = d.toLocalDate
-    Date(localDate.getDayOfMonth, localDate.getMonthValue, localDate.getYear)
+    
+    Date(localDate.getDayOfMonth, localDate.getMonthValue, {
+      if (d.before(jesusWasBorn))
+        -localDate.getYear
+      else
+        localDate.getYear
+    })
   }
 
   private def getLinesFromFile(file: BufferedSource) = file
