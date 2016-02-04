@@ -192,7 +192,7 @@ function Graph() {
     function updateWithRange() {
         var years = getScaledYears();
 
-        $.ajax("/getEvents/1.1." + years[0] + "/1.1." + years[1], {
+        $.ajax("/getEvents/1.1." + years[0] + "/31.12." + years[1], {
             type: "GET",
             success: function(e) {
                 handleEvents($.parseJSON(e));
