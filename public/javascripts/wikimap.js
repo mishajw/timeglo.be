@@ -9,7 +9,6 @@ function Graph() {
     var colors = d3.scale.category10();
 
     // GLOBE VARS
-    var globeRotIncrement = 30;
     var globeRotation = {x: 670, y: 400};
     var desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
     var globeRotCatchUp = 0.3;
@@ -17,12 +16,12 @@ function Graph() {
     var globeZoom = 1;
     var desGlobeZoom = globeZoom;
     var globeZoomCatchUp = 0.2;
-    //var globeZoomMax = 6000 / 400, globeZoomMin = 300 / 400;
     var globeZoomMax = 6, globeZoomMin = 1;
 
     var globeMaxEvents = 0;
+    var globeDefaultMax = 10;
     var globeMaxPointSize = 50;
-    var globeMinPointSize = 2;
+    var globeMinPointSize = 5;
 
     var projection = d3.geo.orthographic()
         .scale(globeZoom)
@@ -293,10 +292,14 @@ function Graph() {
                 })
                 .attr("d", path.pointRadius(function(d) {
                     try {
-                        return ((d.geometry.coordinates[0][2].events.length / globeMaxEvents) *
-                                (globeMaxPointSize - globeMinPointSize) + globeMinPointSize) *
-                                (parseFloat(globeZoom));
+                        var max = globeMaxEvents > globeDefaultMax ? globeMaxEvents : globeDefaultMax;
+                        var min = 1;
+                        var amount = d.geometry.coordinates[0][2].events.length;
+                        var amountScale = (amount - min) / (max - min);
+                        var unscaledSize = ((amountScale) * (globeMaxPointSize - globeMinPointSize)) + globeMinPointSize;
+                        return unscaledSize * parseFloat(globeZoom);
                     } catch (err) {
+                        // Not a point
                         return 1;
                     }
                 }));
