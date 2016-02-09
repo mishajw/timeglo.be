@@ -8,7 +8,7 @@ import scala.io.Source
 /**
   * Created by misha on 24/12/15.
   */
-object APIArticleRetreiver {
+object APIArticleRetriever {
   val baseURL = "https://en.wikipedia.org/w/api.php?%20format=json&action=query&prop=revisions&rvprop=content"
 
   def getTitle(title: String): String = {
