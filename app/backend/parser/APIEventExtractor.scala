@@ -1,6 +1,6 @@
 package backend.parser
 
-import backend.retriever.wikipedia.APIArticleRetreiver
+import backend.retriever.wikipedia.APIArticleRetriever
 import backend.util.DB
 import backend.{Date, Event}
 import play.api.Logger
@@ -38,7 +38,7 @@ object APIEventExtractor {
 
   private def getEventsForDate(date: Date): Seq[Event] = {
     Try(
-      APIArticleRetreiver
+      APIArticleRetriever
         .getTitle(s"${months(date.month)}%20${date.date + 1}")
         .split("==(Events|Births)==").toList(1)
         .split("\n\\*").toList
