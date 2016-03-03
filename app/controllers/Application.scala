@@ -16,6 +16,8 @@ class Application extends Controller {
   private val dateFormat = new java.text.SimpleDateFormat(dateFormatString)
 
   def index = Action {
+    println("test")
+
     Ok(views.html.index())
   }
 

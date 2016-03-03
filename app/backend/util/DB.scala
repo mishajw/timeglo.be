@@ -18,7 +18,7 @@ import scala.io.{BufferedSource, Source}
 object DB {
   private val log = Logger(getClass)
 
-  private val sqlPath: String = "res/postgres"
+  private val sqlPath: String = "conf/resources/postgres"
 
   Class.forName("org.postgresql.Driver")
   val connection = DriverManager.getConnection("jdbc:postgresql://localhost/wikimap", "misha", "")

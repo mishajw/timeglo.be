@@ -22,6 +22,6 @@ server.pid
 /out
 
 # Ignore large resources
-/res/allCountries.txt
-/res/nationalities.json
+/conf/resources/allCountries.txt
+/conf/resources/nationalities.json
 
