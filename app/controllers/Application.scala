@@ -40,7 +40,8 @@ class Application extends Controller {
         errorJson("Start date must be before end date")
       }
     } catch {
-      case e: java.text.ParseException =>
+      case e: Throwable =>
+        log.warn("Got error on parsing user input", e)
         errorJson(s"Not a valid format for a date. Must be in format ${dateFormatString.toUpperCase()}")
     }
   }
