@@ -1,0 +1,9 @@
+[Unit]
+Description=Play! Framework timeglo.be service
+
+[Service]
+Type=simple
+ExecStart=/home/misha/timeglobe-start.sh
+
+[Install]
+WantedBy=multi-user.target
