@@ -50,6 +50,7 @@ function Graph() {
     var $startDate = $("input[name=start-date]");
     var $endDate = $("input[name=end-date]");
     var $searchButton = $("#search-button");
+    var $searchButton = $("#search-box");
     var $searchBox = $("#search-box");
 
     // MOUSE VARS
@@ -160,6 +161,10 @@ function Graph() {
 
     $searchButton.click(function() {
         updateWithSearch();
+    });
+
+    $searchBox.keypress(function(e) {
+        if (e.which == 13) $searchBox.click();
     });
 
     $(function() {
