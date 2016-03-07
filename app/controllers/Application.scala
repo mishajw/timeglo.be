@@ -15,6 +15,8 @@ class Application extends Controller {
   private val dateFormatString: String = "dd.MM.yyyy"
   private val dateFormat = new java.text.SimpleDateFormat(dateFormatString)
 
+  private val regexBadLocationType = "adm.+".r
+
   def index = Action {
     println("test")
 
@@ -98,7 +100,10 @@ class Application extends Controller {
           "name" -> JString(le.location.name.replace("_", " ")),
           "lat" -> JDouble(le.location.coords.lat),
           "long" -> JDouble(le.location.coords.long),
-          "type" -> JString(le.location.locationType)
+          "type" -> JString(le.location.locationType match {
+            case regexBadLocationType() => ""
+            case s => s
+          })
         ))
       ))
     }).toList)
