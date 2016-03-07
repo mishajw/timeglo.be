@@ -319,6 +319,14 @@ function Graph() {
         updateLabel();
 
         $("#range-button").click(updateWithRange);
+        
+        $startDate.keypress(function(e) {
+            if (e.which == 13) updateWithRange();
+        });
+
+        $endDate.keypress(function(e) {
+            if (e.which == 13) updateWithRange();
+        });
     }
 
     function updateRotation() {
