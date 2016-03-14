@@ -3,7 +3,7 @@ Description=Play! Framework timeglo.be service
 
 [Service]
 Type=simple
-ExecStart=/home/misha/timeglobe-start.sh
+ExecStart=/home/misha/WikiMap/start.sh
 
 [Install]
 WantedBy=multi-user.target
