@@ -324,6 +324,10 @@ function Graph() {
         $endDate.keypress(function(e) {
             if (e.which == 13) updateEvents();
         });
+
+        $searchBox.keypress(function(e) {
+            if (e.which == 13) updateEvents();
+        });
     }
 
     function updateRotation() {
