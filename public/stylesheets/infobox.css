@@ -21,13 +21,11 @@
 }
 
 .event-date {
-    width: 20%;
     color: #666;
     text-align: right;
 }
 
 .event-desc {
-    width: 70%;
     text-align: left;
 }
 
