@@ -1,6 +1,10 @@
+#infobox-container {
+    overflow-y: auto;
+    display: flex;
+    margin: 1em 0 2em;
+}
+
 #infobox {
-    padding: 10px;
-    overflow: auto;
     display: table;
     text-align: center;
     width: 100%;
