@@ -3,6 +3,8 @@ function Graph() {
     // Container for the visualisation
     var $container = $("#wikimap-d3");
 
+    $container.height($(window).height());
+
     // D3 VARIABLES
     var width = $container.width(),
         height = $container.height();
@@ -176,6 +178,10 @@ function Graph() {
         svg.call(zoomListener)
     });
 
+    $(window).resize(function() {
+        projection.translate([$container.width() * 0.65, height / 2]);
+        svg.selectAll("path").attr("d", path);
+    });
 
     function updateEvents() {
         var keywords = sanatise($searchBox.val());
