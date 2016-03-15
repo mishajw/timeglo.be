@@ -195,11 +195,11 @@ function Graph() {
 
     function handleEvents(events) {
         if (events.length == 0) {
-            $infobox.html("No events.");
+            $infobox.html("No events");
             return;
         }
 
-        $infobox.html("");
+        $infobox.html("Click on a point to see events");
 
         svg.selectAll(".points").remove();
 
