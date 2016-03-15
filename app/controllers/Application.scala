@@ -21,6 +21,31 @@ class Application extends Controller {
     Ok(views.html.index())
   }
 
+  def search(startString: String, endString: String, searchTerm: String) = Action {
+    log.debug(s"Asked for date between $startString and $endString, with search term $searchTerm")
+
+    try {
+      val startDate = new java.sql.Date(dateFormat.parse(startString).getTime)
+      val endDate = new java.sql.Date(dateFormat.parse(endString).getTime)
+
+      log.debug(s"Parsed dates as $startDate and $endDate")
+
+      if (startDate.before(endDate)) {
+        Ok(
+          stringifyJson(
+            eventsToJson(
+              DB.searchForEvent
+              (startDate, endDate, searchTerm.replace("%20", " ")))))
+      } else {
+        errorJson("Start date must be before end date")
+      }
+    } catch {
+      case e: Throwable =>
+        log.warn("Got error on parsing user input", e)
+        errorJson(s"Not a valid format for a date. Must be in format ${dateFormatString.toUpperCase()}")
+    }
+  }
+
   def getEventsInDateRange(startString: String, endString: String) = Action {
     log.debug(s"Asked for events from $startString to $endString")
 

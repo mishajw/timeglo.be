@@ -80,9 +80,10 @@ function Graph() {
             .attr("class", "land")
             .attr("fill", "#333")
             .attr("d", path);
+
+        updateWithRange();
+        $svg.fadeIn(1000);
     });
-    updateWithRange();
-    $svg.fadeIn(1000);
 
     // MOUSE/KEYBOARD EVENTS
     $svg.on("mousemove", function(e) {
