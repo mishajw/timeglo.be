@@ -1,9 +1,10 @@
 #options {
     text-align: center;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
 }
 
 #options input, #options span, #options div, #options button {
-    font-size: 110%;
 }
 
 .date-input {
@@ -22,12 +23,8 @@
     width: 75%;
 }
 
-#options-or {
-    margin: 5px;
-}
-
 #search-button {
     display: block;
     text-align: center;
-    margin: 20px auto;
+    margin: 10px auto;
 }

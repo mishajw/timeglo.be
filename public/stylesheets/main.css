@@ -6,3 +6,16 @@ body {
     overflow: hidden;
     margin: 0;
 }
+
+#main-title {
+
+    font-size: 300%;
+
+    margin-top: 0;margin-bottom: 20px;
+
+
+    padding-bottom: 5px;text-align: center;}
+
+#title-end {
+    color: rgb(44, 160, 44)
+}
