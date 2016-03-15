@@ -81,7 +81,7 @@ function Graph() {
             .attr("fill", "#333")
             .attr("d", path);
 
-        updateWithRange();
+        updateEvents();
         $svg.fadeIn(1000);
     });
 
@@ -159,9 +159,7 @@ function Graph() {
             .attr("stroke-width", "1px");
     }
 
-    $searchButton.click(function() {
-        updateWithSearch();
-    });
+    $searchButton.click(updateEvents);
 
     $searchBox.keypress(function(e) {
         if (e.which == 13) $searchBox.click();
@@ -178,37 +176,29 @@ function Graph() {
         svg.call(zoomListener)
     });
 
-    // OTHER FUNCTIONS
-    function updateWithSearch() {
-        var keywords = $searchBox.val();
-        $.ajax("/getEvents/" + keywords, {
+
+    function updateEvents() {
+        var keywords = sanatise($searchBox.val());
+        var years = getScaledYears().map(sanatise);
+
+        $.ajax("/search/1.1." + years[0] + "/31.12." + years[1] + "/" + keywords, {
             type: "GET",
             success: function(e) {
-                handleEvents($.parseJSON(e));
+                handleEvents(JSON.parse(e));
             },
             error: function(e) {
-                console.log("Couldn't get events.");
-                console.log(e);
-            }
-        });
-    }
-
-    function updateWithRange() {
-        var years = getScaledYears();
-
-        $.ajax("/getEvents/1.1." + years[0] + "/31.12." + years[1], {
-            type: "GET",
-            success: function(e) {
-                handleEvents($.parseJSON(e));
-            },
-            error: function(e) {
-                console.log("Couldn't get events.");
+                console.log("Couldn't get events")
                 console.log(e);
             }
         });
     }
 
     function handleEvents(events) {
+        if (events.size == 0) {
+            // No events
+            return;
+        }
+
         $infobox.html("");
 
         svg.selectAll(".points").remove();
@@ -319,14 +309,14 @@ function Graph() {
 
         updateLabel();
 
-        $("#range-button").click(updateWithRange);
+        $("#range-button").click(updateEvents);
 
         $startDate.keypress(function(e) {
-            if (e.which == 13) updateWithRange();
+            if (e.which == 13) updateEvents();
         });
 
         $endDate.keypress(function(e) {
-            if (e.which == 13) updateWithRange();
+            if (e.which == 13) updateEvents();
         });
     }
 
@@ -439,6 +429,10 @@ function Graph() {
 
     function capitalise(s) {
         return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function sanatise(s) {
+        return s.replace(/[^A-Za-z0-9 ]/, "");
     }
 
     updateTransformations();
