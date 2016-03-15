@@ -183,8 +183,12 @@ function Graph() {
     });
 
     $(window).resize(function() {
-        projection.translate([$container.width() * 0.65, height / 2]);
+        var newTranslate = [$container.width() * 0.65, height / 2];
+        projection.translate(newTranslate);
         svg.selectAll("path").attr("d", path);
+        globeSea
+            .attr("cx", newTranslate[0])
+            .attr("cy", newTranslate[1]);
     });
 
     function updateEvents() {
