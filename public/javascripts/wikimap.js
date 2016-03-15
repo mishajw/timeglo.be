@@ -188,8 +188,8 @@ function Graph() {
     });
 
     function updateEvents() {
-        var keywords = sanatise($searchBox.val());
-        var years = getScaledYears().map(sanatise);
+        var keywords = sanitise($searchBox.val());
+        var years = getScaledYears().map(sanitise);
 
         $.ajax("/search/1.1." + years[0] + "/31.12." + years[1] + "/" + keywords, {
             type: "GET",
@@ -457,7 +457,7 @@ function Graph() {
         return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
-    function sanatise(s) {
+    function sanitise(s) {
         return s.replace(/[^A-Za-z0-9 ]/, "");
     }
 
