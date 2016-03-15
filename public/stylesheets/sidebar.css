@@ -3,24 +3,16 @@
     top: 0;
     left: 0;
     width: 30%;
-}
 
-#search-box {
-    margin-top: 20px;
-}
-
-#sidebar {
     background-color: #EEEEF4;
     opacity: 0.95;
-    border: 1px solid #333;
+    border-right: 1px solid #333;
     padding: 20px;
     height: 100%;
     display: flex;
     flex-flow: column;
 }
 
-/*#options-container, #infobox-container {*/
-    /*padding: 0;*/
-    /*margin: 0;*/
-    /*border: 0;*/
-/*}*/
+#search-box {
+    margin-top: 20px;
+}
