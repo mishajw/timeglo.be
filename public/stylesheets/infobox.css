@@ -1,24 +1,38 @@
 #infobox {
     padding: 10px;
-    text-align: center;
     overflow: auto;
+    display: table;
+    text-align: center;
+    width: 100%;
 }
 
 .event-container {
     margin: 20px 0;
+    display: table-row;
+}
+
+.event-date, .event-desc {
+    display: table-cell;
+    padding: 5px;
 }
 
 .event-date {
+    width: 20%;
     font-weight: bold;
+    color: #666;
+    text-align: right;
 }
 
 .event-desc {
+    width: 70%;
     text-align: left;
 }
 
 .event-location {
     font-size: 160%;
     font-weight: bold;
-
-    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+    display: table-caption;
 }
