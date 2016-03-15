@@ -25,3 +25,9 @@
 #options-or {
     margin: 5px;
 }
+
+#search-button {
+    display: block;
+    text-align: center;
+    margin: 20px auto;
+}
