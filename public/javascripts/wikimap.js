@@ -11,6 +11,8 @@ function Graph() {
     var colors = d3.scale.category10();
 
     // GLOBE VARS
+    var globeSize = 400;
+    var globeSea = undefined;
     var globeRotation = {x: 670, y: 400};
     var desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
     var globeRotCatchUp = 0.3;
@@ -75,9 +77,11 @@ function Graph() {
     d3.json("/assets/res/world-110m.json", function(error, world) {
         if (error) throw error;
 
+        addSea();
+
         svg.append("path")
             .datum(topojson.feature(world, world.objects.countries))
-            .attr("stroke", "#666")
+            .attr("stroke", "#222")
             .attr("stroke-width", "0.5px")
             .attr("class", "land")
             .attr("fill", "#333")
@@ -197,6 +201,17 @@ function Graph() {
                 console.log(e);
             }
         });
+    }
+
+    function addSea() {
+        globeSea =
+            svg.append("circle")
+                .attr("cx", width * 0.65)
+                .attr("cy", height * 0.5)
+                .attr("r", globeSize)
+                .attr("fill", "#EEE")
+                .attr("stroke", "#DDD")
+                .attr("stroke-width", "0.5");
     }
 
     function handleEvents(events) {
@@ -341,7 +356,8 @@ function Graph() {
     function updateZoom() {
         if (globeZoom > globeZoomMax) { globeZoom = globeZoomMax; desGlobeZoom = globeZoomMax; }
         if (globeZoom < globeZoomMin) { globeZoom = globeZoomMin; desGlobeZoom = globeZoomMin; }
-        projection.scale(globeZoom * 400);
+        projection.scale(globeZoom * globeSize);
+        globeSea.attr("r", globeZoom * globeSize);
     }
 
     function getText(eventsObject) {

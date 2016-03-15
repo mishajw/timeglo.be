@@ -7,10 +7,11 @@ body {
     font-size: 300%;
     margin-top: 0;
     margin-bottom: 20px;
-
-    padding-bottom: 5px;text-align: center;
+    padding-bottom: 5px;
+    text-align: center;
+    font-weight: bold;
 }
 
 #title-end {
-    color: rgb(44, 160, 44)
+    color: rgb(44, 160, 44);
 }
