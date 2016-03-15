@@ -18,7 +18,7 @@ $(function() {
             .height(height - $("#options-container").height());
 
         $("#infobox")
-            .height($("#infobox-container").height() * 0.85);
+            .height($("#infobox-container").height() * 0.95);
 
         if (graph) graph.updateScale();
     }
