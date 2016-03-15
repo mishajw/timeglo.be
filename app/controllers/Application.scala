@@ -18,8 +18,6 @@ class Application extends Controller {
   private val regexBadLocationType = "adm.+".r
 
   def index = Action {
-    println("test")
-
     Ok(views.html.index())
   }
 
