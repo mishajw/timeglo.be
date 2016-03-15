@@ -5,7 +5,9 @@
     width: 30%;
 }
 
-/*#infobox, #options*/
+#search-box {
+    margin-top: 20px;
+}
 
 #sidebar {
     background-color: #EEEEF4;
