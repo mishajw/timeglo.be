@@ -194,8 +194,8 @@ function Graph() {
     }
 
     function handleEvents(events) {
-        if (events.size == 0) {
-            // No events
+        if (events.length == 0) {
+            $infobox.html("No events.");
             return;
         }
 
