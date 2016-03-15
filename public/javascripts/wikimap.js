@@ -187,7 +187,7 @@ function Graph() {
                 handleEvents(JSON.parse(e));
             },
             error: function(e) {
-                console.log("Couldn't get events")
+                console.log("Couldn't get events");
                 console.log(e);
             }
         });
