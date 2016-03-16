@@ -1,0 +1,18 @@
+@(message: String, code: Int)
+
+@main("Error", Seq()) {
+
+    <div id="error-container">
+
+        <div id="error-code">@code</div>
+
+        <div id="error-title">
+            An error occurred
+        </div>
+
+        <div id="error-message">@message</div>
+
+    </div>
+
+    <link href="@routes.Assets.versioned("stylesheets/error.css")" rel="stylesheet">
+}
