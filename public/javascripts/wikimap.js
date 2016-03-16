@@ -11,7 +11,7 @@ function Graph() {
     var colors = d3.scale.category10();
 
     // GLOBE VARS
-    var globeSize = height * 0.4;
+    var globeSize = Math.min(height, width) * 0.4;
     var globeSea = undefined;
     var globeRotation = {x: 670, y: 400};
     var desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
