@@ -187,6 +187,8 @@ function Graph() {
             $sidebar.addClass("show");
             $toggleButton.html("<i class='fa fa-arrow-circle-left fa-2x'></i>");
         }
+
+        updateTranslation();
     });
 
     $(function() {
@@ -200,14 +202,16 @@ function Graph() {
         svg.call(zoomListener)
     });
 
-    $(window).resize(function() {
-        var newTranslate = [$container.width() * 0.65, height / 2];
+    var updateTranslation = function() {
+        var newTranslate = [getWidthMiddle(), height / 2];
         projection.translate(newTranslate);
         svg.selectAll("path").attr("d", path);
         globeSea
             .attr("cx", newTranslate[0])
             .attr("cy", newTranslate[1]);
-    });
+    };
+
+    $(window).resize(updateTranslation);
 
     function updateEvents() {
         var keywords = sanitise($searchBox.val());
@@ -228,7 +232,7 @@ function Graph() {
     function addSea() {
         globeSea =
             svg.append("circle")
-                .attr("cx", width * 0.65)
+                .attr("cx", getWidthMiddle())
                 .attr("cy", height * 0.5)
                 .attr("r", globeSize)
                 .attr("fill", "#EEE")
@@ -483,6 +487,16 @@ function Graph() {
         return s.replace(/[^A-Za-z0-9 ]/, "");
     }
 
+    function getWidthMiddle() {
+        width = $container.width();
+
+        if ($sidebar.hasClass("show")) {
+            return width * 0.65;
+        } else {
+            return width * 0.5;
+        }
+    }
+
     updateTransformations();
 
     // PUBLIC FUNCTIONS
@@ -490,7 +504,7 @@ function Graph() {
     this.updateScale = function() {
         width = $container.width();
         height = $container.height();
-        projection.translate([width * 0.65, height / 2]);
+        projection.translate([getWidthMiddle(), height / 2]);
     }
 }
 
