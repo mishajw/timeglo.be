@@ -93,7 +93,7 @@ function Graph() {
         $svg.fadeIn(1000);
 
         if (isMobile()) {
-            updateToggle();
+            toggleSidebar();
         }
     });
 
@@ -143,6 +143,8 @@ function Graph() {
     });
 
     function eventMouseClick(d) {
+        showSidebar();
+
         $infobox.html(getText(d));
     }
 
@@ -186,7 +188,7 @@ function Graph() {
             .attr("cy", newTranslate[1]);
     };
 
-    var updateToggle = function() {
+    var toggleSidebar = function() {
         var shown = $sidebar.hasClass("show");
 
         if (shown) {
@@ -208,7 +210,19 @@ function Graph() {
         updateTranslation();
     };
 
-    $toggleButton.click(updateToggle);
+    var showSidebar = function() {
+        if (!$sidebar.hasClass("show")) {
+            toggleSidebar();
+        }
+    };
+
+    var hideSidebar = function() {
+        if ($sidebar.hasClass("show")) {
+            toggleSidebar();
+        }
+    };
+
+    $toggleButton.click(toggleSidebar);
 
     $(function() {
         var zoomListener = d3.behavior.zoom()
@@ -224,6 +238,10 @@ function Graph() {
     $(window).resize(updateTranslation);
 
     function updateEvents() {
+        if (isMobile()) {
+            hideSidebar();
+        }
+
         var keywords = sanitise($searchBox.val());
         var years = getScaledYears().map(sanitise);
 
