@@ -189,14 +189,18 @@ function Graph() {
     var updateToggle = function() {
         var shown = $sidebar.hasClass("show");
 
-        $sidebar.animate({
-            left: (shown ? "-=" : "+=") + $sidebar.width() * 1.5
-        }, 500);
-
         if (shown) {
+            $sidebar.animate({
+                left: "-=" + $sidebar.width() * 1.5
+            }, 500);
+
             $sidebar.removeClass("show");
             $toggleButton.html("<i class='fa fa-arrow-circle-right fa-2x'></i>");
         } else {
+            $sidebar.animate({
+                left: "0"
+            }, 500);
+
             $sidebar.addClass("show");
             $toggleButton.html("<i class='fa fa-arrow-circle-left fa-2x'></i>");
         }
