@@ -184,7 +184,13 @@ function Graph() {
             .attr("stroke-width", "1px");
     }
 
-    $searchButton.click(updateEvents);
+    $searchButton.click(function() {
+        if (isMobile()) {
+            hideSidebar();
+        }
+
+        updateEvents();
+    });
 
     $searchBox.keypress(function(e) {
         if (e.which == 13) $searchBox.click();
@@ -249,10 +255,6 @@ function Graph() {
     $(window).resize(updateTranslation);
 
     function updateEvents() {
-        if (isMobile()) {
-            hideSidebar();
-        }
-
         var keywords = sanitise($searchBox.val());
         var years = getScaledYears().map(sanitise);
 
@@ -421,8 +423,8 @@ function Graph() {
     function updateZoom() {
         if (globeZoom > globeZoomMax) { globeZoom = globeZoomMax; desGlobeZoom = globeZoomMax; }
         if (globeZoom < globeZoomMin) { globeZoom = globeZoomMin; desGlobeZoom = globeZoomMin; }
-        projection.scale(globeZoom * globeSize);
-        globeSea.attr("r", globeZoom * globeSize);
+        if (projection) projection.scale(globeZoom * globeSize);
+        if (globeSea) globeSea.attr("r", globeZoom * globeSize);
     }
 
     function getText(eventsObject) {
