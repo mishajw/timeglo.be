@@ -92,7 +92,7 @@ function Graph() {
         updateEvents();
         $svg.fadeIn(1000);
 
-        if ($(window).width() < 850) {
+        if (isMobile()) {
             updateToggle();
         }
     });
@@ -505,6 +505,10 @@ function Graph() {
         } else {
             return width * 0.5;
         }
+    }
+
+    function isMobile() {
+        return $(window).width() < 850;
     }
 
     updateTransformations();
