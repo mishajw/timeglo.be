@@ -91,6 +91,10 @@ function Graph() {
 
         updateEvents();
         $svg.fadeIn(1000);
+
+        if ($(window).width() < 850) {
+            updateToggle();
+        }
     });
 
     // MOUSE/KEYBOARD EVENTS
@@ -173,7 +177,16 @@ function Graph() {
         if (e.which == 13) $searchBox.click();
     });
 
-    $toggleButton.click(function(e) {
+    var updateTranslation = function() {
+        var newTranslate = [getWidthMiddle(), height / 2];
+        projection.translate(newTranslate);
+        svg.selectAll("path").attr("d", path);
+        globeSea
+            .attr("cx", newTranslate[0])
+            .attr("cy", newTranslate[1]);
+    };
+
+    var updateToggle = function() {
         var shown = $sidebar.hasClass("show");
 
         $sidebar.animate({
@@ -189,7 +202,9 @@ function Graph() {
         }
 
         updateTranslation();
-    });
+    };
+
+    $toggleButton.click(updateToggle);
 
     $(function() {
         var zoomListener = d3.behavior.zoom()
@@ -201,15 +216,6 @@ function Graph() {
 
         svg.call(zoomListener)
     });
-
-    var updateTranslation = function() {
-        var newTranslate = [getWidthMiddle(), height / 2];
-        projection.translate(newTranslate);
-        svg.selectAll("path").attr("d", path);
-        globeSea
-            .attr("cx", newTranslate[0])
-            .attr("cy", newTranslate[1]);
-    };
 
     $(window).resize(updateTranslation);
 
