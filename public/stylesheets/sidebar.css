@@ -11,7 +11,7 @@
     border-right: 1px solid #333;
     padding: 20px;
     height: 100%;
-    display: flex;
+    display: none;
     flex-flow: column;
 }
 

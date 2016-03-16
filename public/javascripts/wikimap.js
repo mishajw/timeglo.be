@@ -211,14 +211,14 @@ function Graph() {
         if (shown) {
             $sidebar.animate({
                 left: "-=" + $sidebar.width() * 1.5
-            }, 500);
+            }, 500, function() { $sidebar.css("display", "flex"); });
 
             $sidebar.removeClass("show");
             $toggleButton.html("<i class='fa fa-arrow-circle-right fa-2x'></i>");
         } else {
             $sidebar.animate({
                 left: "0"
-            }, 500);
+            }, 500, function() { $sidebar.css("display", "flex"); });
 
             $sidebar.addClass("show");
             $toggleButton.html("<i class='fa fa-arrow-circle-left fa-2x'></i>");
@@ -531,7 +531,7 @@ function Graph() {
     function getWidthMiddle() {
         width = $container.width();
 
-        if ($sidebar.hasClass("show")) {
+        if ($sidebar.hasClass("show") && !isMobile()) {
             return width * 0.65;
         } else {
             return width * 0.5;
