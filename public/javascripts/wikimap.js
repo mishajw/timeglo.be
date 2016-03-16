@@ -182,10 +182,10 @@ function Graph() {
 
         if (shown) {
             $sidebar.removeClass("show");
-            $toggleButton.html("<i class='fa fa-arrow-circle-right'></i>");
+            $toggleButton.html("<i class='fa fa-arrow-circle-right fa-2x'></i>");
         } else {
             $sidebar.addClass("show");
-            $toggleButton.html("<i class='fa fa-arrow-circle-left'></i>");
+            $toggleButton.html("<i class='fa fa-arrow-circle-left fa-2x'></i>");
         }
     });
 
