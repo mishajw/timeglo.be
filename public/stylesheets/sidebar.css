@@ -2,7 +2,9 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 30%;
+
+    width: 100%;
+    max-width: 500px;
 
     background-color: #EEEEF4;
     opacity: 0.95;
