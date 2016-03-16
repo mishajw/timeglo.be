@@ -98,9 +98,8 @@ function Graph() {
     });
 
     // MOUSE/KEYBOARD EVENTS
-    $svg.on("mousemove", function(e) {
-        mouseLocation.x = e.clientX;
-        mouseLocation.y = e.clientY;
+    $svg.on("mousemove touchmove", function(e) {
+        mouseLocation = getEventLocation(e);
 
         $tooltip.css({
             top: mouseLocation.y - $tooltip.height() / 2,
@@ -109,28 +108,26 @@ function Graph() {
 
         if (!isMouseDown) return;
 
-        globeRotation.x += (e.clientX - mouseDownLocation.x) / (globeZoom);
-        globeRotation.y += (e.clientY - mouseDownLocation.y) / (globeZoom);
+        globeRotation.x += (mouseLocation.x - mouseDownLocation.x) / (globeZoom);
+        globeRotation.y += (mouseLocation.y - mouseDownLocation.y) / (globeZoom);
 
         desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
 
-        mouseDownLocation.x = e.clientX;
-        mouseDownLocation.y = e.clientY;
+        mouseDownLocation = getEventLocation(e);
 
         updateRotation();
     });
 
-    $svg.on("mousedown", function(e) {
+    $svg.on("mousedown touchstart", function(e) {
         isMouseDown = true;
 
-        mouseDownLocation.x = e.clientX;
-        mouseDownLocation.y = e.clientY;
+        mouseDownLocation = getEventLocation(e);
 
         e.preventDefault();
         return false;
     });
 
-    $svg.on("mouseup", function(e) {
+    $svg.on("mouseup touchend", function(e) {
         isMouseDown = false;
 
         e.preventDefault();
@@ -146,6 +143,20 @@ function Graph() {
         showSidebar();
 
         $infobox.html(getText(d));
+    }
+
+    function getEventLocation(e) {
+        if (e.type.substring(0, 5) == "mouse") {
+            return {
+                x: e.clientX,
+                y: e.clientY
+            };
+        } else {
+            return {
+                x: e.originalEvent.touches[0].clientX,
+                y: e.originalEvent.touches[0].clientY
+            };
+        }
     }
 
     function eventMouseOver(d) {
