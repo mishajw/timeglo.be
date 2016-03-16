@@ -55,6 +55,8 @@ function Graph() {
     var $endDate = $("input[name=end-date]");
     var $searchButton = $("#search-button");
     var $searchBox = $("#search-box");
+    var $toggleButton = $("#sidebar-toggle");
+    var $sidebar = $("#sidebar");
 
     // MOUSE VARS
     var isMouseDown = false;
@@ -169,6 +171,20 @@ function Graph() {
 
     $searchBox.keypress(function(e) {
         if (e.which == 13) $searchBox.click();
+    });
+
+    $toggleButton.click(function(e) {
+        var shown = $sidebar.hasClass("show");
+
+        $sidebar.animate({
+            left: (shown ? "-=" : "+=") + $sidebar.width() * 1.5
+        }, 500);
+
+        if (shown) {
+            $sidebar.removeClass("show");
+        } else {
+            $sidebar.addClass("show");
+        }
     });
 
     $(function() {

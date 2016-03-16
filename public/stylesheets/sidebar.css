@@ -16,3 +16,9 @@
 #search-box {
     margin-top: 10px;
 }
+
+#sidebar-toggle {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+}
