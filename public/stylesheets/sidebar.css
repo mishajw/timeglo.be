@@ -1,18 +1,22 @@
 #sidebar {
     position: absolute;
-    top: 0;
-    left: 0;
-
+    display: inline-block;
     width: 100%;
-    max-width: 500px;
-
+    z-index: 500;
     background-color: #EEEEF4;
     opacity: 0.95;
     border-right: 1px solid #333;
     padding: 20px;
     height: 100%;
-    display: none;
     flex-flow: column;
+    -webkit-transition: margin-left ease-in-out 0.3s;
+    -moz-transition: margin-left ease-in-out 0.3s;
+    -ms-transition: margin-left ease-in-out 0.3s;
+    -o-transition: margin-left ease-in-out 0.3s;
+    transition: margin-left ease-in-out 0.3s;
+}
+#sidebar-toggle:not(:checked) ~ #sidebar {
+    margin-left: -500px;
 }
 
 #search-box {
@@ -20,7 +24,30 @@
 }
 
 #sidebar-toggle {
+      display: none;
+}
+
+#sidebar-button {
+    display: block;
+    z-index: 1000;
+    background-color: #DDD;
     position: fixed;
     top: 25px;
     left: 10px;
+}
+#sidebar-button i {
+    margin-top: 1px;
+    -webkit-transition: -webkit-transform ease-in-out 0.3s;
+    -moz-transition: -moz-transform ease-in-out 0.3s;
+    -ms-transition: -ms-transform ease-in-out 0.3s;
+    -o-transition: -o-transform ease-in-out 0.3s;
+    transition: transform ease-in-out 0.3s;
+}
+
+#sidebar-toggle:not(:checked) ~ #sidebar-button i {
+    -webkit-transform: translateY(-2px) rotate(180deg);
+    -moz-transform: translateY(-2px) rotate(180deg);
+    -ms-transform: translateY(-2px) rotate(180deg);
+    -o-transform: translateY(-2px) rotate(180deg);
+    transform: translateY(-2px) rotate(180deg);
 }

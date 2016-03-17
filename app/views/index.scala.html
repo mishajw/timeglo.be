@@ -1,10 +1,13 @@
 @main("timeglo.be", Seq("//d3js.org/d3.v3.min.js", "//d3js.org/topojson.v1.js", "//rawgit.com/1wheel/graph-scroll/master/graph-scroll.js")) {
     @*<div class="container">*@
         @*<div class="row">*@
-            <div class="show" id="sidebar">
 
-                <button class="btn" id="sidebar-toggle"><i class="fa fa-arrow-circle-left fa-2x"></i></button>
+            <input type="checkbox" id="sidebar-toggle" checked/>
+            <label for="sidebar-toggle" id="sidebar-button" class="btn">
+                <i class="fa fa-arrow-circle-left fa-2x"></i>
+            </label>
 
+            <div id="sidebar">
                 <h1 id="main-title">timeglo<span id="title-end">.be</span></h1>
 
                 <div id="options-container">

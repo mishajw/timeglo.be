@@ -205,41 +205,7 @@ function Graph() {
             .attr("cy", newTranslate[1]);
     };
 
-    var toggleSidebar = function() {
-        var shown = $sidebar.hasClass("show");
-
-        if (shown) {
-            $sidebar.animate({
-                left: "-=" + $sidebar.width() * 1.5
-            }, 500, function() { $sidebar.css("display", "flex"); });
-
-            $sidebar.removeClass("show");
-            $toggleButton.html("<i class='fa fa-arrow-circle-right fa-2x'></i>");
-        } else {
-            $sidebar.animate({
-                left: "0"
-            }, 500, function() { $sidebar.css("display", "flex"); });
-
-            $sidebar.addClass("show");
-            $toggleButton.html("<i class='fa fa-arrow-circle-left fa-2x'></i>");
-        }
-
-        updateTranslation();
-    };
-
-    var showSidebar = function() {
-        if (!$sidebar.hasClass("show")) {
-            toggleSidebar();
-        }
-    };
-
-    var hideSidebar = function() {
-        if ($sidebar.hasClass("show")) {
-            toggleSidebar();
-        }
-    };
-
-    $toggleButton.click(toggleSidebar);
+    $toggleButton.click(updateTranslation);
 
     $(function() {
         var zoomListener = d3.behavior.zoom()
