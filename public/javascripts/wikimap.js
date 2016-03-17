@@ -367,6 +367,9 @@ function Graph() {
                 .on("click", function(e) {
                     eventMouseClick(e.geometry.coordinates[0][2]);
                 })
+                .on("touchend", function(e) {
+                    eventMouseClick(e.geometry.coordinates[0][2]);
+                })
                 .on("mouseover", function(e) {
                     eventMouseOver(e.geometry.coordinates[0][2]);
                 })
