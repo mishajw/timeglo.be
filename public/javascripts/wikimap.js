@@ -76,7 +76,7 @@ function Graph() {
             setupSlider(json.startDate.year, json.endDate.year);
         }
     });
-    d3.json("/assets/res/world-110m.json", function(error, world) {
+    d3.json("/assets/res/world-110m-0.6.json", function(error, world) {
         if (error) throw error;
 
         addSea();
