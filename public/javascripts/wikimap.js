@@ -93,7 +93,7 @@ function Graph() {
         $svg.fadeIn(1000);
 
         if (isMobile()) {
-            toggleSidebar();
+            $toggleButton.click();
         }
     });
 
@@ -204,6 +204,18 @@ function Graph() {
             .attr("cx", newTranslate[0])
             .attr("cy", newTranslate[1]);
     };
+
+    function showSidebar() {
+        if (!document.getElementById("sidebar-toggle").checked) {
+            $toggleButton.click();
+        }
+    }
+
+    function hideSidebar() {
+        if (document.getElementById("sidebar-toggle").checked) {
+            $toggleButton.click();
+        }
+    }
 
     $toggleButton.click(updateTranslation);
 
