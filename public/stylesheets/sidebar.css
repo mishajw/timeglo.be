@@ -1,6 +1,6 @@
 #sidebar {
     position: absolute;
-    display: inline-block;
+    display: flex;
     width: 100%;
     max-width: 500px;
     z-index: 500;
