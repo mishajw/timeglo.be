@@ -262,14 +262,14 @@ function Graph() {
     }
 
     function handleEvents(events) {
+        svg.selectAll(".points").remove();
+
         if (events.length == 0) {
             $infobox.html("No events");
             return;
         }
 
         $infobox.html("Click on a point to see events");
-
-        svg.selectAll(".points").remove();
 
         var topojsonObject = {
             type: "Topology",
