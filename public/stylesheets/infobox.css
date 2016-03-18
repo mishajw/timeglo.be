@@ -1,7 +1,6 @@
 #infobox-container {
     overflow-y: auto;
-    display: flex;
-    margin: 1em 0 2em;
+    margin: 1em 0 0;
 }
 
 #infobox {
