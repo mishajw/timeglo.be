@@ -512,7 +512,7 @@ function Graph() {
     function getWidthMiddle() {
         width = $container.width();
 
-        if ($sidebar.hasClass("show") && !isMobile()) {
+        if (!document.getElementById("sidebar-toggle").checked && !isMobile()) {
             return width * 0.65;
         } else {
             return width * 0.5;
