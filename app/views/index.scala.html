@@ -31,9 +31,35 @@
         <div id="tooltip"></div>
     </div>
 
+    <div id="legend">
+        <div class="legend-item">
+            <div class="legend-symbol">
+                <span class="fa-stack">
+                    <i class="fa fa-circle-thin fa-stack-2x"></i>
+                    <i class="fa fa-expand fa-stack-1x"></i>
+                </span>
+            </div>
+
+            <div class="legend-description">
+                Amount of events
+            </div>
+        </div>
+
+        <div class="legend-item">
+            <div id="legend-symbol-color" class="legend-symbol">
+                <i class="fa fa-circle-thin fa-2x"></i>
+            </div>
+
+            <div class="legend-description">
+                Type of location
+            </div>
+        </div>
+    </div>
+
+
     <script src="@routes.Assets.versioned("javascripts/wikimap.js")" type="text/javascript"></script>
 
-    @for(css <- Seq("main", "graph", "sidebar", "options", "infobox", "sidebar")) {
+    @for(css <- Seq("main", "graph", "sidebar", "options", "infobox", "sidebar", "legend")) {
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned(s"stylesheets/$css.css")">
     }
 

@@ -1,0 +1,37 @@
+#legend {
+    font-size: 85%;
+
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    display: table;
+
+    background-color: rgba(238, 238, 244, 0.7);
+
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 4px;
+}
+
+.legend-item {
+    display: table-row;
+}
+
+.legend-symbol, .legend-description {
+    display: table-cell;
+    padding: 3px;
+}
+
+.legend-symbol {
+    font-size: 90%;
+    text-align: center;
+}
+
+.legend-description {
+    text-align: left;
+}
+
+#legend-symbol-color > i {
+    color: rgb(255, 127, 14);
+}
