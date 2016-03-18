@@ -92,6 +92,8 @@ function Graph() {
         updateEvents();
         $svg.fadeIn(1000);
 
+        updateTranslation();
+
         if (isMobile()) {
             $toggleButton.click();
         }
@@ -512,7 +514,7 @@ function Graph() {
     function getWidthMiddle() {
         width = $container.width();
 
-        if (!document.getElementById("sidebar-toggle").checked && !isMobile()) {
+        if (document.getElementById("sidebar-toggle").checked && !isMobile()) {
             return width * 0.65;
         } else {
             return width * 0.5;
