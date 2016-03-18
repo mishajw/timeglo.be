@@ -508,7 +508,7 @@ function Graph() {
     }
 
     function sanitise(s) {
-        return s.replace(/[^A-Za-z0-9 ]/, "");
+        return s.replace(/[^A-Za-z0-9\- ]/, "");
     }
 
     function getWidthMiddle() {
