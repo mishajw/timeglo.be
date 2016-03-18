@@ -6,7 +6,7 @@ Using the [Wikipedia API](https://en.wikipedia.org/w/api.php), and mapping the e
 
 These are then mapped onto a globe using [D3](d3js.org) and [Topojson](https://github.com/mbostock/topojson) managed by [Play! Framework](https://www.playframework.com/), sized by events in that location and coloured by population size.
 
-![Screenshot](conf/resources/images/screenshot.png?raw=true)
+![Screenshot](public/images/screenshot.png?raw=true)
 
 Developed by [Misha Wagner](https://github.com/mishajw), with the help of [Joe Groocock](https://github.com/frebib). Idea from Hoagy Cunningham.
 
