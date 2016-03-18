@@ -1,4 +1,4 @@
-name := """WikiMap"""
+name := """timglo.be"""
 
 version := "1.0-SNAPSHOT"
 

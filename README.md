@@ -1,4 +1,4 @@
-# WikiMap
+# [timeglo.be](https://timeglo.be)
 
 A map of events from Wikipedia, taken from pages like [this](https://en.wikipedia.org/wiki/January_1).
 
