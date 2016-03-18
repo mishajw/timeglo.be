@@ -1,4 +1,4 @@
-name := """timglo.be"""
+name := """timeglo.be"""
 
 version := "1.0-SNAPSHOT"
 
