@@ -37,31 +37,133 @@ object DB {
   }
 
   def resetTables(tables: Seq[String]) = {
-    sql"""${Source.fromFile(s"$sqlPath/tables.sql").mkString}"""
-    sql"""${Source.fromFile(s"$sqlPath/drop.sql").mkString}"""
+    sql"""
+       DROP TABLE IF EXISTS date_precision CASCADE;
+       DROP TABLE IF EXISTS events CASCADE;
+       DROP TABLE IF EXISTS locations CASCADE;
+       DROP TABLE IF EXISTS locationNames CASCADE;
+       DROP TABLE IF EXISTS eventLocations CASCADE;
+       DROP TABLE IF EXISTS wikiEventLocations CASCADE;
+
+       CREATE TABLE date_precision (
+         id              SERIAL PRIMARY KEY,
+         type            TEXT
+       );
+
+       INSERT INTO date_precision(type) VALUES ('PreciseToYear');
+       INSERT INTO date_precision(type) VALUES ('PreciseToMonth');
+       INSERT INTO date_precision(type) VALUES ('PreciseToDate');
+       INSERT INTO date_precision(type) VALUES ('NotPrecise');
+
+       CREATE TABLE events (
+         id              SERIAL PRIMARY KEY,
+         occurs          DATE,
+         precision       INT REFERENCES date_precision,
+         description     TEXT
+       );
+
+       CREATE TABLE locations (
+         id              SERIAL PRIMARY KEY,
+         name            TEXT,
+         latitude        REAL,
+         longitude       REAL
+       );
+
+       CREATE TABLE located_events (
+         event_id        INT REFERENCES events,
+         location_id     INT REFERENCES locations,
+         PRIMARY KEY (event_id, location_id)
+       );
+      """.update.apply()
   }
 
   def dateRange: Option[(java.sql.Date, java.sql.Date)] = {
     ???
   }
 
-  def insertEvent(event: NewLocatedEvent) = {
-    ???
+  def insertEvent(event: NewEvent): Long = {
+      sql"""
+         INSERT INTO events (occurs, precision, description) VALUES (
+            ${toSqlDate(event.date)},
+            (SELECT id FROM date_precision WHERE type = ${event.date.precision}),
+            ${event.desc}
+         )
+       """.updateAndReturnGeneratedKey.apply()
   }
 
-  def getEvents: Seq[NewLocatedEvent] = {
-    ???
+  def insertLocation(location: Location): Long = {
+    val id: Option[Long] = sql"""
+          SELECT id FROM locations
+          WHERE name = ${location.name}
+      """.map(_.long("id")).single.apply()
+
+    id getOrElse {
+      sql"""
+           INSERT INTO locations (name, latitude, longitude) VALUES (
+              ${location.name},
+              ${location.coords.lat},
+              ${location.coords.long}
+           )
+         """.updateAndReturnGeneratedKey.apply()
+    }
+  }
+
+  def insertLocatedEvent(le: NewLocatedEvent): Long = {
+    val eventId = insertEvent(le.event)
+    val locationId = insertLocation(le.location)
+
+    sql"""
+         INSERT INTO located_events (event_id, location_id)
+         VALUES ($eventId, $locationId)
+       """.update.apply()
+  }
+
+  def getLocatedEvents: Seq[NewLocatedEvent] = {
+    sql"""
+         SELECT E.description, L.name, L.latitude, L.longitude
+         FROM located_events LE, events E, locations L, date_precision P
+         WHERE
+          LE.event_id = E.id,
+          LE.location_id = L.id,
+          E.precision = P.id
+       """.map(resultsToLocatedEvent).list.apply()
   }
 
   def performIndexing() = {
-    ???
+    sql"""
+       CREATE INDEX occurs_idx     ON events           (occurs);
+       CREATE INDEX el_locid_idx   ON event_locations   (location_id);
+       CREATE INDEX el_evid_idx    ON event_locations   (event_id);
+       """.update.apply()
   }
 
   def searchForEvent(start: java.sql.Date, end: java.sql.Date, searchWords: String): Seq[NewLocatedEvent] = {
-    ???
+    sql"""
+        SELECT E.description, L.name, L.latitude, L.longitude
+        FROM located_events LE, events E, locations L, date_precision P
+        WHERE
+         LE.event_id = E.id,
+         LE.location_id = L.id,
+         E.precision = P.id,
+         $start < E.occurs AND E.occurs < $end AND
+         (
+            ${searchWords.isEmpty} OR
+            regexp_replace(lower(E.description), '[^A-Za-z0-9 ]', '', 'g') LIKE
+              '%' || regexp_replace(lower($searchWords), '[^A-Za-z0-9 ]', '', 'g') || '%'
+         )
+       """.map(resultsToLocatedEvent).list.apply()
   }
 
-  private def toSqlDate(d: Date) = {
+  private def resultsToLocatedEvent(r: WrappedResultSet): NewLocatedEvent =
+    NewLocatedEvent(
+      NewEvent(
+        NewDate(precision = NotPrecise),
+        r.string("description")),
+      Location(
+        r.string("name"),
+        Coords(r.double("latitude"), r.double("longitude")), ""))
+
+  private def toSqlDate(d: NewDate) = {
     val cal = Calendar.getInstance()
     cal.set(Calendar.YEAR, d.year)
     cal.set(Calendar.MONTH, d.month)
@@ -70,10 +172,10 @@ object DB {
     new java.sql.Date(cal.getTime.getTime)
   }
 
-  private def fromSqlDate(d: java.sql.Date): Date = {
+  private def fromSqlDate(d: java.sql.Date): NewDate = {
     val localDate: LocalDate = d.toLocalDate
 
-    Date(localDate.getDayOfMonth, localDate.getMonthValue, {
+    NewDate(localDate.getDayOfMonth, localDate.getMonthValue, {
       if (d.before(jesusWasBorn))
         -localDate.getYear
       else
