@@ -23,7 +23,7 @@ object SPARQLListRetriever {
   }
 
   private def query = {
-    val f = Source.fromFile("conf/resources/sparql/events-query.txt")
+    val f = Source.fromFile("conf/resources/sparql/events-query.rq")
     val q = f.mkString
     f.close() ; q
   }
