@@ -79,7 +79,7 @@ object DB {
     ???
   }
 
-  def insertEvent(event: NewEvent): Long = {
+  def insertEvent(event: Event): Long = {
       sql"""
          INSERT INTO events (occurs, precision, description) VALUES (
             ${toSqlDate(event.date)},
@@ -106,7 +106,7 @@ object DB {
     }
   }
 
-  def insertLocatedEvent(le: NewLocatedEvent): Long = {
+  def insertLocatedEvent(le: LocatedEvent): Long = {
     val eventId = insertEvent(le.event)
     val locationId = insertLocation(le.location)
 
@@ -116,7 +116,7 @@ object DB {
        """.update.apply()
   }
 
-  def getLocatedEvents: Seq[NewLocatedEvent] = {
+  def getLocatedEvents: Seq[LocatedEvent] = {
     sql"""
          SELECT E.description, E.occurs, L.name, L.latitude, L.longitude, P.type AS precision
          FROM located_events LE, events E, locations L, date_precision P
@@ -135,7 +135,7 @@ object DB {
        """.update.apply()
   }
 
-  def searchForEvent(start: java.sql.Date, end: java.sql.Date, searchWords: String): Seq[NewLocatedEvent] = {
+  def searchForEvent(start: java.sql.Date, end: java.sql.Date, searchWords: String): Seq[LocatedEvent] = {
     sql"""
         SELECT E.description, E.occurs, L.name, L.latitude, L.longitude, P.type AS precision
         FROM located_events LE, events E, locations L, date_precision P
@@ -152,16 +152,16 @@ object DB {
        """.map(resultsToLocatedEvent).list.apply()
   }
 
-  private def resultsToLocatedEvent(r: WrappedResultSet): NewLocatedEvent =
-    NewLocatedEvent(
-      NewEvent(
+  private def resultsToLocatedEvent(r: WrappedResultSet): LocatedEvent =
+    LocatedEvent(
+      Event(
         fromSqlDate(r.date("occurs"), r.string("precision")),
         r.string("description")),
       Location(
         r.string("name"),
         Coords(r.double("latitude"), r.double("longitude")), ""))
 
-  private def toSqlDate(d: NewDate) = {
+  private def toSqlDate(d: Date) = {
     val cal = Calendar.getInstance()
     cal.set(Calendar.YEAR, d.year)
     cal.set(Calendar.MONTH, d.month)
@@ -170,7 +170,7 @@ object DB {
     new java.sql.Date(cal.getTime.getTime)
   }
 
-  private def fromSqlDate(d: java.sql.Date, precisionRaw: String): NewDate = {
+  private def fromSqlDate(d: java.sql.Date, precisionRaw: String): Date = {
     val precision = precisionRaw match {
       case "PreciseToYear" => PreciseToYear
       case "PreciseToMonth" => PreciseToMonth
@@ -180,7 +180,7 @@ object DB {
 
     val localDate: LocalDate = d.toLocalDate
 
-    NewDate(localDate.getDayOfMonth, localDate.getMonthValue, {
+    Date(localDate.getDayOfMonth, localDate.getMonthValue, {
       if (d.before(jesusWasBorn))
         -localDate.getYear
       else

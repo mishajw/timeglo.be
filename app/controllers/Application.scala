@@ -2,7 +2,7 @@ package controllers
 
 import java.util.Calendar
 
-import backend.NewLocatedEvent
+import backend.LocatedEvent
 import backend.util.DB
 import org.json4s._
 import org.json4s.jackson.JsonMethods
@@ -85,7 +85,7 @@ class Application extends Controller {
     }
   }
 
-  private def eventsToJson(events: Seq[NewLocatedEvent]) = {
+  private def eventsToJson(events: Seq[LocatedEvent]) = {
     JArray(events.map(le => {
       JObject(List(
         "date" -> JString(s"${le.event.date.date}.${le.event.date.month}.${le.event.date.year}"),

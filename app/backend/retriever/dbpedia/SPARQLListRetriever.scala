@@ -11,7 +11,7 @@ import org.json4s.native.JsonMethods._
 
 object SPARQLListRetriever {
 
-  def run: Seq[NewLocatedEvent] = {
+  def run: Seq[LocatedEvent] = {
     val raw = getRaw
 
     val json = parse(raw)
@@ -19,7 +19,7 @@ object SPARQLListRetriever {
     parseJson(json)
   }
 
-  private def parseJson(json: JValue): List[NewLocatedEvent] = {
+  private def parseJson(json: JValue): List[LocatedEvent] = {
 
     def getValue(obj: List[(String, JValue)]): String = {
       (for { JField("value", JString(value)) <- obj } yield value).head
@@ -28,10 +28,10 @@ object SPARQLListRetriever {
     val rNumericDate = "(-?\\d+)-(\\d+)-(\\d+)".r
     val rYearOnly =    "(-?\\d+{1,4})".r
 
-    def parseDate(s: String): NewDate = s match {
-      case rNumericDate(y, m, d)  => NewDate(d.toInt, m.toInt, y.toInt)
-      case rYearOnly(y)           => NewDate(year = y.toInt, precision = PreciseToYear)
-      case unparsed               => println(unparsed) ; NewDate(precision = NotPrecise)
+    def parseDate(s: String): Date = s match {
+      case rNumericDate(y, m, d)  => Date(d.toInt, m.toInt, y.toInt)
+      case rYearOnly(y)           => Date(year = y.toInt, precision = PreciseToYear)
+      case unparsed               => println(unparsed) ; Date(precision = NotPrecise)
     }
 
     (for {
@@ -45,8 +45,8 @@ object SPARQLListRetriever {
       JField("lat", JObject(lat)) <- eventContainer
       JField("desc", JObject(desc)) <- eventContainer
     } yield {
-      NewLocatedEvent(
-        NewEvent(
+      LocatedEvent(
+        Event(
           parseDate(getValue(date)),
           getValue(desc)),
         Location(
@@ -54,7 +54,7 @@ object SPARQLListRetriever {
           Coords(getValue(lat).toDouble, getValue(long).toDouble),
           "")
       )
-    }).asInstanceOf[List[NewLocatedEvent]]
+    }).asInstanceOf[List[LocatedEvent]]
   }
 
   private def getRaw: String = {
