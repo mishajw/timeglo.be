@@ -41,9 +41,7 @@ object DB {
        DROP TABLE IF EXISTS date_precision CASCADE;
        DROP TABLE IF EXISTS events CASCADE;
        DROP TABLE IF EXISTS locations CASCADE;
-       DROP TABLE IF EXISTS locationNames CASCADE;
-       DROP TABLE IF EXISTS eventLocations CASCADE;
-       DROP TABLE IF EXISTS wikiEventLocations CASCADE;
+       DROP TABLE IF EXISTS located_events CASCADE;
 
        CREATE TABLE date_precision (
          id              SERIAL PRIMARY KEY,
@@ -85,7 +83,7 @@ object DB {
       sql"""
          INSERT INTO events (occurs, precision, description) VALUES (
             ${toSqlDate(event.date)},
-            (SELECT id FROM date_precision WHERE type = ${event.date.precision}),
+            (SELECT id FROM date_precision WHERE type = ${event.date.precision.toString}),
             ${event.desc}
          )
        """.updateAndReturnGeneratedKey.apply()
@@ -123,8 +121,8 @@ object DB {
          SELECT E.description, L.name, L.latitude, L.longitude
          FROM located_events LE, events E, locations L, date_precision P
          WHERE
-          LE.event_id = E.id,
-          LE.location_id = L.id,
+          LE.event_id = E.id AND
+          LE.location_id = L.id AND
           E.precision = P.id
        """.map(resultsToLocatedEvent).list.apply()
   }
@@ -142,9 +140,9 @@ object DB {
         SELECT E.description, L.name, L.latitude, L.longitude
         FROM located_events LE, events E, locations L, date_precision P
         WHERE
-         LE.event_id = E.id,
-         LE.location_id = L.id,
-         E.precision = P.id,
+         LE.event_id = E.id AND
+         LE.location_id = L.id AND
+         E.precision = P.id AND
          $start < E.occurs AND E.occurs < $end AND
          (
             ${searchWords.isEmpty} OR

@@ -11,19 +11,15 @@ import org.json4s.native.JsonMethods._
 
 object SPARQLListRetriever {
 
-  def run: Seq[NewEvent] = {
+  def run: Seq[NewLocatedEvent] = {
     val raw = getRaw
 
     val json = parse(raw)
 
-    val parsed = parseJson(json)
-
-    println(parsed.mkString("\n"))
-
-    Seq()
+    parseJson(json)
   }
 
-  private def parseJson(json: JValue): List[List[String]] = {
+  private def parseJson(json: JValue): List[NewLocatedEvent] = {
 
     def getValue(obj: List[(String, JValue)]): String = {
       (for { JField("value", JString(value)) <- obj } yield value).head
@@ -58,7 +54,7 @@ object SPARQLListRetriever {
           Coords(getValue(lat).toDouble, getValue(long).toDouble),
           "")
       )
-    }).asInstanceOf[List[List[String]]]
+    }).asInstanceOf[List[NewLocatedEvent]]
   }
 
   private def getRaw: String = {

@@ -1,18 +1,17 @@
 package backend
 
 import backend.retriever.dbpedia.SPARQLListRetriever
+import backend.util.DB
 import play.api.Logger
 
 object BackendOrganiser {
   private val log = Logger(getClass)
 
-  def runAll(): Unit = {
-
-  }
-
   def main(args: Array[String]) {
-//    BackendOrganiser.runAll()
+    DB.resetTables(Seq())
+    val events = SPARQLListRetriever.run
+    events.foreach(DB.insertLocatedEvent)
 
-    SPARQLListRetriever.run
+    println(DB.getLocatedEvents.mkString("\n"))
   }
 }
