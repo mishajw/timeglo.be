@@ -30,7 +30,7 @@ object SPARQLListRetriever {
     }
 
     val rNumericDate = "(-?\\d+)-(\\d+)-(\\d+)".r
-    val rYearOnly =    "(\\d+{1,4})".r
+    val rYearOnly =    "(-?\\d+{1,4})".r
 
     def parseDate(s: String): NewDate = s match {
       case rNumericDate(y, m, d)  => NewDate(d.toInt, m.toInt, y.toInt)
