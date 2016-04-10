@@ -3,6 +3,7 @@ package backend.retriever.dbpedia
 import java.net.URLEncoder
 
 import backend._
+import play.api.Logger
 
 import scala.io.Source
 
@@ -10,6 +11,8 @@ import org.json4s._
 import org.json4s.native.JsonMethods._
 
 object SPARQLListRetriever {
+
+  private val log = Logger(getClass)
 
   def run: Seq[LocatedEvent] = {
     val raw = getRaw
@@ -31,7 +34,9 @@ object SPARQLListRetriever {
     def parseDate(s: String): Date = s match {
       case rNumericDate(y, m, d)  => Date(d.toInt, m.toInt, y.toInt)
       case rYearOnly(y)           => Date(year = y.toInt, precision = PreciseToYear)
-      case unparsed               => println(unparsed) ; Date(precision = NotPrecise)
+      case unparsed =>
+        log.warn(s"Couldn't parse as date: $unparsed")
+        Date(precision = NotPrecise)
     }
 
     (for {
@@ -58,8 +63,7 @@ object SPARQLListRetriever {
   }
 
   private def getRaw: String = {
-//    Source.fromURL(url(query)).mkString
-    Source.fromFile("largeresources/dbpedia.json").mkString
+    Source.fromURL(url(query)).mkString
   }
 
   private def url(query: String): String = {
