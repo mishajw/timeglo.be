@@ -136,7 +136,7 @@ object DB {
 
   def searchForEvent(start: java.sql.Date, end: java.sql.Date, searchWords: String): Seq[LocatedEvent] = {
     sql"""
-       |SELECT E.description, E.occurs, E.wiki_page, L.name, L.latitude, L.longitude, P.type AS precision
+        SELECT E.description, E.occurs, E.wiki_page, L.name, L.latitude, L.longitude, P.type AS precision
         FROM located_events LE, events E, locations L, date_precision P
         WHERE
          LE.event_id = E.id AND
