@@ -2,11 +2,14 @@
   * Created by misha on 27/12/15.
   */
 package object backend {
+  case class Event(date: Date, description: String, id: Option[Int] = None)
+  case class Date(date: Int = 1, month: Int = 1, year: Int = 1)
+
   case class Coords(lat: Double, long: Double)
   case class Location(name: String, coords: Coords, locationType: String)
 
-  case class Event(date: Date, description: String, id: Option[Int] = None)
-  case class Date(date: Int = 1, month: Int = 1, year: Int = 1)
+  case class NewEvent(date: Date, desc: String)
+  case class NewDate(date: Int = 1, month: Int = 1, year: Int = 1, precision: DatePrecision = PreciseToDate)
   case class LocatedEvent(event: Event, location: Location)
 
   sealed trait DatePrecision
