@@ -68,7 +68,7 @@ object SPARQLListRetriever {
 
   private def url(query: String): String = {
     s"http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=${
-      URLEncoder.encode(query)
+      URLEncoder.encode(query, "UTF-8")
     }&format=format=application%2Fsparql-results%2Bjson&CXML_redir_for_subjs=121&CXML_redir_for_hrefs=&timeout=30000&debug=on"
   }
 
