@@ -6,7 +6,7 @@ package object backend {
   case class SimpleLocation(name: String, coords: Coords, locationType: String)
 
   case class Event(date: Date, description: String, id: Option[Int] = None)
-  case class Date(date: Int, month: Int, year: Int)
+  case class Date(date: Int = 1, month: Int = 1, year: Int = 1)
   case class LocatedEvent(event: Event, location: SimpleLocation)
 
   sealed trait DatePrecision
