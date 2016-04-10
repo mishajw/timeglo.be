@@ -32,6 +32,7 @@ object SPARQLListRetriever {
 
     val rNumericDate = "(-?\\d+)-(\\d+)-(\\d+)".r
     val rYearOnly =    "(-?\\d{1,4})".r
+    val rCoord =       "(-?\\d+\\.\\d+)".r
 
     def parseDate(s: String): Date = s match {
       case rNumericDate(y, m, d)  => Date(d.toInt, m.toInt, y.toInt)
@@ -39,6 +40,15 @@ object SPARQLListRetriever {
       case unparsed =>
         log.warn(s"Couldn't parse as date: $unparsed")
         Date(precision = NotPrecise)
+    }
+
+    def parseCoords(sLat: String, sLong: String): Coords = {
+      (sLat, sLong) match {
+        case (rCoord(lat), rCoord(long)) => Coords(lat.toDouble, long.toDouble)
+        case unparsed =>
+          log.warn(s"Couldn't parse as coordinate: $unparsed")
+          Coords(0, 0)
+      }
     }
 
     (for {
@@ -60,7 +70,7 @@ object SPARQLListRetriever {
           getValue(desc)),
         Location(
           getValue(placeName),
-          Try(Coords(getValue(lat).toDouble, getValue(long).toDouble)).getOrElse(Coords(0, 0)),
+          parseCoords(getValue(lat), getValue(long)),
           "")
       )
     }).asInstanceOf[List[LocatedEvent]]
