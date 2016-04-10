@@ -155,22 +155,11 @@ object DB {
   private def resultsToLocatedEvent(r: WrappedResultSet): NewLocatedEvent =
     NewLocatedEvent(
       NewEvent(
-        makeDate(r.date("occurs"), r.string("precision")),
+        fromSqlDate(r.date("occurs"), r.string("precision")),
         r.string("description")),
       Location(
         r.string("name"),
         Coords(r.double("latitude"), r.double("longitude")), ""))
-
-  private def makeDate(date: java.sql.Date, s: String) = {
-    val precision = s match {
-      case "PreciseToYear" => PreciseToYear
-      case "PreciseToMonth" => PreciseToMonth
-      case "PreciseToDate" => PreciseToDate
-      case "NotPrecise" => NotPrecise
-    }
-
-    fromSqlDate(date, precision)
-  }
 
   private def toSqlDate(d: NewDate) = {
     val cal = Calendar.getInstance()
@@ -181,7 +170,14 @@ object DB {
     new java.sql.Date(cal.getTime.getTime)
   }
 
-  private def fromSqlDate(d: java.sql.Date, precision: DatePrecision): NewDate = {
+  private def fromSqlDate(d: java.sql.Date, precisionRaw: String): NewDate = {
+    val precision = precisionRaw match {
+      case "PreciseToYear" => PreciseToYear
+      case "PreciseToMonth" => PreciseToMonth
+      case "PreciseToDate" => PreciseToDate
+      case "NotPrecise" => NotPrecise
+    }
+
     val localDate: LocalDate = d.toLocalDate
 
     NewDate(localDate.getDayOfMonth, localDate.getMonthValue, {
