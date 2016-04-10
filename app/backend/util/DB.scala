@@ -13,9 +13,6 @@ import scala.io.{BufferedSource, Source}
   * Created by misha on 28/12/15.
   */
 object DB {
-  private val log = Logger(getClass)
-
-  private val sqlPath: String = "conf/resources/postgres"
 
   lazy implicit val session = {
     Class.forName("org.postgresql.Driver")
@@ -186,22 +183,5 @@ object DB {
       else
         localDate.getYear
     }, precision)
-  }
-
-  private def getLinesFromFile(file: BufferedSource) = file
-    .getLines().toList
-    .mkString("\n")
-    .split("\n\n").toList
-
-  private def getLineFromFileName(fileName: String): String = {
-    try {
-      val file = Source.fromFile(fileName)
-      val line = getLinesFromFile(file).head
-      file.close()
-      line
-    } catch {
-      case e: Throwable =>
-        println(s"Couldn't open file $fileName"); ""
-    }
   }
 }
