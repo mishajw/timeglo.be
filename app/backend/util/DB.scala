@@ -33,7 +33,7 @@ object DB {
     cal.getTime
   }
 
-  def resetTables(tables: Seq[String]) = {
+  def resetTables() = {
     sql"""
        DROP TABLE IF EXISTS date_precision CASCADE;
        DROP TABLE IF EXISTS events CASCADE;

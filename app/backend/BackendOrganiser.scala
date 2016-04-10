@@ -8,7 +8,7 @@ object BackendOrganiser {
   private val log = Logger(getClass)
 
   def main(args: Array[String]) {
-    DB.resetTables(Seq())
+    DB.resetTables()
     val events = SPARQLListRetriever.run
     events.foreach(DB.insertLocatedEvent)
 
