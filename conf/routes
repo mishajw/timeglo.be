@@ -4,8 +4,6 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET     /getEvents/:start/:end      controllers.Application.getEventsInDateRange(start, end)
-GET     /getEvents/:search          controllers.Application.getEventsByKeyword(search)
 GET     /getDateRange               controllers.Application.getDateRange
 GET     /search/:start/:end/$search<[A-Za-z0-9%]*>  controllers.Application.search(start, end, search)
 
