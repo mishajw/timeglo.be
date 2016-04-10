@@ -9,5 +9,11 @@ package object backend {
   case class Date(date: Int, month: Int, year: Int)
   case class LocatedEvent(event: Event, location: SimpleLocation)
 
+  sealed trait DatePrecision
+  case object PreciseToYear extends DatePrecision
+  case object PreciseToMonth extends DatePrecision
+  case object PreciseToDate extends DatePrecision
+  case object NotPrecise extends DatePrecision
+
   def strip(text: String) = text.toLowerCase().replaceAll("\\W", "")
 }

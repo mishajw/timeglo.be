@@ -18,8 +18,6 @@ object SPARQLListRetriever {
 
     val parsed = parseJson(json)
 
-    println(parsed.mkString("\n"))
-
     Seq()
   }
 
@@ -29,8 +27,17 @@ object SPARQLListRetriever {
       (for { JField("value", JString(value)) <- obj } yield value).head
     }
 
+    val rNumericDate = "(\\d+)-(\\d+)-(\\d+)".r
+    val rYearOnly =    "(\\d+{1,4})".r
+
+    def parseDate(s: String): (Date, DatePrecision) = s match {
+      case rNumericDate(y, m, d)  => (Date(d.toInt, m.toInt, y.toInt), PreciseToDate)
+      case rYearOnly(y)           => (Date(1, 1, y.toInt), PreciseToYear)
+      case _                      => (Date(1, 1, 1), NotPrecise)
+    }
+
     (for {
-      JObject(obj: List[(String, JsonAST.JValue)]) <- json
+      JObject(obj) <- json
       JField("results", JObject(results)) <- obj
       JField("bindings", JArray(bindings)) <- results
       JObject(eventContainer) <- bindings
@@ -42,7 +49,7 @@ object SPARQLListRetriever {
     } yield {
       LocatedEvent(
         Event(
-          Date(1, 1, 1),
+          parseDate(getValue(date))._1,
           getValue(desc)),
         SimpleLocation(
           getValue(placeName),
