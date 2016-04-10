@@ -118,7 +118,7 @@ object DB {
 
   def getLocatedEvents: Seq[NewLocatedEvent] = {
     sql"""
-         SELECT E.description, L.name, L.latitude, L.longitude
+         SELECT E.description, E.occurs, L.name, L.latitude, L.longitude, P.type AS precision
          FROM located_events LE, events E, locations L, date_precision P
          WHERE
           LE.event_id = E.id AND
@@ -137,7 +137,7 @@ object DB {
 
   def searchForEvent(start: java.sql.Date, end: java.sql.Date, searchWords: String): Seq[NewLocatedEvent] = {
     sql"""
-        SELECT E.description, L.name, L.latitude, L.longitude
+        SELECT E.description, E.occurs, L.name, L.latitude, L.longitude, P.type AS precision
         FROM located_events LE, events E, locations L, date_precision P
         WHERE
          LE.event_id = E.id AND
@@ -155,11 +155,22 @@ object DB {
   private def resultsToLocatedEvent(r: WrappedResultSet): NewLocatedEvent =
     NewLocatedEvent(
       NewEvent(
-        NewDate(precision = NotPrecise),
+        makeDate(r.date("occurs"), r.string("precision")),
         r.string("description")),
       Location(
         r.string("name"),
         Coords(r.double("latitude"), r.double("longitude")), ""))
+
+  private def makeDate(date: java.sql.Date, s: String) = {
+    val precision = s match {
+      case "PreciseToYear" => PreciseToYear
+      case "PreciseToMonth" => PreciseToMonth
+      case "PreciseToDate" => PreciseToDate
+      case "NotPrecise" => NotPrecise
+    }
+
+    fromSqlDate(date, precision)
+  }
 
   private def toSqlDate(d: NewDate) = {
     val cal = Calendar.getInstance()
@@ -170,7 +181,7 @@ object DB {
     new java.sql.Date(cal.getTime.getTime)
   }
 
-  private def fromSqlDate(d: java.sql.Date): NewDate = {
+  private def fromSqlDate(d: java.sql.Date, precision: DatePrecision): NewDate = {
     val localDate: LocalDate = d.toLocalDate
 
     NewDate(localDate.getDayOfMonth, localDate.getMonthValue, {
@@ -178,7 +189,7 @@ object DB {
         -localDate.getYear
       else
         localDate.getYear
-    })
+    }, precision)
   }
 
   private def getLinesFromFile(file: BufferedSource) = file
