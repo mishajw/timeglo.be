@@ -10,8 +10,15 @@ package object backend {
   case class Location(name: String, coords: Coords, locationType: String)
 
   case class NewEvent(date: NewDate, desc: String)
-  case class NewDate(date: Int = 1, month: Int = 1, year: Int = 1, precision: DatePrecision = PreciseToDate)
   case class NewLocatedEvent(event: NewEvent, location: Location)
+  case class NewDate(date: Int = 1, month: Int = 1, year: Int = 1, precision: DatePrecision = PreciseToDate) {
+    override def toString: String = precision match {
+      case PreciseToDate => s"NewDate($date/$month/$year)"
+      case PreciseToMonth => s"NewDate($month/$year)"
+      case PreciseToYear => s"NewDate($year)"
+      case NotPrecise => "NewDate(N/A)"
+    }
+  }
 
   sealed trait DatePrecision
   case object PreciseToYear extends DatePrecision
