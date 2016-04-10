@@ -8,10 +8,13 @@ object BackendOrganiser {
   private val log = Logger(getClass)
 
   def main(args: Array[String]) {
+    log.info("Resetting database tables")
     DB.resetTables()
-    val events = SPARQLListRetriever.run
-    events.foreach(DB.insertLocatedEvent)
 
-    println(DB.getLocatedEvents.mkString("\n"))
+    log.info("Getting events from DBpedia using SPARQL")
+    val events = SPARQLListRetriever.run
+
+    log.info("Inserting events into the database")
+    events.foreach(DB.insertLocatedEvent)
   }
 }
