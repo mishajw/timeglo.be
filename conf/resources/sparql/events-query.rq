@@ -1,5 +1,6 @@
 SELECT
   ?event,
+  SAMPLE(?wiki_page) AS ?wiki_page,
   SAMPLE(?date) AS ?date,
   SAMPLE(?place) AS ?place,
   SAMPLE(?place_name) AS ?place_name,
@@ -13,6 +14,9 @@ WHERE {
   { ?event a yago:Event100029378 } UNION
   { ?event a schema:Event } UNION
   { ?event a umbel-rc:Event }
+
+  # Get the wikipedia page
+  ?event prov:wasDerivedFrom ?wiki_page .
 
   # Get the abstract
   ?event dbo:abstract ?desc .

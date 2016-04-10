@@ -10,6 +10,8 @@ import scala.io.Source
 import org.json4s._
 import org.json4s.native.JsonMethods._
 
+import scala.util.Try
+
 object SPARQLListRetriever {
 
   private val log = Logger(getClass)
@@ -29,7 +31,7 @@ object SPARQLListRetriever {
     }
 
     val rNumericDate = "(-?\\d+)-(\\d+)-(\\d+)".r
-    val rYearOnly =    "(-?\\d+{1,4})".r
+    val rYearOnly =    "(-?\\d{1,4})".r
 
     def parseDate(s: String): Date = s match {
       case rNumericDate(y, m, d)  => Date(d.toInt, m.toInt, y.toInt)
@@ -44,6 +46,7 @@ object SPARQLListRetriever {
       JField("results", JObject(results)) <- obj
       JField("bindings", JArray(bindings)) <- results
       JObject(eventContainer) <- bindings
+      JField("wiki_page", JObject(wikiPage)) <- eventContainer
       JField("date", JObject(date)) <- eventContainer
       JField("place_name", JObject(placeName)) <- eventContainer
       JField("long", JObject(long)) <- eventContainer
@@ -53,17 +56,19 @@ object SPARQLListRetriever {
       LocatedEvent(
         Event(
           parseDate(getValue(date)),
+          getValue(wikiPage),
           getValue(desc)),
         Location(
           getValue(placeName),
-          Coords(getValue(lat).toDouble, getValue(long).toDouble),
+          Try(Coords(getValue(lat).toDouble, getValue(long).toDouble)).getOrElse(Coords(0, 0)),
           "")
       )
     }).asInstanceOf[List[LocatedEvent]]
   }
 
   private def getRaw: String = {
-    Source.fromURL(url(query)).mkString
+//    Source.fromURL(url(query)).mkString
+    Source.fromFile("largeresources/dbpedia.json").mkString
   }
 
   private def url(query: String): String = {

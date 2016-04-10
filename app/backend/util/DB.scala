@@ -53,6 +53,7 @@ object DB {
        CREATE TABLE events (
          id              SERIAL PRIMARY KEY,
          occurs          DATE,
+         wiki_page       TEXT,
          precision       INT REFERENCES date_precision,
          description     TEXT
        );
@@ -78,8 +79,9 @@ object DB {
 
   def insertEvent(event: Event): Long = {
       sql"""
-         INSERT INTO events (occurs, precision, description) VALUES (
+         INSERT INTO events (occurs, wiki_page, precision, description) VALUES (
             ${toSqlDate(event.date)},
+            ${event.wikiPage},
             (SELECT id FROM date_precision WHERE type = ${event.date.precision.toString}),
             ${event.desc}
          )
@@ -115,7 +117,7 @@ object DB {
 
   def getLocatedEvents: Seq[LocatedEvent] = {
     sql"""
-         SELECT E.description, E.occurs, L.name, L.latitude, L.longitude, P.type AS precision
+         SELECT E.description, E.occurs, E.wiki_page, L.name, L.latitude, L.longitude, P.type AS precision
          FROM located_events LE, events E, locations L, date_precision P
          WHERE
           LE.event_id = E.id AND
@@ -134,7 +136,7 @@ object DB {
 
   def searchForEvent(start: java.sql.Date, end: java.sql.Date, searchWords: String): Seq[LocatedEvent] = {
     sql"""
-        SELECT E.description, E.occurs, L.name, L.latitude, L.longitude, P.type AS precision
+       |SELECT E.description, E.occurs, E.wiki_page, L.name, L.latitude, L.longitude, P.type AS precision
         FROM located_events LE, events E, locations L, date_precision P
         WHERE
          LE.event_id = E.id AND
@@ -153,6 +155,7 @@ object DB {
     LocatedEvent(
       Event(
         fromSqlDate(r.date("occurs"), r.string("precision")),
+        r.string("wiki_page"),
         r.string("description")),
       Location(
         r.string("name"),

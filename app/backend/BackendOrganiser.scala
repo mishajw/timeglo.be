@@ -16,5 +16,7 @@ object BackendOrganiser {
 
     log.info("Inserting events into the database")
     events.foreach(DB.insertLocatedEvent)
+
+    log.info(s"Found ${DB.getLocatedEvents.size} located events in the database")
   }
 }
