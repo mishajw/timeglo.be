@@ -1,0 +1,13 @@
+select ?date, ?place_name, ?long, ?lat, ?event, ?abs
+where {
+  ?event a dbo:Event .
+  ?event dbo:abstract ?abs .
+  ?event dbo:date ?date .
+
+  ?event dbo:place ?place .
+  ?place foaf:name ?place_name .
+  OPTIONAL {?place dbp:longm ?long} .
+  OPTIONAL {?place dbp:latm ?lat} .
+  FILTER (langMatches(lang(?abs), "EN"))
+}
+LIMIT 100
