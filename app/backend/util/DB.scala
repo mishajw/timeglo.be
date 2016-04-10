@@ -169,7 +169,7 @@ object DB {
         Event(
           fromSqlDate(results.getDate("occurs")),
           results.getString("description")),
-        SimpleLocation(
+        Location(
           results.getString("name"),
           Coords(results.getFloat("latitude"), results.getFloat("longitude")),
           results.getString("type")
@@ -192,7 +192,7 @@ object DB {
         Event(
           fromSqlDate(results.getDate("occurs")),
           results.getString("description")),
-        SimpleLocation(
+        Location(
           results.getString("name"),
           Coords(results.getFloat("latitude"), results.getFloat("longitude")),
           results.getString("type")
@@ -218,7 +218,7 @@ object DB {
         Event(
           fromSqlDate(results.getDate("occurs")),
           results.getString("description")),
-        SimpleLocation(
+        Location(
           results.getString("name"),
           Coords(results.getFloat("latitude"), results.getFloat("longitude")),
           results.getString("type")

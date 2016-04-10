@@ -51,7 +51,7 @@ object SPARQLListRetriever {
         Event(
           parseDate(getValue(date))._1,
           getValue(desc)),
-        SimpleLocation(
+        Location(
           getValue(placeName),
           Coords(getValue(lat).toDouble, getValue(long).toDouble),
           "")
