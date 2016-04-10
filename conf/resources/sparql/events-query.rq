@@ -29,12 +29,11 @@ WHERE {
   ?event dbo:place ?place .
   OPTIONAL { ?place foaf:name ?place_name } .
 
-  { ?place dbp:longm ?long } UNION { ?place geo:long ?long } .
-  { ?place dbp:latm  ?lat  } UNION { ?place geo:lat  ?lat  } .
+  ?place geo:long ?long .
+  ?place geo:lat  ?lat  .
 
   # Only get English elements
   FILTER (langMatches(lang(?desc), "EN"))
 }
 GROUP BY ?event
 ORDER BY ?event
-LIMIT 100
