@@ -1,13 +1,35 @@
-select ?date, ?place_name, ?long, ?lat, ?event, ?abs
-where {
-  ?event a dbo:Event .
-  ?event dbo:abstract ?abs .
-  ?event dbo:date ?date .
+SELECT
+  ?event,
+  SAMPLE(?date) AS ?date,
+  SAMPLE(?place) AS ?place,
+  SAMPLE(?place_name) AS ?place_name,
+  SAMPLE(?long) AS ?long,
+  SAMPLE(?lat) AS ?lat,
+  SAMPLE(?desc) AS ?desc
+WHERE {
+  # Event can be of many types
+  { ?event a dbo:Event } UNION
+  { ?event a dul:Event } UNION
+  { ?event a yago:Event100029378 } UNION
+  { ?event a schema:Event } UNION
+  { ?event a umbel-rc:Event }
 
+  # Get the abstract
+  ?event dbo:abstract ?desc .
+
+  # Get the date
+  { ?event dbo:date ?date . } UNION
+  { ?event dbp:date ?date . }
+
+  # Get the location
   ?event dbo:place ?place .
-  ?place foaf:name ?place_name .
-  OPTIONAL {?place dbp:longm ?long} .
-  OPTIONAL {?place dbp:latm ?lat} .
-  FILTER (langMatches(lang(?abs), "EN"))
+  OPTIONAL { ?place foaf:name ?place_name } .
+
+  { ?place dbp:longm ?long } UNION { ?place geo:long ?long } .
+  { ?place dbp:latm  ?lat  } UNION { ?place geo:lat  ?lat  } .
+
+  # Only get English elements
+  FILTER (langMatches(lang(?desc), "EN"))
 }
-LIMIT 100
+GROUP BY ?event
+ORDER BY ?event
