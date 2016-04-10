@@ -2,7 +2,7 @@ package controllers
 
 import java.util.Calendar
 
-import backend.LocatedEvent
+import backend.NewLocatedEvent
 import backend.util.DB
 import org.json4s._
 import org.json4s.jackson.JsonMethods
@@ -46,39 +46,10 @@ class Application extends Controller {
     }
   }
 
-  def getEventsInDateRange(startString: String, endString: String) = Action {
-    log.debug(s"Asked for events from $startString to $endString")
-
-    try {
-      val startDate = new java.sql.Date(dateFormat.parse(startString).getTime)
-      val endDate = new java.sql.Date(dateFormat.parse(endString).getTime)
-
-      log.debug(s"Parsed dates as $startDate and $endDate")
-
-      if (startDate.before(endDate)) {
-        Ok(
-          stringifyJson(
-            eventsToJson(
-              DB.getWikiLocatedEvents
-              (startDate, endDate))))
-      } else {
-        errorJson("Start date must be before end date")
-      }
-    } catch {
-      case e: Throwable =>
-        log.warn("Got error on parsing user input", e)
-        errorJson(s"Not a valid format for a date. Must be in format ${dateFormatString.toUpperCase()}")
-    }
-  }
-
-  def getEventsByKeyword(keywords: String) = Action {
-    Ok(stringifyJson(eventsToJson(DB.keywordSearch(keywords))))
-  }
-
   def getDateRange = Action {
     log.debug("Asked for date range")
 
-    DB.getDateRange match {
+    DB.dateRange match {
       case Some(tup) =>
         val (start, end) = tup
 
@@ -114,11 +85,11 @@ class Application extends Controller {
     }
   }
 
-  private def eventsToJson(events: Seq[LocatedEvent]) = {
+  private def eventsToJson(events: Seq[NewLocatedEvent]) = {
     JArray(events.map(le => {
       JObject(List(
         "date" -> JString(s"${le.event.date.date}.${le.event.date.month}.${le.event.date.year}"),
-        "desc" -> JString(le.event.description),
+        "desc" -> JString(le.event.desc),
         "location" -> JObject(List(
           "name" -> JString(le.location.name.replace("_", " ")),
           "lat" -> JDouble(le.location.coords.lat),

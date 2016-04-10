@@ -33,3 +33,4 @@ WHERE {
 }
 GROUP BY ?event
 ORDER BY ?event
+LIMIT 100

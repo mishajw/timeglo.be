@@ -35,7 +35,7 @@ object SPARQLListRetriever {
     def parseDate(s: String): NewDate = s match {
       case rNumericDate(y, m, d)  => NewDate(d.toInt, m.toInt, y.toInt)
       case rYearOnly(y)           => NewDate(year = y.toInt, precision = PreciseToYear)
-      case _                      => NewDate(precision = NotPrecise)
+      case unparsed               => println(unparsed) ; NewDate(precision = NotPrecise)
     }
 
     (for {
