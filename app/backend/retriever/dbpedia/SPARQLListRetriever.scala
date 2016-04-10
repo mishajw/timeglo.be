@@ -18,6 +18,8 @@ object SPARQLListRetriever {
 
     val parsed = parseJson(json)
 
+    println(parsed.mkString("\n"))
+
     Seq()
   }
 
@@ -27,7 +29,7 @@ object SPARQLListRetriever {
       (for { JField("value", JString(value)) <- obj } yield value).head
     }
 
-    val rNumericDate = "(\\d+)-(\\d+)-(\\d+)".r
+    val rNumericDate = "(-?\\d+)-(\\d+)-(\\d+)".r
     val rYearOnly =    "(\\d+{1,4})".r
 
     def parseDate(s: String): NewDate = s match {
