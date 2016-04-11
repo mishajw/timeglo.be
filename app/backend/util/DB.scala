@@ -142,6 +142,7 @@ object DB {
          LE.event_id = E.id AND
          LE.location_id = L.id AND
          E.precision = P.id AND
+         P.type != 'NotPrecise' AND
          $start < E.occurs AND E.occurs < $end AND
          (
             ${searchWords.isEmpty} OR
