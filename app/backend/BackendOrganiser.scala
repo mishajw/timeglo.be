@@ -1,5 +1,6 @@
 package backend
 
+import backend.parser.{LinkLocationExtractor, APIEventExtractor}
 import backend.retriever.dbpedia.SPARQLListRetriever
 import backend.util.DB
 import play.api.Logger
@@ -12,13 +13,13 @@ object BackendOrganiser {
     DB.resetTables()
 
     log.info("Running sparql")
-    runSparql
+    runSparql()
 
     log.info("Running date retriever")
-    runDateRetriever
+    runDateRetriever()
   }
 
-  private def runSparql = {
+  private def runSparql() = {
     log.info("Getting events from DBpedia using SPARQL")
     val events = SPARQLListRetriever.run
 
@@ -28,7 +29,11 @@ object BackendOrganiser {
     log.info(s"Found ${DB.getLocatedEvents.size} located events in the database")
   }
 
-  private def runDateRetriever = {
+  private def runDateRetriever() = {
+    log.info("Getting events from Wikipedia API")
+    val events = APIEventExtractor.run
 
+    log.info("Pairing with locations")
+    val eventLocations = LinkLocationExtractor.run(events)
   }
 }
