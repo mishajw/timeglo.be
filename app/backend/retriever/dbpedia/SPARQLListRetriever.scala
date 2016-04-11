@@ -17,11 +17,11 @@ object SPARQLListRetriever {
   private val log = Logger(getClass)
 
   def run: Seq[LocatedEvent] = {
-    val raw = getRaw
-
-    val json = parse(raw)
-
-    parseJson(json)
+    queries
+      .map(url)
+      .map(Source.fromURL(_).mkString)
+      .map(parse(_))
+      .flatMap(parseJson)
   }
 
   private def parseJson(json: JValue): List[LocatedEvent] = {
@@ -63,10 +63,12 @@ object SPARQLListRetriever {
       JField("lat", JObject(lat)) <- eventContainer
       JField("desc", JObject(desc)) <- eventContainer
     } yield {
+      println(s"${getValue(date)} => ${parseDate(getValue(date))}")
+
       LocatedEvent(
         Event(
           parseDate(getValue(date)),
-          getValue(wikiPage),
+          Some(getValue(wikiPage)),
           getValue(desc)),
         Location(
           getValue(placeName),
@@ -76,15 +78,19 @@ object SPARQLListRetriever {
     }).asInstanceOf[List[LocatedEvent]]
   }
 
-  private def getRaw: String = {
-//    Source.fromURL(url(query)).mkString
-    Source.fromFile("largeresources/dbpedia.json").mkString
-  }
-
   private def url(query: String): String = {
     s"http://dbpedia.org/sparql?default-graph-uri=http%3A%2F%2Fdbpedia.org&query=${
       URLEncoder.encode(query, "UTF-8")
     }&format=format=application%2Fsparql-results%2Bjson&CXML_redir_for_subjs=121&CXML_redir_for_hrefs=&timeout=30000&debug=on"
+  }
+
+  private def queries: Seq[String] = {
+    val max = 1200
+    val increment = Math.min(max / 2, 800)
+    val plainQuery = query
+
+    (0 until max by increment)
+      .map(i => s"$plainQuery LIMIT $increment OFFSET $i")
   }
 
   private def query = {
