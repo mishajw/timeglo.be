@@ -11,6 +11,14 @@ object BackendOrganiser {
     log.info("Resetting database tables")
     DB.resetTables()
 
+    log.info("Running sparql")
+    runSparql
+
+    log.info("Running date retriever")
+    runDateRetriever
+  }
+
+  private def runSparql = {
     log.info("Getting events from DBpedia using SPARQL")
     val events = SPARQLListRetriever.run
 
@@ -18,5 +26,9 @@ object BackendOrganiser {
     events.foreach(DB.insertLocatedEvent)
 
     log.info(s"Found ${DB.getLocatedEvents.size} located events in the database")
+  }
+
+  private def runDateRetriever = {
+
   }
 }
