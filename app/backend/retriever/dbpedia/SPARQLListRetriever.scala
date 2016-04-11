@@ -85,8 +85,8 @@ object SPARQLListRetriever {
   }
 
   private def queries: Seq[String] = {
-    val max = 1200
-    val increment = Math.min(max / 2, 800)
+    val max = 12000
+    val increment = Math.min(max / 2, 8000)
     val plainQuery = query
 
     (0 until max by increment)
