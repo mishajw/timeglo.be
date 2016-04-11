@@ -38,7 +38,8 @@ object DB {
        DROP TABLE IF EXISTS date_precision CASCADE;
        DROP TABLE IF EXISTS events CASCADE;
        DROP TABLE IF EXISTS locations CASCADE;
-       DROP TABLE IF EXISTS located_events CASCADE;
+       DROP TABLE IF EXISTS located_events_db CASCADE;
+       DROP TABLE IF EXISTS located_events_wiki CASCADE;
 
        CREATE TABLE date_precision (
          id              SERIAL PRIMARY KEY,
@@ -65,11 +66,18 @@ object DB {
          longitude       REAL
        );
 
-       CREATE TABLE located_events (
+       CREATE TABLE located_events_db (
          event_id        INT REFERENCES events,
          location_id     INT REFERENCES locations,
          PRIMARY KEY (event_id, location_id)
        );
+
+       CREATE TABLE located_events_wiki (
+         event_id        INT REFERENCES events,
+         location_id     INT REFERENCES page,
+         PRIMARY KEY (event_id, location_id)
+       );
+       
       """.update.apply()
   }
 
@@ -110,15 +118,26 @@ object DB {
     val locationId = insertLocation(le.location)
 
     sql"""
-         INSERT INTO located_events (event_id, location_id)
+         INSERT INTO located_events_db (event_id, location_id)
          VALUES ($eventId, $locationId)
        """.update.apply()
+  }
+
+  def insertEventWithLocationIds(event: Event, locationIds: Seq[Long]): Long = {
+    val eventId = insertEvent(event)
+    
+    sql"""
+         INSERT INTO located_events_wiki (event_id, location_id)
+         VALUES (?, ?)
+       """.batch(locationIds.map(Seq(eventId, _))).apply()
+
+    eventId
   }
 
   def getLocatedEvents: Seq[LocatedEvent] = {
     sql"""
          SELECT E.description, E.occurs, E.wiki_page, L.name, L.latitude, L.longitude, P.type AS precision
-         FROM located_events LE, events E, locations L, date_precision P
+         FROM located_events_db LE, events E, locations L, date_precision P
          WHERE
           LE.event_id = E.id AND
           LE.location_id = L.id AND
@@ -139,7 +158,7 @@ object DB {
   def searchForEvent(start: java.sql.Date, end: java.sql.Date, searchWords: String): Seq[LocatedEvent] = {
     sql"""
         SELECT E.description, E.occurs, E.wiki_page, L.name, L.latitude, L.longitude, P.type AS precision
-        FROM located_events LE, events E, locations L, date_precision P
+        FROM located_events_db LE, events E, locations L, date_precision P
         WHERE
          LE.event_id = E.id AND
          LE.location_id = L.id AND
