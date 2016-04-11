@@ -126,6 +126,8 @@ object DB {
        """.map(resultsToLocatedEvent).list.apply()
   }
 
+  def getLocationForLink(link: String): Option[Long] = ???
+
   def performIndexing() = {
     sql"""
        CREATE INDEX occurs_idx     ON events           (occurs);
@@ -156,7 +158,7 @@ object DB {
     LocatedEvent(
       Event(
         fromSqlDate(r.date("occurs"), r.string("precision")),
-        r.string("wiki_page"),
+        Some(r.string("wiki_page")),
         r.string("description")),
       Location(
         r.string("name"),
