@@ -200,7 +200,7 @@ object DB {
     LocatedEvent(
       Event(
         fromSqlDate(r.date("occurs"), r.string("precision")),
-        Some(r.string("wiki_page")),
+        r.stringOpt("wiki_page"),
         r.string("description")),
       Location(
         r.string("name"),
