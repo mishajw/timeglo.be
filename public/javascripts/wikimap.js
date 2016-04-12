@@ -363,7 +363,7 @@ function Graph() {
                         var amount = d.geometry.coordinates[0][2].events.length;
                         var amountScale = (amount - min) / (max - min);
                         var unscaledSize = ((amountScale) * (globeMaxPointSize - globeMinPointSize)) + globeMinPointSize;
-                        return unscaledSize * parseFloat(globeZoom) * (globeSize / 400);
+                        return unscaledSize * Math.sqrt(parseFloat(globeZoom) * (globeSize / 400));
                     } catch (err) {
                         // Not a point
                         return 1;
