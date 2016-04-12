@@ -63,8 +63,6 @@ object SPARQLListRetriever {
       JField("lat", JObject(lat)) <- eventContainer
       JField("desc", JObject(desc)) <- eventContainer
     } yield {
-      println(s"${getValue(date)} => ${parseDate(getValue(date))}")
-
       LocatedEvent(
         Event(
           parseDate(getValue(date)),
