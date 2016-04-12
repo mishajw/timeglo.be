@@ -9,6 +9,9 @@ object BackendOrganiser {
   private val log = Logger(getClass)
 
   def main(args: Array[String]) {
+    log.info("Resetting database")
+    DB.resetTables()
+
     log.info("Running sparql")
     runSparql()
 
