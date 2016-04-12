@@ -9,14 +9,13 @@ object BackendOrganiser {
   private val log = Logger(getClass)
 
   def main(args: Array[String]) {
-    log.info("Resetting database tables")
-    DB.resetTables()
-
     log.info("Running sparql")
     runSparql()
 
     log.info("Running date retriever")
     runDateRetriever()
+
+    log.info("Done")
   }
 
   private def runSparql() = {
@@ -35,5 +34,9 @@ object BackendOrganiser {
 
     log.info("Pairing with locations")
     val eventLocations = LinkLocationExtractor.run(events)
+
+    log.info("Inserting events into the database")
+    eventLocations map
+      { case (e, ids) => DB.insertEventWithLocationIds(e, ids) }
   }
 }
