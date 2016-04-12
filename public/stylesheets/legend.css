@@ -32,6 +32,17 @@
     text-align: left;
 }
 
-#legend-symbol-color > i {
-    color: rgb(255, 127, 14);
+#legend-symbol-color > div {
+    width: 18px;
+    height: 18px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    border: 1px solid #333;
+
+    background: red; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(left, red, yellow, green); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, red, yellow, green); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, red, yellow, green); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(left,   red, yellow, green); /* Standard syntax */
 }
