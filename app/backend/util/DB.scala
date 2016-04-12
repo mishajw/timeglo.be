@@ -178,6 +178,21 @@ object DB {
             regexp_replace(lower(E.description), '[^A-Za-z0-9 ]', '', 'g') LIKE
               '%' || regexp_replace(lower($searchWords), '[^A-Za-z0-9 ]', '', 'g') || '%'
          )
+       """.map(resultsToLocatedEvent).list.apply() ++
+      sql"""
+        SELECT E.description, E.occurs, E.wiki_page, L.name, L.gt_lat AS latitude, L.gt_lon AS longitude, P.type AS precision
+        FROM located_events_wiki LE, events E, geo_tags L, date_precision P
+        WHERE
+         LE.event_id = E.id AND
+         LE.location_id = L.gt_id AND
+         E.precision = P.id AND
+         P.type != 'NotPrecise' AND
+         $start < E.occurs AND E.occurs < $end AND
+         (
+            ${searchWords.isEmpty} OR
+            regexp_replace(lower(E.description), '[^A-Za-z0-9 ]', '', 'g') LIKE
+              '%' || regexp_replace(lower($searchWords), '[^A-Za-z0-9 ]', '', 'g') || '%'
+         )
        """.map(resultsToLocatedEvent).list.apply()
   }
 
