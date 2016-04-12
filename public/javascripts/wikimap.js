@@ -27,6 +27,9 @@ function Graph() {
     var globeMaxPointSize = 50;
     var globeMinPointSize = 5;
 
+    var maxTimestamp;
+    var minTimestamp;
+
     var projection = d3.geo.orthographic()
         .scale(globeZoom)
         .translate([width * 0.65, height / 2])
@@ -318,6 +321,15 @@ function Graph() {
         // Get the max amount of events
         globeMaxEvents = groupedEventsList[0].length;
 
+        // Get the timestamp ranges
+        minTimestamp = getAverageTimestamp(groupedEventsList[0]);
+        maxTimestamp = getAverageTimestamp(groupedEventsList[0]);
+        groupedEventsList.forEach(function(es) {
+            var timestamp = getAverageTimestamp(es);
+            if (minTimestamp > timestamp) minTimestamp = timestamp;
+            if (maxTimestamp < timestamp) maxTimestamp = timestamp;
+        });
+
         for (var i = 0; i < groupedEventsList.length; i++) {
             var group = groupedEventsList[i];
 
@@ -339,8 +351,9 @@ function Graph() {
                 .attr("class", "points")
                 .attr("id", eventObject.pointID)
                 .attr("fill", function(eo) {
-                    var type = getLocationForEvents(eo.geometry.coordinates[0][2]).type;
-                    return colors(type);
+                    var timestamp = getAverageTimestamp(eo.geometry.coordinates[0][2].events);
+                    var colour = ((timestamp - minTimestamp) / (maxTimestamp - minTimestamp)) * 255;
+                    return d3.rgb(colour, 0, 0);
                 })
                 .attr("stroke", "white")
                 .attr("opacity", 0.9)
@@ -535,6 +548,12 @@ function Graph() {
 
     function isMobile() {
         return $(window).width() < 850;
+    }
+
+    function getAverageTimestamp(es) {
+        var total = 0;
+        es.forEach(function(e) { total += e.date.getTime(); });
+        return total / es.length;
     }
 
     updateTransformations();
