@@ -129,11 +129,18 @@ object DB {
     log.debug(s"Inserting location IDs $locationIds for event $event")
 
     val eventId = insertEvent(event)
-    
-    sql"""
-         INSERT INTO located_events_wiki (event_id, location_id)
-         VALUES (?, ?)
-       """.batch(locationIds.map(Seq(eventId, _)): _*).apply()
+
+    for (id <- locationIds) {
+      try {
+        sql"""
+           INSERT INTO located_events_wiki (event_id, location_id)
+           VALUES ($eventId, $id)
+         """.update.apply()
+      } catch {
+        case e: Throwable =>
+          log.error(s"Got an error with event id $eventId and location id $id", e)
+      }
+    }
 
     eventId
   }
@@ -233,7 +240,7 @@ object DB {
 
     val localDate: LocalDate = d.toLocalDate
 
-    Date(localDate.getDayOfMonth, localDate.getMonthValue + 1, {
+    Date(localDate.getDayOfMonth, localDate.getMonthValue, {
       if (d.before(jesusWasBorn))
         -localDate.getYear
       else
