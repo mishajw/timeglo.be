@@ -57,7 +57,7 @@ object DB {
          id              SERIAL PRIMARY KEY,
          occurs          DATE,
          wiki_page       TEXT,
-         precision       INT REFERENCES date_precision,
+         precision       SERIAL REFERENCES date_precision,
          description     TEXT
        );
 
@@ -69,14 +69,14 @@ object DB {
        );
 
        CREATE TABLE located_events_db (
-         event_id        INT REFERENCES events,
-         location_id     INT REFERENCES locations,
+         event_id        SERIAL REFERENCES events,
+         location_id     SERIAL REFERENCES locations,
          PRIMARY KEY (event_id, location_id)
        );
 
        CREATE TABLE located_events_wiki (
-         event_id        INT REFERENCES events,
-         location_id     INT REFERENCES page,
+         event_id        SERIAL REFERENCES events,
+         location_id     SERIAL REFERENCES page,
          PRIMARY KEY (event_id, location_id)
        );
        
@@ -151,12 +151,12 @@ object DB {
 
   def getLocationForLink(link: String): Option[Long] = {
     sql"""
-         SELECT G.gt_id AS id
+         SELECT P.page_id AS id
          FROM page P, geo_tags G
          WHERE
            P.page_title = $link AND
            P.page_id = G.gt_page_id
-       """.map(_.long("id")).single.apply()
+       """.map(_.long("id")).list.apply().headOption
   }
 
   def performIndexing() = {
@@ -187,13 +187,14 @@ object DB {
          )
        """.map(resultsToLocatedEvent).list.apply() ++
       sql"""
-        SELECT E.description, E.occurs, E.wiki_page, L.name, L.gt_lat AS latitude, L.gt_lon AS longitude, P.type AS precision
-        FROM located_events_wiki LE, events E, geo_tags L, date_precision P
+        SELECT E.description, E.occurs, E.wiki_page, P.page_title AS name, L.gt_lat AS latitude, L.gt_lon AS longitude, PR.type AS precision
+        FROM located_events_wiki LE, events E, geo_tags L, page P, date_precision PR
         WHERE
          LE.event_id = E.id AND
-         LE.location_id = L.gt_id AND
-         E.precision = P.id AND
-         P.type != 'NotPrecise' AND
+         LE.location_id = P.page_id AND
+         E.precision = PR.id AND
+         P.page_id = L.gt_page_id AND
+         PR.type != 'NotPrecise' AND
          $start < E.occurs AND E.occurs < $end AND
          (
             ${searchWords.isEmpty} OR
