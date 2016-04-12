@@ -89,6 +89,7 @@ class Application extends Controller {
     JArray(events.map(le => {
       JObject(List(
         "date" -> JString(s"${le.event.date.date}.${le.event.date.month}.${le.event.date.year}"),
+        "datePrecision" -> JString(le.event.date.precision.toString),
         "desc" -> JString(le.event.desc),
         "wikiPage" -> JString(le.event.wikiPage.getOrElse("")),
         "location" -> JObject(List(

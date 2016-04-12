@@ -441,7 +441,7 @@ function Graph() {
 
             fullText +=
                 "<div class='event-date'>" +
-                    formatDate(e.date) +
+                    formatDate(e.date, e.datePrecision) +
                 "</div>";
 
             fullText +=
@@ -504,8 +504,21 @@ function Graph() {
         });
     }
 
-    function formatDate(d) {
-        return d.getDate() + "/" + (d.getMonth() + 1) + "/" + (d.getFullYear() > 0 ? d.getFullYear() : -d.getFullYear() + " BC");
+    function formatDate(date, precision) {
+        var d = date.getDate();
+        var m = date.getMonth() + 1;
+        var y = date.getFullYear() > 0 ? date.getFullYear() : -date.getFullYear() + " BC";
+
+        switch (precision) {
+            case "PreciseToDate":
+                return d + "/" + m + "/" + y;
+            case "PreciseToMonth":
+                return m + "/" + y;
+            case "PreciseToYear":
+                return y;
+            case "NotPrecise":
+                return "N/A";
+        }
     }
 
     function getLocationForEvents(eo) {
