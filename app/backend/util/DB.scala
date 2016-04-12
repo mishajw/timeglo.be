@@ -84,7 +84,13 @@ object DB {
   }
 
   def dateRange: Option[(java.sql.Date, java.sql.Date)] = {
-    ???
+    sql"""
+         SELECT
+           MAX(occurs) AS max_date,
+           MIN(occurs) AS min_date
+         FROM events;
+       """.map(r => (r.date("min_date"), r.date("max_date")))
+          .single.apply()
   }
 
   def insertEvent(event: Event): Long = {
