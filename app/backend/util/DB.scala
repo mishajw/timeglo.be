@@ -14,6 +14,8 @@ import scala.io.{BufferedSource, Source}
   */
 object DB {
 
+  private val log = Logger(getClass)
+
   lazy implicit val session = {
     Class.forName("org.postgresql.Driver")
     ConnectionPool.singleton("jdbc:postgresql://localhost/wikimap", "postgres", "postgres")
@@ -124,12 +126,14 @@ object DB {
   }
 
   def insertEventWithLocationIds(event: Event, locationIds: Seq[Long]): Long = {
+    log.debug(s"Inserting location IDs $locationIds for event $event")
+
     val eventId = insertEvent(event)
     
     sql"""
          INSERT INTO located_events_wiki (event_id, location_id)
          VALUES (?, ?)
-       """.batch(locationIds.map(Seq(eventId, _))).apply()
+       """.batch(locationIds.map(Seq(eventId, _)): _*).apply()
 
     eventId
   }
@@ -157,9 +161,12 @@ object DB {
 
   def performIndexing() = {
     sql"""
-       CREATE INDEX occurs_idx     ON events           (occurs);
-       CREATE INDEX el_locid_idx   ON event_locations   (location_id);
-       CREATE INDEX el_evid_idx    ON event_locations   (event_id);
+       CREATE INDEX IF NOT EXISTS occurs_idx     ON events                (occurs);
+       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_db     (location_id);
+       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_db     (event_id);
+       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_wiki   (location_id);
+       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_wiki   (event_id);
+       CREATE INDEX IF NOT EXISTS page_title_idx ON page                  (page_title);
        """.update.apply()
   }
 
