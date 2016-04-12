@@ -209,8 +209,8 @@ object DB {
   private def toSqlDate(d: Date) = {
     val cal = Calendar.getInstance()
     cal.set(Calendar.YEAR, d.year)
-    cal.set(Calendar.MONTH, d.month)
-    cal.set(Calendar.DAY_OF_MONTH, d.date + 1)
+    cal.set(Calendar.MONTH, d.month - 1)
+    cal.set(Calendar.DAY_OF_MONTH, d.date)
 
     new java.sql.Date(cal.getTime.getTime)
   }
@@ -225,7 +225,7 @@ object DB {
 
     val localDate: LocalDate = d.toLocalDate
 
-    Date(localDate.getDayOfMonth, localDate.getMonthValue, {
+    Date(localDate.getDayOfMonth, localDate.getMonthValue + 1, {
       if (d.before(jesusWasBorn))
         -localDate.getYear
       else
