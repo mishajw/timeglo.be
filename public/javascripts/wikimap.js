@@ -427,7 +427,13 @@ function Graph() {
         var fullText = "";
 
         eventsObject.events.sort(function(a, b) {
-            return a.date.getTime() - b.date.getTime();
+            if (a.date.getFullYear() != b.date.getFullYear()) {
+                return a.date.getFullYear() - b.date.getFullYear();
+            } else if (a.date.getMonth() != b.date.getMonth()) {
+                return a.date.getMonth() - b.date.getMonth();
+            } else {
+                return a.date.getDate() != b.date.getDate();
+            }
         });
 
         eventsObject.events.forEach(function(e, i) {
