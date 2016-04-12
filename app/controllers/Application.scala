@@ -90,7 +90,7 @@ class Application extends Controller {
       JObject(List(
         "date" -> JString(s"${le.event.date.date}.${le.event.date.month}.${le.event.date.year}"),
         "desc" -> JString(le.event.desc),
-        "wiki_page" -> JString(le.event.wikiPage.getOrElse("")),
+        "wikiPage" -> JString(le.event.wikiPage.getOrElse("")),
         "location" -> JObject(List(
           "name" -> JString(le.location.name.replace("_", " ")),
           "lat" -> JDouble(le.location.coords.lat),

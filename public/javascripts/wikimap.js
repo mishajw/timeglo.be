@@ -446,7 +446,7 @@ function Graph() {
 
             fullText +=
                 "<div class='event-desc'>" +
-                    formatDescription(e.desc, e.wiki_page) +
+                    formatDescription(e.desc, e.wikiPage) +
                 "</div>";
 
             fullText += "</div>";
