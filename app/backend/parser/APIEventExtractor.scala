@@ -24,22 +24,24 @@ object APIEventExtractor {
     "October", "November", "December")
 
   def run: Seq[Event] = {
-    (for (month <- 1 to 1; date <- 1 to 31) yield {
+    (for (month <- 1 to 12; date <- 1 to 31) yield {
       getEventsForDate(date, month)
     }).flatten
   }
 
   private def getEventsForDate(date: Int, month: Int): Seq[Event] = {
-    APIArticleRetriever
-      .getTitle(s"${months(month - 1)}%20$date")
-      .split("==(Events|Births)==").toList(1)
-      .split("\n\\*").toList
-        .map(_.split(" ?&ndash; ?"))
-        .collect {
-          case Array(SimpleDate(d), desc) =>
-            Event(Date(date, month, d.toInt), None, desc)
-          case Array(BCDate(d), desc) =>
-            Event(Date(date, month, -d.toInt), None, desc)
-        }
+    Try(
+      APIArticleRetriever
+        .getTitle(s"${months(month - 1)}%20$date")
+        .split("==(Events|Births)==").toList(1)
+        .split("\n\\*").toList
+          .map(_.split(" ?&ndash; ?"))
+          .collect {
+            case Array(SimpleDate(d), desc) =>
+              Event(Date(date, month, d.toInt), None, desc)
+            case Array(BCDate(d), desc) =>
+              Event(Date(date, month, -d.toInt), None, desc)
+          }
+    ).getOrElse(Seq())
   }
 }
