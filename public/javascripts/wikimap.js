@@ -67,7 +67,7 @@ function Graph() {
     var mouseLocation = {x: 0, y: 0};
 
     // OTHER
-    var defaultYears = [2010, 2015];
+    var defaultYears = [2010, 2016];
 
     // Setup
     $startDate.val(defaultYears[0]);
