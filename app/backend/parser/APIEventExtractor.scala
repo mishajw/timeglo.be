@@ -5,6 +5,7 @@ import backend.util.DB
 import backend.{Date, Event}
 import play.api.Logger
 
+import scala.collection.immutable.IndexedSeq
 import scala.util.Try
 
 /**
@@ -23,33 +24,22 @@ object APIEventExtractor {
     "October", "November", "December")
 
   def run: Seq[Event] = {
-    (for (
-      month <- months.indices;
-      date <- 0 to 30
-    ) yield  {
-      log.debug(s"Getting date: $date/$month")
-      val e = getEventsForDate(Date(date, month, 0))
-      e.foreach(DB.insertEvent)
-      e
-    }).flatMap(es => es)
+    (for (month <- 1 to 1; date <- 1 to 31) yield {
+      getEventsForDate(date, month)
+    }).flatten
   }
 
-  private def getEventsForDate(date: Date): Seq[Event] = {
-    Try(
-      APIArticleRetriever
-        .getTitle(s"${months(date.month)}%20${date.date + 1}")
-        .split("==(Events|Births)==").toList(1)
-        .split("\n\\*").toList
-        .map(_.split(" ?&ndash; ?") match {
+  private def getEventsForDate(date: Int, month: Int): Seq[Event] = {
+    APIArticleRetriever
+      .getTitle(s"${months(month - 1)}%20$date")
+      .split("==(Events|Births)==").toList(1)
+      .split("\n\\*").toList
+        .map(_.split(" ?&ndash; ?"))
+        .collect {
           case Array(SimpleDate(d), desc) =>
-            Some(Event(Date(date.date, date.month, d.toInt), None, desc))
+            Event(Date(date, month, d.toInt), None, desc)
           case Array(BCDate(d), desc) =>
-            Some(Event(Date(date.date, date.month, -d.toInt), None, desc))
-          case e => None
-        })
-        .filter(_.isDefined)
-        .map(_.get))
-      .getOrElse(List())
+            Event(Date(date, month, -d.toInt), None, desc)
+        }
   }
-
 }
