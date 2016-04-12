@@ -76,7 +76,7 @@ object DB {
 
        CREATE TABLE located_events_wiki (
          event_id        SERIAL REFERENCES events,
-         location_id     SERIAL REFERENCES page,
+         location_id     SERIAL REFERENCES geo_tags,
          PRIMARY KEY (event_id, location_id)
        );
        
@@ -158,11 +158,12 @@ object DB {
 
   def getLocationForLink(link: String): Option[Long] = {
     sql"""
-         SELECT P.page_id AS id
+         SELECT G.gt_id AS id
          FROM page P, geo_tags G
          WHERE
            P.page_title = $link AND
-           P.page_id = G.gt_page_id
+           P.page_id = G.gt_page_id AND
+           G.gt_name IS NOT NULL
        """.map(_.long("id")).list.apply().headOption
   }
 
@@ -195,12 +196,12 @@ object DB {
        """.map(resultsToLocatedEvent).list.apply() ++
       sql"""
         SELECT E.description, E.occurs, E.wiki_page, P.page_title AS name, L.gt_lat AS latitude, L.gt_lon AS longitude, PR.type AS precision
-        FROM located_events_wiki LE, events E, geo_tags L, page P, date_precision PR
+        FROM located_events_wiki LE, events E, page P, geo_tags L, date_precision PR
         WHERE
          LE.event_id = E.id AND
-         LE.location_id = P.page_id AND
+         LE.location_id = L.gt_id AND
+         L.gt_page_id = P.page_id AND
          E.precision = PR.id AND
-         P.page_id = L.gt_page_id AND
          PR.type != 'NotPrecise' AND
          $start < E.occurs AND E.occurs < $end AND
          (
