@@ -352,8 +352,8 @@ function Graph() {
                 .attr("id", eventObject.pointID)
                 .attr("fill", function(eo) {
                     var timestamp = getAverageTimestamp(eo.geometry.coordinates[0][2].events);
-                    var colour = ((timestamp - minTimestamp) / (maxTimestamp - minTimestamp)) * 255;
-                    return d3.rgb(colour, 0, 0);
+                    var colour = (timestamp - minTimestamp) / (maxTimestamp - minTimestamp);
+                    return scaleToTrafficLights(colour)
                 })
                 .attr("stroke", "white")
                 .attr("opacity", 0.9)
@@ -554,6 +554,16 @@ function Graph() {
         var total = 0;
         es.forEach(function(e) { total += e.date.getTime(); });
         return total / es.length;
+    }
+
+    function scaleToTrafficLights(i) {
+        var colorScale = 210;
+
+        if (i < 0.5) {
+            return d3.rgb(colorScale, (i * 2) * colorScale, 0);
+        } else {
+            return d3.rgb((1 - (i * 2)) * colorScale, colorScale, 0);
+        }
     }
 
     updateTransformations();
