@@ -448,6 +448,10 @@ function Graph() {
         var linkRegex = /\[\[([^\[\|\]]*)\]\]/g;
         var linkWithBarRegex = /\[\[([^\[\|\]]*)\|([^\[\|\]]*)\]\]/g;
 
+        if (desc.length > 140) {
+            desc = desc.substring(0, 300).trim() + "..."
+        }
+
         if (wikiPage) {
             desc =
                 "<a href='" + wikiPage + "' class='wiki-page' target='_blank'>" +
