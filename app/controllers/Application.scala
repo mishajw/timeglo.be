@@ -97,7 +97,8 @@ class Application extends Controller {
           "type" -> JString(le.location.locationType match {
             case regexBadLocationType() => ""
             case s => s
-          })
+          }),
+          "wiki_page" -> JString(le.event.wikiPage.getOrElse(""))
         ))
       ))
     }).toList)
