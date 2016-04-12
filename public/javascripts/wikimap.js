@@ -418,8 +418,6 @@ function Graph() {
         });
 
         eventsObject.events.forEach(function(e, i) {
-            console.log(e);
-
             if (i == 0)
                 fullText +=
                     "<div class='event-location'>" +
