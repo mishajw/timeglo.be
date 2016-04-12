@@ -418,6 +418,8 @@ function Graph() {
         });
 
         eventsObject.events.forEach(function(e, i) {
+            console.log(e);
+
             if (i == 0)
                 fullText +=
                     "<div class='event-location'>" +
@@ -433,7 +435,7 @@ function Graph() {
 
             fullText +=
                 "<div class='event-desc'>" +
-                    formatDescription(e.desc) +
+                    formatDescription(e.desc, e.wiki_page) +
                 "</div>";
 
             fullText += "</div>";
@@ -442,9 +444,19 @@ function Graph() {
         return fullText;
     }
 
-    function formatDescription(desc) {
+    function formatDescription(desc, wikiPage) {
         var linkRegex = /\[\[([^\[\|\]]*)\]\]/g;
         var linkWithBarRegex = /\[\[([^\[\|\]]*)\|([^\[\|\]]*)\]\]/g;
+
+        if (wikiPage) {
+            desc =
+                "<a href='" + wikiPage + "' class='wiki-page' target='_blank'>" +
+                    wikiPage
+                        .replace("http://en.wikipedia.org/wiki/", "")
+                        .replace(/_/g, " ")
+                        .replace(/\?.+/g, "") +
+                "</a>" + desc;
+        }
 
         return desc
             .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$1</a>")

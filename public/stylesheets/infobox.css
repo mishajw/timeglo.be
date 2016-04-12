@@ -36,3 +36,9 @@
     text-align: center;
     display: table-caption;
 }
+
+.wiki-page {
+    display: block;
+    font-weight: bold;
+    font-size: 120%;
+}
