@@ -446,8 +446,6 @@ function Graph() {
         var linkRegex = /\[\[([^\[\|\]]*)\]\]/g;
         var linkWithBarRegex = /\[\[([^\[\|\]]*)\|([^\[\|\]]*)\]\]/g;
 
-        // TODO bold matched text
-
         return desc
             .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$1</a>")
             .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$2</a>");
