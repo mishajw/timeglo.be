@@ -145,7 +145,15 @@ object DB {
        """.map(resultsToLocatedEvent).list.apply()
   }
 
-  def getLocationForLink(link: String): Option[Long] = ???
+  def getLocationForLink(link: String): Option[Long] = {
+    sql"""
+         SELECT G.gt_id AS id
+         FROM page P, geo_tags G
+         WHERE
+           P.page_title = $link AND
+           P.page_id = G.gt_page_id
+       """.map(_.long("id")).single.apply()
+  }
 
   def performIndexing() = {
     sql"""
