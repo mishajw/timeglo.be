@@ -131,7 +131,7 @@ function Graph() {
 
     $svg.on("mousedown touchstart", function(e) {
         isMouseDown = true;
-        touchCount ++;
+        //touchCount ++;
 
         mouseDownLocation = getEventLocation(e);
 
@@ -141,11 +141,14 @@ function Graph() {
 
     $svg.on("mouseup touchend", function(e) {
         isMouseDown = false;
-        touchCount --;
+        //touchCount --;
 
         e.preventDefault();
         return false;
     });
+
+    $svg.on("touchstart", function(e) { touchCount ++; });
+    $svg.on("touchend",   function(e) { touchCount --; });
 
     $svg.on("mousedrag", function(e) {
         e.preventDefault();
