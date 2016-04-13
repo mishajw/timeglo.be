@@ -15,7 +15,7 @@
 }
 
 .legend-item {
-    display: flex;
+    display: -webkit-box;
 }
 
 .legend-symbol {
