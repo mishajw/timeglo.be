@@ -31,11 +31,12 @@ class Application extends Controller {
       log.debug(s"Parsed dates as $startDate and $endDate")
 
       if (startDate.before(endDate)) {
+        val events = DB.searchForEvent(startDate, endDate, searchTerm.replace("%20", " "))
+        log.debug(s"Sending user ${events.length} events")
+
         Ok(
           stringifyJson(
-            eventsToJson(
-              DB.searchForEvent
-              (startDate, endDate, searchTerm.replace("%20", " ")))))
+            eventsToJson(events)))
       } else {
         errorJson("Start date must be before end date")
       }
