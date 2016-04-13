@@ -186,35 +186,45 @@ object DB {
 
   def searchForEvent(start: java.sql.Date, end: java.sql.Date, searchWords: String): Seq[LocatedEvent] = {
     sql"""
-        SELECT E.description, E.occurs, E.wiki_page, L.name, L.latitude, L.longitude, P.type AS precision
-        FROM located_events_db LE, events E, locations L, date_precision P
-        WHERE
-         LE.event_id = E.id AND
-         LE.location_id = L.id AND
-         E.precision = P.id AND
-         P.type != 'NotPrecise' AND
-         $start < E.occurs AND E.occurs < $end AND
-         (
-            ${searchWords.isEmpty} OR
-            regexp_replace(lower(E.description), '[^A-Za-z0-9 ]', '', 'g') LIKE
-              '%' || regexp_replace(lower($searchWords), '[^A-Za-z0-9 ]', '', 'g') || '%'
-         )
-       """.map(resultsToLocatedEvent).list.apply() ++
-      sql"""
-        SELECT E.description, E.occurs, E.wiki_page, P.page_title AS name, L.gt_lat AS latitude, L.gt_lon AS longitude, PR.type AS precision
-        FROM located_events_wiki LE, events E, page P, geo_tags L, date_precision PR
-        WHERE
-         LE.event_id = E.id AND
-         LE.location_id = L.gt_id AND
-         L.gt_page_id = P.page_id AND
-         E.precision = PR.id AND
-         PR.type != 'NotPrecise' AND
-         $start < E.occurs AND E.occurs < $end AND
-         (
-            ${searchWords.isEmpty} OR
-            regexp_replace(lower(E.description), '[^A-Za-z0-9 ]', '', 'g') LIKE
-              '%' || regexp_replace(lower($searchWords), '[^A-Za-z0-9 ]', '', 'g') || '%'
-         )
+         SELECT E.description, E.occurs, E.wiki_page, PR.type AS precision, LE.*
+         FROM
+           events E, date_precision PR,
+           (
+             (
+               SELECT
+                 P.page_title AS name,
+                 G.gt_lat AS latitude,
+                 G.gt_lon AS longitude,
+                 LE.event_id
+               FROM
+                 located_events_wiki LE,
+                 page P, geo_tags G
+               WHERE
+                 LE.location_id = G.gt_id AND
+                 G.gt_page_id = P.page_id
+             ) UNION (
+               SELECT
+                 L.name AS name,
+                 L.latitude AS latitude,
+                 L.longitude AS longitude,
+                 LE.event_id
+               FROM
+                 located_events_db LE,
+                 locations L
+               WHERE
+                 LE.location_id = L.id
+             )
+           ) AS LE
+         WHERE
+           E.precision = PR.id AND
+           LE.event_id = E.id AND
+           PR.type != 'NotPrecise' AND
+           $start < E.occurs AND E.occurs < $end AND
+           (
+              ${searchWords.isEmpty} OR
+              regexp_replace(lower(E.description), '[^A-Za-z0-9 ]', '', 'g') LIKE
+                '%' || regexp_replace(lower($searchWords), '[^A-Za-z0-9 ]', '', 'g') || '%'
+           )
        """.map(resultsToLocatedEvent).list.apply()
   }
 
