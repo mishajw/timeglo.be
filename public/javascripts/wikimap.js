@@ -167,6 +167,7 @@ function Graph() {
                 var $this = $(this);
                 var number = $this.attr("id").replace("continue", "");
                 $("#hidden" + number).show();
+                $("#ellipsis" + number).hide();
                 $this.hide();
             });
     }
@@ -537,12 +538,13 @@ function Graph() {
             return desc;
         }
 
-        var descStart = desc.substring(0, closestSpace + 1);
-            descEnd = desc.substring(closestSpace + 1, desc.length);
+        var descStart = desc.substring(0, closestSpace);
+            descEnd = desc.substring(closestSpace, desc.length);
 
         continueCount ++;
 
         return descStart +
+            "<span id='ellipsis" + continueCount + "'>...</span>" +
             "<a class='continue-button' id='continue" + continueCount + "'>continue</a>" +
             "<span class='continue-text' id='hidden" + continueCount + "'>" + descEnd + "</span>"
     }
