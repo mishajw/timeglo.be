@@ -25,7 +25,9 @@ function Graph() {
     var globeMaxEvents = 0;
     var globeDefaultMax = 10;
     var globeMaxPointSize = 50;
-    var globeMinPointSize = 5;
+    var globeMinPointSize = 4;
+    var globeBusyThreshold = 3000;
+    var globeMinPointSizeBusy = 2;
 
     var maxTimestamp;
     var minTimestamp;
@@ -150,10 +152,10 @@ function Graph() {
     $svg.on("touchstart", function(e) { touchCount ++; });
     $svg.on("touchend",   function(e) { touchCount --; });
 
-    $svg.on("mousedrag", function(e) {
-        e.preventDefault();
-        return false;
-    });
+    //$svg.on("mousedrag", function(e) {
+    //    e.preventDefault();
+    //    return false;
+    //});
 
     function eventMouseClick(d) {
         if (touchCount > 1) {
@@ -397,10 +399,11 @@ function Graph() {
                 .attr("d", path.pointRadius(function(d) {
                     try {
                         var max = globeMaxEvents > globeDefaultMax ? globeMaxEvents : globeDefaultMax;
+                        var minSize = events.length > globeBusyThreshold ? globeMinPointSizeBusy : globeMinPointSize;
                         var min = 1;
                         var amount = d.geometry.coordinates[0][2].events.length;
                         var amountScale = (amount - min) / (max - min);
-                        var unscaledSize = ((amountScale) * (globeMaxPointSize - globeMinPointSize)) + globeMinPointSize;
+                        var unscaledSize = ((amountScale) * (globeMaxPointSize - minSize)) + minSize;
                         return unscaledSize * Math.sqrt(parseFloat(globeZoom) * (globeSize / 400));
                     } catch (err) {
                         // Not a point
