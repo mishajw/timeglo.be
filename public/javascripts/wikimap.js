@@ -513,7 +513,7 @@ function Graph() {
     }
 
     function concatDescription(desc) {
-        var maxAmount = 200v +
+        var maxAmount = 200 +
             (desc.length - desc.replace(/<[^\<\>]+>/g, "").length);
 
         if (desc.length < maxAmount)
