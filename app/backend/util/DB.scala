@@ -224,7 +224,9 @@ object DB {
               ${searchWords.isEmpty} OR
               regexp_replace(lower(E.description), '[^A-Za-z0-9 ]', '', 'g') LIKE
                 '%' || regexp_replace(lower($searchWords), '[^A-Za-z0-9 ]', '', 'g') || '%'
-           )
+           ) AND
+           NOT (LE.latitude = 0 AND LE.longitude = 0)
+
          LIMIT 7000
        """.map(resultsToLocatedEvent).list.apply()
   }
