@@ -15,30 +15,32 @@
 }
 
 .legend-item {
-    display: table-row;
-}
-
-.legend-symbol, .legend-description {
-    display: table-cell;
-    padding: 3px;
+    display: flex;
 }
 
 .legend-symbol {
-    font-size: 90%;
-    text-align: center;
+    font-size: 0.8em;
+    display: inline-block;
 }
 
 .legend-description {
     text-align: left;
+    padding-top: 0.25em;
+    padding-bottom: 0;
+}
+
+.legend-symbol, .legend-description {
+    padding: 0.2em;
 }
 
 #legend-symbol-color > div {
-    width: 18px;
-    height: 18px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    border: 1px solid #333;
+    width: 1.6em;
+    height: 1.6em;
+    margin: 0.15em;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    border: 0.15em solid #333;
 
     background: red; /* For browsers that do not support gradients */
     background: -webkit-linear-gradient(left, red 50%, green 50%); /* For Safari 5.1 to 6.0 */
