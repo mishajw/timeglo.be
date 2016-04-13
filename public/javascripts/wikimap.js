@@ -67,7 +67,7 @@ function Graph() {
     var mouseLocation = {x: 0, y: 0};
 
     // OTHER
-    var defaultYears = [2010, 2016];
+    var defaultYears = [1966, 1966];
 
     // Setup
     $startDate.val(defaultYears[0]);
@@ -480,6 +480,7 @@ function Graph() {
         }
 
         return desc
+            .replace(/\{\{convert\|([\d.]+)\|([^\{\}\|]+)\|([^\{\}\|]+)(\|[^\{\}\|]+)?\}\}/g, "$1 $2")
             .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$1</a>")
             .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$2</a>");
     }
