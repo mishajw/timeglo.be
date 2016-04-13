@@ -465,13 +465,13 @@ function Graph() {
         var linkRegex = /\[\[([^\[\|\]]*)\]\]/g;
         var linkWithBarRegex = /\[\[([^\[\|\]]*)\|([^\[\|\]]*)\]\]/g;
 
-        if (desc.length > 140) {
-            desc = desc.substring(0, 300).trim() + "..."
-        }
+        //if (desc.length > 140) {
+        //    desc = desc.substring(0, 300).trim() + "..."
+        //}
 
         if (wikiPage) {
             desc =
-                "<a href='" + wikiPage + "' class='wiki-page' target='_blank'>" +
+                "<a href=\"" + wikiPage + "\" class='wiki-page' target='_blank'>" +
                     wikiPage
                         .replace("http://en.wikipedia.org/wiki/", "")
                         .replace(/_/g, " ")
