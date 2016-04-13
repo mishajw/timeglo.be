@@ -225,6 +225,7 @@ object DB {
               regexp_replace(lower(E.description), '[^A-Za-z0-9 ]', '', 'g') LIKE
                 '%' || regexp_replace(lower($searchWords), '[^A-Za-z0-9 ]', '', 'g') || '%'
            )
+         LIMIT 7000
        """.map(resultsToLocatedEvent).list.apply()
   }
 
