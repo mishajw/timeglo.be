@@ -66,7 +66,7 @@ object SPARQLListRetriever {
       LocatedEvent(
         Event(
           parseDate(getValue(date)),
-          Some(getValue(wikiPage)),
+          Some(getValue(wikiPage).replaceAll("\\?oldid=.*", "")),
           getValue(desc)),
         Location(
           getValue(placeName),
