@@ -148,6 +148,7 @@ function Graph() {
     function eventMouseClick(d) {
         showSidebar();
 
+        $("#infobox-container").scrollTop(0);
         $infobox.html(getText(d));
 
         $(".continue-button")
