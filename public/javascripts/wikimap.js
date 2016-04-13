@@ -30,6 +30,7 @@ function Graph() {
     var maxTimestamp;
     var minTimestamp;
     var continueCount = 0;
+    var touchCount = 0;
 
     var projection = d3.geo.orthographic()
         .scale(globeZoom)
@@ -105,6 +106,10 @@ function Graph() {
 
     // MOUSE/KEYBOARD EVENTS
     $svg.on("mousemove touchmove", function(e) {
+        if (touchCount > 1) {
+            return;
+        }
+
         mouseLocation = getEventLocation(e);
 
         $tooltip.css({
@@ -126,6 +131,7 @@ function Graph() {
 
     $svg.on("mousedown touchstart", function(e) {
         isMouseDown = true;
+        touchCount ++;
 
         mouseDownLocation = getEventLocation(e);
 
@@ -135,6 +141,7 @@ function Graph() {
 
     $svg.on("mouseup touchend", function(e) {
         isMouseDown = false;
+        touchCount --;
 
         e.preventDefault();
         return false;
@@ -146,6 +153,10 @@ function Graph() {
     });
 
     function eventMouseClick(d) {
+        if (touchCount > 1) {
+            return;
+        }
+
         showSidebar();
 
         $("#infobox-container").scrollTop(0);
