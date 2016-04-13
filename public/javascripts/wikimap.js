@@ -29,6 +29,7 @@ function Graph() {
 
     var maxTimestamp;
     var minTimestamp;
+    var continueCount = 0;
 
     var projection = d3.geo.orthographic()
         .scale(globeZoom)
@@ -148,6 +149,14 @@ function Graph() {
         showSidebar();
 
         $infobox.html(getText(d));
+
+        $(".continue-button")
+            .click(function() {
+                var $this = $(this);
+                var number = $this.attr("id").replace("continue", "");
+                $("#hidden" + number).show();
+                $this.hide();
+            });
     }
 
     function getEventLocation(e) {
@@ -469,21 +478,60 @@ function Graph() {
         //    desc = desc.substring(0, 300).trim() + "..."
         //}
 
-        if (wikiPage) {
-            desc =
-                "<a href=\"" + wikiPage + "\" class='wiki-page' target='_blank'>" +
-                    wikiPage
-                        .replace("http://en.wikipedia.org/wiki/", "")
-                        .replace(/_/g, " ")
-                        .replace(/\?.+/g, "") +
-                "</a>" + desc;
-        }
-
-        return desc
+        desc = desc
             .replace(/\{\{convert\|([\d.]+)\|([^\{\}\|]+)\|([^\{\}\|]+)(\|[^\{\}\|]+)?\}\}/g, "$1 $2")
             .replace(/\{\{([^\{\}\|]+)\|([^\{\}\|]+)(\|([^\{\}]+))\}\}/g, "$1 $2")
             .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$1</a>")
-            .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$2</a>");
+            .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$2</a>")
+        ;
+
+        desc = concatDescription(desc);
+
+        if (wikiPage) {
+            desc =
+                "<a href=\"" + wikiPage + "\" class='wiki-page' target='_blank'>" +
+                wikiPage
+                    .replace("http://en.wikipedia.org/wiki/", "")
+                    .replace(/_/g, " ")
+                    .replace(/\?.+/g, "") +
+                "</a>" + desc;
+        }
+
+        return desc;
+    }
+
+    function concatDescription(desc) {
+        var maxAmount = 150;
+
+        if (desc.length < maxAmount)
+            return desc;
+
+        var closestSpace = maxAmount;
+        while (closestSpace < desc.length && desc.charAt(closestSpace) != ' ') {
+            closestSpace ++;
+        }
+
+        var descEnd = desc.substring(closestSpace, desc.length);
+        var endTagIndex = descEnd.indexOf(">") + closestSpace;
+        var startTagIndex = descEnd.indexOf("<") + closestSpace;
+        if (endTagIndex != -1 && startTagIndex != -1 && endTagIndex < startTagIndex) {
+            if (desc.charAt(startTagIndex + 1) == "/") {
+                closestSpace = startTagIndex + 3;
+            } else {
+                closestSpace = endTagIndex;
+            }
+        } else if (endTagIndex != -1 && startTagIndex == -1) {
+            return desc;
+        }
+
+        var descStart = desc.substring(0, closestSpace + 1);
+            descEnd = desc.substring(closestSpace + 1, desc.length);
+
+        continueCount ++;
+
+        return descStart +
+            "<a class='continue-button' id='continue" + continueCount + "'>continue</a>" +
+            "<span class='continue-text' id='hidden" + continueCount + "'>" + descEnd + "</span>"
     }
 
     function getScaledYears() {

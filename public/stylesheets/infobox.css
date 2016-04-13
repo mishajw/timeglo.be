@@ -45,3 +45,12 @@
     font-weight: bold;
     font-size: 120%;
 }
+
+.continue-text {
+    display: none;
+}
+
+.continue-button {
+    display: block;
+    font-size: 80%;
+}
