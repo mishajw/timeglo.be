@@ -51,6 +51,6 @@
 }
 
 .continue-button {
-    display: block;
-    font-size: 80%;
+    font-size: 95%;
+    padding-left: 3px;
 }
