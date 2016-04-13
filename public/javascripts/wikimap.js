@@ -481,6 +481,7 @@ function Graph() {
 
         return desc
             .replace(/\{\{convert\|([\d.]+)\|([^\{\}\|]+)\|([^\{\}\|]+)(\|[^\{\}\|]+)?\}\}/g, "$1 $2")
+            .replace(/\{\{([^\{\}\|]+)\|([^\{\}\|]+)(\|([^\{\}]+))\}\}/g, "$1 $2")
             .replace(linkRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$1</a>")
             .replace(linkWithBarRegex, "<a href='http://en.wikipedia.org/wiki/$1' target='_blank'>$2</a>");
     }
