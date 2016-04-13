@@ -13,7 +13,7 @@ function Graph() {
     // GLOBE VARS
     var globeSize = Math.min(height, width) * 0.4;
     var globeSea = undefined;
-    var globeRotation = {x: 558, y: 579};
+    var globeRotation = {x: parseInt(width) / 2, y: parseInt(height) * 0.7};
     var desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
     var globeRotCatchUp = 0.3;
 
