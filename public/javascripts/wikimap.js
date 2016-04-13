@@ -291,12 +291,12 @@ function Graph() {
 
         var groupedEvents = {};
         events.forEach(function(e) {
-            // Put it int a group
-            var coords = [e.location.long, e.location.lat];
-            if (groupedEvents[coords]) {
-                groupedEvents[coords].push(e);
+            // Put it in a group
+            var key = e.location.name;
+            if (groupedEvents[key]) {
+                groupedEvents[key].push(e);
             } else {
-                groupedEvents[coords] = [e];
+                groupedEvents[key] = [e];
             }
 
             // Format the date
