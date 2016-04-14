@@ -9,9 +9,7 @@ object SPARQLParser {
 
   private val log = Logger(getClass)
 
-  val rNumericDate = "(-?\\d+)-(\\d+)-(\\d+)".r
-  val rYearOnly =    "(-?\\d{1,4})".r
-  val rCoord =       "(-?\\d+\\.?\\d*)".r
+  private val rCoord = "(-?\\d+\\.?\\d*)".r
 
   def parse(json: JValue): Seq[LocatedEvent] = {
     (for {
@@ -28,7 +26,7 @@ object SPARQLParser {
     } yield {
       LocatedEvent(
         Event(
-          parseDate(getValue(date)),
+          DateParser.parse(getValue(date)),
           Some(getValue(wikiPage).replaceAll("\\?oldid=.*", "")),
           getValue(desc)),
         Location(
@@ -41,14 +39,6 @@ object SPARQLParser {
 
   private def getValue(obj: List[(String, JValue)]): String = {
     (for { JField("value", JString(value)) <- obj } yield value).head
-  }
-
-  private def parseDate(s: String): Date = s match {
-    case rNumericDate(y, m, d)  => Date(d.toInt, m.toInt, y.toInt)
-    case rYearOnly(y)           => Date(year = y.toInt, precision = PreciseToYear)
-    case unparsed =>
-      log.warn(s"Couldn't parse as date: $unparsed")
-      Date(precision = NotPrecise)
   }
 
   private def parseCoords(sLat: String, sLong: String): Coords = {
