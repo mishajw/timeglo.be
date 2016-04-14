@@ -2,6 +2,7 @@ package backend.parser
 
 import backend.retriever.wikipedia.APIArticleRetriever
 import backend.util.DB
+import backend.months
 import backend.{Date, Event}
 import play.api.Logger
 
@@ -16,12 +17,6 @@ object APIEventExtractor {
 
   val SimpleDate = " *\\[?\\[?([0-9]*)\\]?\\]? *".r
   val BCDate = " *\\[\\[([0-9]*) ?BC\\]\\] *".r
-
-  val months = Seq(
-    "January", "February", "March",
-    "April", "May", "June",
-    "July", "August", "September",
-    "October", "November", "December")
 
   def run: Seq[Event] = {
     (for (month <- 1 to 12; date <- 1 to 31) yield {

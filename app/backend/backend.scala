@@ -2,6 +2,13 @@
   * Created by misha on 27/12/15.
   */
 package object backend {
+
+  val months = Seq(
+    "January", "February", "March",
+    "April", "May", "June",
+    "July", "August", "September",
+    "October", "November", "December")
+
   case class Coords(lat: Double, long: Double)
   case class Location(name: String, coords: Coords, locationType: String)
 
