@@ -1,4 +1,9 @@
-@main("timeglo.be", Seq("//d3js.org/d3.v3.min.js", "//d3js.org/topojson.v1.js", "//rawgit.com/1wheel/graph-scroll/master/graph-scroll.js")) {
+@main("timeglo.be", Seq(
+    "//d3js.org/d3.v3.min.js",
+    "//d3js.org/topojson.v1.js",
+    "//rawgit.com/1wheel/graph-scroll/master/graph-scroll.js",
+    "//rawgit.com/mouse0270/bootstrap-notify/master/bootstrap-notify.min.js")) {
+
     <input type="checkbox" id="sidebar-toggle" checked/>
     <label for="sidebar-toggle" id="sidebar-button" class="btn">
         <i class="fa fa-arrow-circle-left fa-2x"></i>
@@ -57,7 +62,6 @@
     </div>
 
 
-    <script src="@routes.Assets.versioned("javascripts/notifier.js")" type="text/javascript"></script>
     <script src="@routes.Assets.versioned("javascripts/wikimap.js")" type="text/javascript"></script>
 
     @for(css <- Seq("main", "graph", "sidebar", "options", "infobox", "sidebar", "legend")) {
