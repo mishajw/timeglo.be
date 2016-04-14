@@ -23,6 +23,14 @@ class Application extends Controller {
     Ok(views.html.index())
   }
 
+  def indexWithDates(start: String, end: String) = Action {
+    Ok("")
+  }
+
+  def indexWithSearch(start: String, end: String, search: String) = Action {
+    Ok("")
+  }
+
   def search(startString: String, endString: String, searchTerm: String) = Action {
     log.debug(s"Asked for date between $startString and $endString, with search term $searchTerm")
 
