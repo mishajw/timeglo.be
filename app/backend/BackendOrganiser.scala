@@ -9,6 +9,10 @@ object BackendOrganiser {
   private val log = Logger(getClass)
 
   def main(args: Array[String]) {
+    runAll()
+  }
+
+  private def runAll() = {
     log.info("Resetting database")
     DB.resetTables()
 
