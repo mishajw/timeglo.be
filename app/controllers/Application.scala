@@ -4,10 +4,12 @@ import java.util.Calendar
 
 import backend.LocatedEvent
 import backend.util.DB
+import org.json4s.ParserUtil.ParseException
 import org.json4s._
 import org.json4s.jackson.JsonMethods
 import play.api.Logger
 import play.api.mvc._
+
 class Application extends Controller {
 
   private val log = Logger(getClass)
@@ -24,26 +26,17 @@ class Application extends Controller {
   def search(startString: String, endString: String, searchTerm: String) = Action {
     log.debug(s"Asked for date between $startString and $endString, with search term $searchTerm")
 
-    try {
-      val startDate = new java.sql.Date(dateFormat.parse(startString).getTime)
-      val endDate = new java.sql.Date(dateFormat.parse(endString).getTime)
+    stringToSqlDates(startString, endString) match {
+      case Some((startDate, endDate)) if startDate before endDate =>
+          val events = DB.searchForEvent(startDate, endDate, searchTerm.replace("%20", " "))
 
-      log.debug(s"Parsed dates as $startDate and $endDate")
+          log.debug(s"Sending user ${events.length} events")
 
-      if (startDate.before(endDate)) {
-        val events = DB.searchForEvent(startDate, endDate, searchTerm.replace("%20", " "))
-        log.debug(s"Sending user ${events.length} events")
-
-        Ok(
-          stringifyJson(
-            eventsToJson(events)))
-      } else {
-        errorJson("Start date must be before end date")
-      }
-    } catch {
-      case e: Throwable =>
-        log.warn("Got error on parsing user input", e)
-        errorJson(s"Not a valid format for a date. Must be in format ${dateFormatString.toUpperCase()}")
+          Ok(
+            stringifyJson(
+              eventsToJson(events)))
+      case None => errorJson("Incorrect date format")
+      case _ => errorJson("Start date must be before end date")
     }
   }
 
@@ -114,5 +107,15 @@ class Application extends Controller {
     BadRequest(stringifyJson(JObject(List(
       "error" -> JString(errorMsg))
     )))
+  }
+
+  private def stringToSqlDates(start: String, end: String): Option[(java.sql.Date, java.sql.Date)] = {
+    try {
+      Some(
+        new java.sql.Date(dateFormat.parse(start).getTime),
+        new java.sql.Date(dateFormat.parse(end).getTime))
+    } catch {
+      case e: ParseException => None
+    }
   }
 }
