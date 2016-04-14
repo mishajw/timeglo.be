@@ -2,7 +2,7 @@ package backend.parser.sparql
 
 import java.time.Year
 
-import backend.{NotPrecise, PreciseToYear, Date}
+import backend.{PreciseToMonth, NotPrecise, PreciseToYear, Date}
 import play.api.Logger
 
 object DateParser {
@@ -13,8 +13,12 @@ object DateParser {
   private val rYearOnly =    "(-?\\d{1,4})".r
   private val rMonthDate =   "--(\\d+)-(\\d+)".r
   private val rNumber =      "(\\d+)".r
+  private val rYearAndBC =   "(\\d+)( BC)?".r
 
-  private case class Context(s: String)
+  private val months = backend.months.map(_.toLowerCase)
+  private val monthsAbbr = months.map(_.take(3))
+
+  case class Context(s: String)
 
   def parse(dateStr: String, contexts: String*): Date = {
     implicit val context = Context(contexts.mkString(" "))
@@ -27,12 +31,11 @@ object DateParser {
       case rMonthDate(m, d) =>
         parseMonthDate(m.toInt, d.toInt)
       case unparsed =>
-        log.warn(s"Couldn't parse as date: $unparsed")
-        Date(precision = NotPrecise)
+        parseOtherDate(unparsed)
     }
   }
 
-  private def parseYearOnly(year: Int)(implicit context: Context) = {
+  private def parseYearOnly(year: Int)(implicit context: Context = Context("")) = {
     // If we can find BC in the context...
     if (s"$year (BC|bc)".r findFirstMatchIn context.s isDefined) {
       Date(year = -year, precision = PreciseToYear)
@@ -41,7 +44,7 @@ object DateParser {
     }
   }
 
-  private def parseMonthDate(month: Int, date: Int)(implicit context: Context): Date = {
+  private def parseMonthDate(month: Int, date: Int)(implicit context: Context = Context("")): Date = {
     (rNumber findAllIn context.s)
       .map(_.toInt)
       .toSeq
@@ -55,5 +58,40 @@ object DateParser {
         case Some(year) => Date(date, month, year)
         case None => Date(precision = NotPrecise)
       }
+  }
+
+  def parseOtherDate(dateStr: String)(implicit context: Context = Context("")): Date = {
+    val year = (rYearAndBC findAllIn dateStr)
+      .toSeq
+      .map { y =>
+        if (y.endsWith(" BC"))
+          -y.split(" ").head.toInt
+        else y.toInt
+      }
+      .headOption
+
+    val month = dateStr
+      .split("\\W+")
+      .map(_.toLowerCase)
+      .flatMap { w =>
+        if (months contains w)
+          Some(months indexOf w)
+        else if (monthsAbbr contains w)
+          Some(monthsAbbr indexOf w)
+        else None
+      }
+     .map(_ + 1)
+     .headOption
+
+    (month, year) match {
+      case (Some(m), Some(y)) =>
+        Date(month = m, year = y, precision = PreciseToMonth)
+      case (None, Some(y)) =>
+        parseYearOnly(y)
+      case (Some(m), None) =>
+        parseMonthDate(m, 1).copy(precision = PreciseToMonth)
+      case _ =>
+        Date(precision = NotPrecise)
+    }
   }
 }
