@@ -70,16 +70,19 @@ function Graph() {
     var mouseDownLocation = {x: 0, y: 0};
     var mouseLocation = {x: 0, y: 0};
 
-    // Get the years from the URL, or use the defaults
     var defaultYears = [2013, 2016];
-    if (urlStart && urlEnd) {
-        defaultYears = [parseInt(urlStart), parseInt(urlEnd)];
-    }
 
-    // If the URL has set the search term, fill the box
-    if (urlSearch) {
-        $searchBox.val(urlSearch)
-    }
+    try {
+        // Get the years from the URL, or use the defaults
+        if (urlStart && urlEnd) {
+            defaultYears = [parseInt(urlStart), parseInt(urlEnd)];
+        }
+
+        // If the URL has set the search term, fill the box
+        if (urlSearch) {
+            $searchBox.val(urlSearch)
+        }
+    } catch (e) {}
 
     // Setup
     $startDate.val(defaultYears[0]);
@@ -272,6 +275,10 @@ function Graph() {
     function updateEvents() {
         var keywords = sanitise($searchBox.val());
         var years = getScaledYears().map(sanitise);
+
+        window.history.pushState(
+            undefined, "timeglo.be",
+            "/" + years[0] + "/" + years[1] + (keywords == "" ? "" : "/" + keywords));
 
         $.ajax("/search/1.1." + years[0] + "/31.12." + years[1] + "/" + keywords, {
             type: "GET",
@@ -683,6 +690,12 @@ function Graph() {
             delay: 3000,
             allow_dismiss: false
         });
+    }
+
+    function updateURL() {
+        var keywords = sanitise($searchBox.val());
+        var years = getScaledYears().map(sanitise);
+
     }
 
     updateTransformations();
