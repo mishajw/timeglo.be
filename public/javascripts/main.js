@@ -642,7 +642,7 @@ function Graph() {
 
     function sanitise(s) {
         return s
-            .replace(/[^A-Za-z0-9\-_ ]/g, "")
+            .replace(/[^A-Za-z0-9\- ]/g, "")
             .replace(/ /g, "_");
     }
 
