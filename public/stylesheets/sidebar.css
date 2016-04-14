@@ -58,3 +58,8 @@
     -o-transform: translateY(-2px) rotate(180deg);
     transform: translateY(-2px) rotate(180deg);
 }
+
+#contributors {
+    text-align: center;
+    margin-top: 10px;
+}
