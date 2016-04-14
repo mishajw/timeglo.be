@@ -18,7 +18,13 @@ body {
 }
 
 @media (min-width: 768px) {
-    .col-sm-4 {
+    .alert {
         width: auto;
     }
+}
+
+.alert-info {
+    background-color: #EEEEF4;
+    border-color: #CCCCDD;
+    color: #333;
 }
