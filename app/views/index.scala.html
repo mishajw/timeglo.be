@@ -57,8 +57,8 @@
     </div>
 
 
-    <script src="@routes.Assets.versioned("javascripts/wikimap.js")" type="text/javascript"></script>
     <script src="@routes.Assets.versioned("javascripts/notifier.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("javascripts/wikimap.js")" type="text/javascript"></script>
 
     @for(css <- Seq("main", "graph", "sidebar", "options", "infobox", "sidebar", "legend")) {
         <link rel="stylesheet" media="screen" href="@routes.Assets.versioned(s"stylesheets/$css.css")">
