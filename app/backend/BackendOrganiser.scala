@@ -31,7 +31,9 @@ object BackendOrganiser {
     val jsons = SPARQLListRetriever.run
 
     log.info("Parsing JSON")
-    val events = jsons flatMap SPARQLParser.parse
+    val events =
+      (jsons flatMap SPARQLParser.parse)
+        .filter(_.event.date.precision != NotPrecise)
 
     log.info("Inserting events into the database")
     events.foreach(DB.insertLocatedEvent)
@@ -44,7 +46,9 @@ object BackendOrganiser {
     val events = APIEventExtractor.run
 
     log.info("Pairing with locations")
-    val eventLocations = LinkLocationExtractor.run(events)
+    val eventLocations =
+      LinkLocationExtractor.run(events)
+        .filter { case (e, ls) => ls.nonEmpty }
 
     log.info("Inserting events into the database")
     eventLocations map
