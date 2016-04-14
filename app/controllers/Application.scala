@@ -24,11 +24,22 @@ class Application extends Controller {
   }
 
   def indexWithDates(start: String, end: String) = Action {
-    Ok("")
+    respondIfDatesParse(
+      Ok(views.html.index(Some(start), Some(end))),
+      start, end)
   }
 
   def indexWithSearch(start: String, end: String, search: String) = Action {
-    Ok("")
+    respondIfDatesParse(
+      Ok(views.html.index(Some(start), Some(end), Some(search))),
+      start, end)
+  }
+
+  def respondIfDatesParse(result: Result, start: String, end: String): Result = {
+    stringToSqlDates(start, end) match {
+      case Some(_) => result
+      case None => BadRequest(views.html.error("Not valid dates", 400))
+    }
   }
 
   def search(startString: String, endString: String, searchTerm: String) = Action {
