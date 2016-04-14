@@ -26,7 +26,7 @@ object SPARQLParser {
     } yield {
       LocatedEvent(
         Event(
-          DateParser.parse(getValue(date)),
+          DateParser.parse(getValue(date), getValue(desc)),
           Some(getValue(wikiPage).replaceAll("\\?oldid=.*", "")),
           getValue(desc)),
         Location(
