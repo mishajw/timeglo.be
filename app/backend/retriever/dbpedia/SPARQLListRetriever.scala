@@ -3,6 +3,7 @@ package backend.retriever.dbpedia
 import java.net.URLEncoder
 
 import backend._
+import backend.parser.SPARQLParser
 import play.api.Logger
 
 import scala.io.Source
@@ -16,64 +17,11 @@ object SPARQLListRetriever {
 
   private val log = Logger(getClass)
 
-  def run: Seq[LocatedEvent] = {
+  def run: Seq[JValue] = {
     queries
       .map(url)
       .map(Source.fromURL(_).mkString)
       .map(parse(_))
-      .flatMap(parseJson)
-  }
-
-  private def parseJson(json: JValue): List[LocatedEvent] = {
-
-    def getValue(obj: List[(String, JValue)]): String = {
-      (for { JField("value", JString(value)) <- obj } yield value).head
-    }
-
-    val rNumericDate = "(-?\\d+)-(\\d+)-(\\d+)".r
-    val rYearOnly =    "(-?\\d{1,4})".r
-    val rCoord =       "(-?\\d+\\.?\\d*)".r
-
-    def parseDate(s: String): Date = s match {
-      case rNumericDate(y, m, d)  => Date(d.toInt, m.toInt, y.toInt)
-      case rYearOnly(y)           => Date(year = y.toInt, precision = PreciseToYear)
-      case unparsed =>
-        log.warn(s"Couldn't parse as date: $unparsed")
-        Date(precision = NotPrecise)
-    }
-
-    def parseCoords(sLat: String, sLong: String): Coords = {
-      (sLat, sLong) match {
-        case (rCoord(lat), rCoord(long)) => Coords(lat.toDouble, long.toDouble)
-        case unparsed =>
-          log.warn(s"Couldn't parse as coordinate: $unparsed")
-          Coords(0, 0)
-      }
-    }
-
-    (for {
-      JObject(obj) <- json
-      JField("results", JObject(results)) <- obj
-      JField("bindings", JArray(bindings)) <- results
-      JObject(eventContainer) <- bindings
-      JField("wiki_page", JObject(wikiPage)) <- eventContainer
-      JField("date", JObject(date)) <- eventContainer
-      JField("place_name", JObject(placeName)) <- eventContainer
-      JField("long", JObject(long)) <- eventContainer
-      JField("lat", JObject(lat)) <- eventContainer
-      JField("desc", JObject(desc)) <- eventContainer
-    } yield {
-      LocatedEvent(
-        Event(
-          parseDate(getValue(date)),
-          Some(getValue(wikiPage).replaceAll("\\?oldid=.*", "")),
-          getValue(desc)),
-        Location(
-          getValue(placeName),
-          parseCoords(getValue(lat), getValue(long)),
-          "")
-      )
-    }).asInstanceOf[List[LocatedEvent]]
   }
 
   private def url(query: String): String = {

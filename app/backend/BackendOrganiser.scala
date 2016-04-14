@@ -1,6 +1,6 @@
 package backend
 
-import backend.parser.{LinkLocationExtractor, APIEventExtractor}
+import backend.parser.{SPARQLParser, LinkLocationExtractor, APIEventExtractor}
 import backend.retriever.dbpedia.SPARQLListRetriever
 import backend.util.DB
 import play.api.Logger
@@ -27,7 +27,10 @@ object BackendOrganiser {
 
   private def runSparql() = {
     log.info("Getting events from DBpedia using SPARQL")
-    val events = SPARQLListRetriever.run
+    val jsons = SPARQLListRetriever.run
+
+    log.info("Parsing JSON")
+    val events = jsons flatMap SPARQLParser.parse
 
     log.info("Inserting events into the database")
     events.foreach(DB.insertLocatedEvent)
