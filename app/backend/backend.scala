@@ -16,10 +16,10 @@ package object backend {
   case class LocatedEvent(event: Event, location: Location)
   case class Date(date: Int = 1, month: Int = 1, year: Int = 1, precision: DatePrecision = PreciseToDate) {
     override def toString: String = precision match {
-      case PreciseToDate => s"NewDate($date/$month/$year)"
-      case PreciseToMonth => s"NewDate($month/$year)"
-      case PreciseToYear => s"NewDate($year)"
-      case NotPrecise => "NewDate(N/A)"
+      case PreciseToDate => s"Date($date/$month/$year)"
+      case PreciseToMonth => s"Date($month/$year)"
+      case PreciseToYear => s"Date($year)"
+      case NotPrecise => "Date(N/A)"
     }
   }
 
