@@ -69,14 +69,14 @@ object DB {
        );
 
        CREATE TABLE located_events_db (
-         event_id        SERIAL REFERENCES events,
-         location_id     SERIAL REFERENCES locations,
+         event_id        SERIAL REFERENCES events ON DELETE CASCADE,
+         location_id     SERIAL REFERENCES locations ON DELETE CASCADE,
          PRIMARY KEY (event_id, location_id)
        );
 
        CREATE TABLE located_events_wiki (
-         event_id        SERIAL REFERENCES events,
-         location_id     SERIAL REFERENCES geo_tags,
+         event_id        SERIAL REFERENCES events ON DELETE CASCADE,
+         location_id     SERIAL REFERENCES geo_tags ON DELETE CASCADE,
          PRIMARY KEY (event_id, location_id)
        );
        
