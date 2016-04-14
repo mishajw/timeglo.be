@@ -479,7 +479,7 @@ function Graph() {
             } else if (a.date.getMonth() != b.date.getMonth()) {
                 return a.date.getMonth() - b.date.getMonth();
             } else {
-                return a.date.getDate() != b.date.getDate();
+                return a.date.getDate() - b.date.getDate();
             }
         });
 
