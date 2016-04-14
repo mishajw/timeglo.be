@@ -34,6 +34,7 @@ function Graph() {
     var touchCount = 0;
 
     var lastNotify;
+    var firstLoad = true;
 
     var projection = d3.geo.orthographic()
         .scale(globeZoom)
@@ -236,6 +237,10 @@ function Graph() {
         if (e.which == 13) $searchBox.click();
     });
 
+    $(window).on("popstate", function () {
+        location.reload();
+    });
+
     var updateTranslation = function() {
         var newTranslate = [getWidthMiddle(), height / 2];
         projection.translate(newTranslate);
@@ -278,9 +283,13 @@ function Graph() {
 
         console.log(keywords);
 
-        window.history.pushState(
-            undefined, "timeglo.be",
-            "/" + years[0] + "/" + years[1] + (keywords == "" ? "" : "/" + keywords));
+        if (firstLoad) {
+            firstLoad = false;
+        } else {
+            window.history.pushState(
+                undefined, "timeglo.be",
+                "/" + years[0] + "/" + years[1] + (keywords == "" ? "" : "/" + keywords));
+        }
 
         $.ajax("/search/1.1." + years[0] + "/31.12." + years[1] + "/" + keywords, {
             type: "GET",
