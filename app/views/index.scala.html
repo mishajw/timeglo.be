@@ -69,6 +69,12 @@
         </div>
     </div>
 
+    @* Define URL parameters *@
+    <script>
+        @if(start.isDefined) { var urlStart = "@start"; }
+        @if(start.isDefined) { var urlEnd = "@end"; }
+        @if(start.isDefined) { var urlSearch = "@search"; }
+    </script>
 
     <link rel="stylesheet" media="screen" href="//rawgit.com/daneden/animate.css/master/animate.min.css">
     <script src="@routes.Assets.versioned("javascripts/main.js")" type="text/javascript"></script>
