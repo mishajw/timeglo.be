@@ -2,16 +2,11 @@ package backend.retriever.dbpedia
 
 import java.net.URLEncoder
 
-import backend._
-import backend.parser.SPARQLParser
+import org.json4s._
+import org.json4s.native.JsonMethods._
 import play.api.Logger
 
 import scala.io.Source
-
-import org.json4s._
-import org.json4s.native.JsonMethods._
-
-import scala.util.Try
 
 object SPARQLListRetriever {
 
