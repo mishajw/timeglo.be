@@ -36,9 +36,9 @@ class Application extends Controller {
   }
 
   def respondIfDatesParse(result: Result, start: String, end: String): Result = {
-    stringToSqlDates(start, end) match {
-      case Some(_) => result
-      case None => BadRequest(views.html.error("Not valid dates", 400))
+    (start forall (_.isDigit), end forall (_.isDigit)) match {
+      case (true, true) => result
+      case _ => BadRequest(views.html.error("Not valid dates", 400))
     }
   }
 
