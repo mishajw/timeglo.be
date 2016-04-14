@@ -1,7 +1,7 @@
-package backend.parser
+package backend.parser.sparql
 
 import backend._
-import org.json4s.JsonAST.{JArray, JObject, JString, JField}
+import org.json4s.JsonAST.{JArray, JField, JObject, JString}
 import org.json4s._
 import play.api.Logger
 
