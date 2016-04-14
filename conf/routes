@@ -5,9 +5,9 @@
 # Home page
 GET     /                                               controllers.Application.index
 GET     /getDateRange                                   controllers.Application.getDateRange
-GET     /search/:start/:end/$search<[A-Za-z0-9%]*>      controllers.Application.search(start, end, search)
+GET     /search/:start/:end/$search<[A-Za-z0-9_]*>      controllers.Application.search(start, end, search)
 GET     /:start/:end                                    controllers.Application.indexWithDates(start, end)
-GET     /:start/:end/$search<[A-Za-z0-9%]*>             controllers.Application.indexWithSearch(start, end, search)
+GET     /:start/:end/$search<[A-Za-z0-9_]*>             controllers.Application.indexWithSearch(start, end, search)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

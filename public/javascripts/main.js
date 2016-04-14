@@ -80,7 +80,7 @@ function Graph() {
 
         // If the URL has set the search term, fill the box
         if (urlSearch) {
-            $searchBox.val(urlSearch)
+            $searchBox.val(unsanitise(urlSearch));
         }
     } catch (e) {}
 
@@ -275,6 +275,8 @@ function Graph() {
     function updateEvents() {
         var keywords = sanitise($searchBox.val());
         var years = getScaledYears().map(sanitise);
+
+        console.log(keywords);
 
         window.history.pushState(
             undefined, "timeglo.be",
@@ -639,7 +641,13 @@ function Graph() {
     }
 
     function sanitise(s) {
-        return s.replace(/[^A-Za-z0-9\- ]/, "");
+        return s
+            .replace(/[^A-Za-z0-9\-_ ]/g, "")
+            .replace(/ /g, "_");
+    }
+
+    function unsanitise(s) {
+        return s.replace(/_/g, " ");
     }
 
     function getWidthMiddle() {

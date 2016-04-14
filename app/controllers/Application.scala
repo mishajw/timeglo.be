@@ -47,7 +47,7 @@ class Application extends Controller {
 
     stringToSqlDates(startString, endString) match {
       case Some((startDate, endDate)) if startDate before endDate =>
-          val events = DB.searchForEvent(startDate, endDate, searchTerm.replace("%20", " "))
+          val events = DB.searchForEvent(startDate, endDate, searchTerm.replace("_", " "))
 
           log.debug(s"Sending user ${events.length} events")
 
