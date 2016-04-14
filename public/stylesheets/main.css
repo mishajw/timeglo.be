@@ -16,3 +16,9 @@ body {
 #title-end {
     color: rgb(44, 160, 44);
 }
+
+@media (min-width: 768px) {
+    .col-sm-4 {
+        width: auto;
+    }
+}

@@ -34,6 +34,8 @@ function Graph() {
     var continueCount = 0;
     var touchCount = 0;
 
+    var lastNotify;
+
     var projection = d3.geo.orthographic()
         .scale(globeZoom)
         .translate([width * 0.65, height / 2])
@@ -217,6 +219,8 @@ function Graph() {
     }
 
     $searchButton.click(function() {
+        notify("Searching...");
+
         if (isMobile()) {
             hideSidebar();
         }
@@ -274,8 +278,16 @@ function Graph() {
                 handleEvents(JSON.parse(e));
             },
             error: function(e) {
-                console.log("Couldn't get events");
-                console.log(e);
+                var errorMessage;
+
+                try {
+                    var json = $.parseJSON(e.responseText);
+                    errorMessage = json.error;
+                } catch (e) {
+                    errorMessage = "Error from server"
+                }
+
+                notify(errorMessage, "danger")
             }
         });
     }
@@ -296,7 +308,14 @@ function Graph() {
 
         if (events.length == 0) {
             $infobox.html("No events");
+            notify("No events found", "danger");
             return;
+        }
+
+        if (events.length < 7000) {
+            notify("Loaded " + events.length + " events");
+        } else {
+            notify("Found too many events, only showing some", "warning");
         }
 
         $infobox.html("Click on a point to see events");
@@ -654,6 +673,26 @@ function Graph() {
         } else {
             return d3.rgb((1 - (i * 2)) * colorScale, colorScale, 0);
         }
+    }
+
+    function notify(message, type) {
+        if (!type) type = "info";
+
+        if (lastNotify) lastNotify.close();
+
+        lastNotify = $.notify(message, {
+            placement: {
+                from: isMobile() ? "bottom" : "top",
+                align: "right"
+            },
+            type: type,
+            animate: {
+                enter: 'animated fadeIn',
+                exit: 'animated fadeOut'
+            },
+            delay: 3000,
+            allow_dismiss: false
+        });
     }
 
     updateTransformations();
