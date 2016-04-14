@@ -63,6 +63,7 @@ object DateParser {
   def parseOtherDate(dateStr: String)(implicit context: Context = Context("")): Date = {
     val year = (rYearAndBC findAllIn dateStr)
       .toSeq
+      .filter(_.length < 8)
       .map { y =>
         if (y.endsWith(" BC"))
           -y.split(" ").head.toInt
