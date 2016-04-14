@@ -8,7 +8,6 @@ function Graph() {
     // D3 VARIABLES
     var width = $container.width(),
         height = $container.height();
-    var colors = d3.scale.category10();
 
     // GLOBE VARS
     var globeSize = Math.min(height, width) * 0.4;
@@ -65,7 +64,6 @@ function Graph() {
     var $searchButton = $("#search-button");
     var $searchBox = $("#search-box");
     var $toggleButton = $("#sidebar-toggle");
-    var $sidebar = $("#sidebar");
 
     // MOUSE VARS
     var isMouseDown = false;
@@ -151,13 +149,8 @@ function Graph() {
         return false;
     });
 
-    $svg.on("touchstart", function(e) { touchCount ++; });
-    $svg.on("touchend",   function(e) { touchCount --; });
-
-    //$svg.on("mousedrag", function(e) {
-    //    e.preventDefault();
-    //    return false;
-    //});
+    $svg.on("touchstart", function() { touchCount ++; });
+    $svg.on("touchend",   function() { touchCount --; });
 
     function eventMouseClick(d) {
         if (touchCount > 1) {
@@ -625,17 +618,6 @@ function Graph() {
         }
     }
 
-    function formatNumber(x) {
-        if (x > 1000000000) {
-            return (x / 1000000000) .toFixed(2) + " billion";
-        } else if (x > 1000000) {
-            return (x / 1000000)    .toFixed(2) + " million";
-        } else if (x > 1000) {
-            return (x / 1000)       .toFixed(2) + " thousand";
-        }
-
-        return x;
-    }
 
     function capitalise(s) {
         return s.charAt(0).toUpperCase() + s.slice(1);
@@ -696,14 +678,6 @@ function Graph() {
     }
 
     updateTransformations();
-
-    // PUBLIC FUNCTIONS
-
-    this.updateScale = function() {
-        width = $container.width();
-        height = $container.height();
-        projection.translate([getWidthMiddle(), height / 2]);
-    }
 }
 
 var graph;
