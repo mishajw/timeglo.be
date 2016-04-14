@@ -70,8 +70,16 @@ function Graph() {
     var mouseDownLocation = {x: 0, y: 0};
     var mouseLocation = {x: 0, y: 0};
 
-    // OTHER
+    // Get the years from the URL, or use the defaults
     var defaultYears = [2013, 2016];
+    if (urlStart && urlEnd) {
+        defaultYears = [parseInt(urlStart), parseInt(urlEnd)];
+    }
+
+    // If the URL has set the search term, fill the box
+    if (urlSearch) {
+        $searchBox.val(urlSearch)
+    }
 
     // Setup
     $startDate.val(defaultYears[0]);
