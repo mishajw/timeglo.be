@@ -151,17 +151,6 @@ object DB {
     eventId
   }
 
-  def getLocatedEvents: Seq[LocatedEvent] = {
-    sql"""
-         SELECT E.description, E.occurs, E.wiki_page, L.name, L.latitude, L.longitude, P.type AS precision
-         FROM located_events_db LE, events E, locations L, date_precision P
-         WHERE
-          LE.event_id = E.id AND
-          LE.location_id = L.id AND
-          E.precision = P.id
-       """.map(resultsToLocatedEvent).list.apply()
-  }
-
   def getLocationForLink(link: String): Option[Long] = {
     sql"""
          SELECT G.gt_id AS id
@@ -171,17 +160,6 @@ object DB {
            P.page_id = G.gt_page_id AND
            G.gt_name IS NOT NULL
        """.map(_.long("id")).list.apply().headOption
-  }
-
-  def performIndexing() = {
-    sql"""
-       CREATE INDEX IF NOT EXISTS occurs_idx     ON events                (occurs);
-       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_db     (location_id);
-       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_db     (event_id);
-       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_wiki   (location_id);
-       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_wiki   (event_id);
-       CREATE INDEX IF NOT EXISTS page_title_idx ON page                  (page_title);
-       """.update.apply()
   }
 
   def searchForEvent(start: java.sql.Date, end: java.sql.Date, searchWords: String): Seq[LocatedEvent] = {
@@ -229,6 +207,17 @@ object DB {
 
          LIMIT 7000
        """.map(resultsToLocatedEvent).list.apply()
+  }
+
+  def performIndexing() = {
+    sql"""
+       CREATE INDEX IF NOT EXISTS occurs_idx     ON events                (occurs);
+       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_db     (location_id);
+       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_db     (event_id);
+       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_wiki   (location_id);
+       CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_wiki   (event_id);
+       CREATE INDEX IF NOT EXISTS page_title_idx ON page                  (page_title);
+       """.update.apply()
   }
 
   private def resultsToLocatedEvent(r: WrappedResultSet): LocatedEvent =
