@@ -726,7 +726,7 @@ function Graph() {
         var hasSearch = search && search != "";
 
         var text = "All" + 
-            (hasSearch ? search : "")
+            (hasSearch ? " " + search : "")
             + " events between " + start + " and " + end;
         var url = "http://timeglo.be" + window.location.pathname;
 
