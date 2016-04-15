@@ -2,7 +2,7 @@ package backend.parser.sparql
 
 import java.time.Year
 
-import backend.{PreciseToMonth, NotPrecise, PreciseToYear, Date}
+import backend.{Date, NotPrecise, PreciseToMonth, PreciseToYear}
 import play.api.Logger
 
 object DateParser {

@@ -1,12 +1,9 @@
 package backend.parser
 
 import backend.retriever.wikipedia.APIArticleRetriever
-import backend.util.DB
-import backend.months
-import backend.{Date, Event}
+import backend.{Date, Event, months}
 import play.api.Logger
 
-import scala.collection.immutable.IndexedSeq
 import scala.util.Try
 
 /**

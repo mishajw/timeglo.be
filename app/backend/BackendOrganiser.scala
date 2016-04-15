@@ -1,7 +1,7 @@
 package backend
 
 import backend.parser.sparql.SPARQLParser
-import backend.parser.{LinkLocationExtractor, APIEventExtractor}
+import backend.parser.{APIEventExtractor, LinkLocationExtractor}
 import backend.retriever.dbpedia.SPARQLListRetriever
 import backend.util.DB
 import play.api.Logger
