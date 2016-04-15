@@ -718,6 +718,8 @@ function Graph() {
         window.history.pushState(
             undefined, "timeglo.be",
             "/" + start + "/" + end + (hasSearch ? "/" + search : ""));
+
+        ga('send', 'pageview', location.pathname);
     }
 
     function updateShareButtons(start, end, search) {
