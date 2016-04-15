@@ -271,9 +271,12 @@ object DB {
         r.string("name"),
         Coords(r.double("latitude"), r.double("longitude")), ""))
 
-  private def toSqlDate(d: Date) = {
+  def toSqlDate(d: Date) = {
     val cal = Calendar.getInstance()
-    cal.set(Calendar.YEAR, d.year)
+    cal.set(Calendar.YEAR, {
+      if (d.year > 0) d.year
+      else d.year + 1
+    })
     cal.set(Calendar.MONTH, d.month - 1)
     cal.set(Calendar.DAY_OF_MONTH, d.date)
 
