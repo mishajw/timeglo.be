@@ -286,9 +286,7 @@ function Graph() {
         if (firstLoad) {
             firstLoad = false;
         } else {
-            window.history.pushState(
-                undefined, "timeglo.be",
-                "/" + years[0] + "/" + years[1] + (keywords == "" ? "" : "/" + keywords));
+            updateSearchTerms(years[0], years[1], keywords);
         }
 
         $.ajax("/search/1.1." + years[0] + "/31.12." + years[1] + "/" + keywords, {
@@ -709,10 +707,27 @@ function Graph() {
         });
     }
 
-    function updateURL() {
-        var keywords = sanitise($searchBox.val());
-        var years = getScaledYears().map(sanitise);
+    function updateSearchTerms(start, end, search) {
+        var hasSearch = search && search != "";
 
+        window.history.pushState(
+            undefined, "timeglo.be",
+            "/" + start + "/" + end + (hasSearch ? "/" + search : ""));
+
+        var $twitter = $("#twitter-container");
+        $twitter.html("");
+
+        $twitter.append(
+            $("<a></a>")
+                .attr("href", "https://twitter.com/share")
+                .attr("class", "twitter-share-button")
+                .attr("data-text",
+                    "See everything that happened from " + start + " to " + end +
+                    (hasSearch ? " about \"" + search + "\"" : ""))
+                .attr("data-hashtags", "timeglobe")
+        );
+
+        twttr.widgets.load();
     }
 
     updateTransformations();

@@ -63,3 +63,10 @@
     text-align: center;
     margin-top: 10px;
 }
+
+#social-container {
+    border-top: 1px solid #AAA;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 5px;
+}
