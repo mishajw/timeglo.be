@@ -714,20 +714,18 @@ function Graph() {
             undefined, "timeglo.be",
             "/" + start + "/" + end + (hasSearch ? "/" + search : ""));
 
-        var $twitter = $("#twitter-container");
-        $twitter.html("");
+        var text = "Look at events between " + start + " and " + end +
+            (hasSearch ? " about " + search : "");
+        var url = "http://timeglo.be" + window.location.pathname;
 
-        $twitter.append(
-            $("<a></a>")
-                .attr("href", "https://twitter.com/share")
-                .attr("class", "twitter-share-button")
-                .attr("data-text",
-                    "See everything that happened from " + start + " to " + end +
-                    (hasSearch ? " about \"" + search + "\"" : ""))
-                .attr("data-hashtags", "timeglobe")
-        );
+        $("#twitter-container")
+            .attr("href", "https://twitter.com/share" +
+                "?text=" + encodeURIComponent(text) +
+                "&url=" + encodeURIComponent(url) +
+                "&hashtags=timeglobe");
 
-        twttr.widgets.load();
+        $("#facebook-container")
+            .attr("href", "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url));
     }
 
     updateTransformations();
