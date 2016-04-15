@@ -34,7 +34,9 @@ class Application extends Controller {
   }
 
   def respondIfDatesParse(result: Result, start: String, end: String): Result = {
-    (start forall (_.isDigit), end forall (_.isDigit)) match {
+    def isYear(d: String) = d.forall(c => c.isDigit || c == '-')
+
+    (isYear(start), isYear(end)) match {
       case (true, true) => result
       case _ => BadRequest(views.html.error("Not valid dates", 400))
     }
