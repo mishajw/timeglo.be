@@ -1,7 +1,12 @@
+import org.json4s.ParserUtil.ParseException
+
 /**
   * Created by misha on 27/12/15.
   */
 package object backend {
+
+  val dateFormatString: String = "dd.MM.yyyy"
+  val dateFormat = new java.text.SimpleDateFormat(dateFormatString)
 
   val months = Seq(
     "January", "February", "March",
@@ -30,4 +35,16 @@ package object backend {
   case object NotPrecise extends DatePrecision
 
   def strip(text: String) = text.toLowerCase().replaceAll("\\W", "")
+
+  def stringToSqlDates(start: String, end: String): Option[(java.sql.Date, java.sql.Date)] = {
+    try {
+      Some(
+        new java.sql.Date(dateFormat.parse(start).getTime),
+        new java.sql.Date(dateFormat.parse(end).getTime))
+    } catch {
+      case e: ParseException => None
+    }
+  }
+
+  def stringToSqlDate(s: String) = new java.sql.Date(dateFormat.parse(s).getTime)
 }

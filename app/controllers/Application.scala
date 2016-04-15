@@ -9,13 +9,11 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods
 import play.api.Logger
 import play.api.mvc._
+import backend._
 
 class Application extends Controller {
 
   private val log = Logger(getClass)
-
-  private val dateFormatString: String = "dd.MM.yyyy"
-  private val dateFormat = new java.text.SimpleDateFormat(dateFormatString)
 
   private val regexBadLocationType = "adm.+".r
 
@@ -126,15 +124,5 @@ class Application extends Controller {
     BadRequest(stringifyJson(JObject(List(
       "error" -> JString(errorMsg))
     )))
-  }
-
-  private def stringToSqlDates(start: String, end: String): Option[(java.sql.Date, java.sql.Date)] = {
-    try {
-      Some(
-        new java.sql.Date(dateFormat.parse(start).getTime),
-        new java.sql.Date(dateFormat.parse(end).getTime))
-    } catch {
-      case e: ParseException => None
-    }
   }
 }

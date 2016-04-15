@@ -4,10 +4,15 @@ import java.time.LocalDate
 import java.util.Calendar
 
 import backend._
+import org.json4s.JsonAST.JObject
 import play.api.Logger
 import scalikejdbc.{AutoSession, ConnectionPool, GlobalSettings, LoggingSQLAndTimeSettings, _}
 
 import scala.io.{BufferedSource, Source}
+import org.json4s._
+import org.json4s.native.JsonMethods._
+
+import scala.reflect.macros.blackbox
 
 /**
   * Created by misha on 28/12/15.
@@ -218,6 +223,45 @@ object DB {
        CREATE INDEX IF NOT EXISTS el_locid_idx   ON located_events_wiki   (event_id);
        CREATE INDEX IF NOT EXISTS page_title_idx ON page                  (page_title);
        """.update.apply()
+  }
+
+  def deleteBlacklisted(): Unit = {
+    case class BL(date: String, location: String, search: String)
+    case class BLCollection(blacklisted: Seq[BL])
+
+    implicit val formats = DefaultFormats
+    val json = parse(Source.fromFile("conf/resources/blacklist.json").mkString)
+    val blacklisted: BLCollection = json.extract[BLCollection]
+
+    for (b <- blacklisted.blacklisted) {
+      log.info(s"Removing $b")
+      sql"""
+         DELETE FROM events
+         WHERE
+           occurs = ${backend.stringToSqlDate(b.date)} AND
+           description LIKE '%' || ${b.search} || '%' AND
+           (
+             id IN (
+               SELECT LED.event_id FROM
+                 located_events_db LED,
+                 locations L
+               WHERE
+                 LED.location_id = L.id AND
+                 L.name = ${b.location}
+             ) OR
+             id IN (
+               SELECT LEW.event_id FROM
+                 located_events_wiki LEW,
+                 geo_tags G,
+                 page P
+               WHERE
+                 LEW.location_id = G.gt_id AND
+                 P.page_id = G.gt_page_id AND
+                 P.page_title = ${b.location}
+             )
+           )
+       """.update.apply()
+    }
   }
 
   private def resultsToLocatedEvent(r: WrappedResultSet): LocatedEvent =

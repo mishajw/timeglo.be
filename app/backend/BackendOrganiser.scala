@@ -10,7 +10,8 @@ object BackendOrganiser {
   private val log = Logger(getClass)
 
   def main(args: Array[String]) {
-    runAll()
+//    runAll()
+    DB.deleteBlacklisted()
   }
 
   private def runAll() = {
