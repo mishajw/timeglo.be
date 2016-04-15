@@ -1,0 +1,23 @@
+{
+  "whitelist": [
+    {
+      "event": {
+        "date": {
+          "date": 18,
+          "month": 4,
+          "year": 2016,
+          "precision": "PreciseToDate"
+        },
+        "desc": "timeglo.be is released",
+      },
+      "location": {
+        "name": "SW2 1PS",
+        "coords": {
+          "lat": 51.455626,
+          "long": -0.110239
+        },
+        "locationType": ""
+      }
+    }
+  ]
+}

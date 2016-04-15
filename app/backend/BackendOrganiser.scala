@@ -26,6 +26,9 @@ object BackendOrganiser {
     log.info("Removing blacklisted")
     DB.deleteBlacklisted()
 
+    log.info("Adding whitelisted")
+    DB.addWhitelisted()
+
     log.info("Done")
   }
 

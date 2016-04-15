@@ -261,6 +261,16 @@ object DB {
     }
   }
 
+  def addWhitelisted(): Unit = {
+    val json = parse(Source.fromFile("conf/resources/whitelist.json").mkString)
+
+    implicit val formats = DefaultFormats
+    case class LECollection(whitelist: Seq[LocatedEvent])
+    val les: Seq[LocatedEvent] = json.extract[LECollection].whitelist
+
+    les map insertLocatedEvent
+  }
+
   private def resultsToLocatedEvent(r: WrappedResultSet): LocatedEvent =
     LocatedEvent(
       Event(
