@@ -281,13 +281,13 @@ function Graph() {
         var keywords = sanitise($searchBox.val());
         var years = getScaledYears().map(sanitise);
 
-        console.log(keywords);
-
         if (firstLoad) {
             firstLoad = false;
         } else {
             updateSearchTerms(years[0], years[1], keywords);
         }
+
+        updateShareButtons(years[0], years[1], keywords);
 
         $.ajax("/search/1.1." + years[0] + "/31.12." + years[1] + "/" + keywords, {
             type: "GET",
@@ -713,6 +713,10 @@ function Graph() {
         window.history.pushState(
             undefined, "timeglo.be",
             "/" + start + "/" + end + (hasSearch ? "/" + search : ""));
+    }
+
+    function updateShareButtons(start, end, search) {
+        var hasSearch = search && search != "";
 
         var text = "Look at events between " + start + " and " + end +
             (hasSearch ? " about " + search : "");
