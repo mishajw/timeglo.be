@@ -60,3 +60,8 @@
 .social-icon { color: white; }
 #facebook-container .social-circle { color: #3b5999; }
 #twitter-container .social-circle { color: #55acee; }
+
+#social-container a:hover,
+#social-container a:visited,
+#social-container a:active
+  { text-decoration: none; }
