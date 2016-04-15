@@ -45,7 +45,7 @@ object DateParser {
   }
 
   private def parseMonthDate(month: Int, date: Int)(implicit context: Context = Context("")): Date = {
-    (rNumber findAllIn context.s)
+    (rNumber findAllIn context.s.replace(",", ""))
       .map(_.toInt)
       .toSeq
       .filter(_ <= Year.now().getValue)
