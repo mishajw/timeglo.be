@@ -280,6 +280,11 @@ function Graph() {
     function updateEvents() {
         var keywords = sanitise($searchBox.val());
         var years = getScaledYears().map(sanitise);
+        
+        if (years[0] == "" || years[1] == "") {
+            notify("Not valid dates", "danger");
+            return;
+        }
 
         if (firstLoad) {
             firstLoad = false;

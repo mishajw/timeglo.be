@@ -42,7 +42,7 @@ package object backend {
         new java.sql.Date(dateFormat.parse(start).getTime),
         new java.sql.Date(dateFormat.parse(end).getTime))
     } catch {
-      case e: ParseException => None
+      case e: java.text.ParseException => None
     }
   }
 

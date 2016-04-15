@@ -45,8 +45,9 @@ class Application extends Controller {
   def search(startString: String, endString: String, searchTerm: String) = Action {
     log.debug(s"Asked for date between $startString and $endString, with search term $searchTerm")
 
-    stringToSqlDates(startString, endString) match {
-      case Some((startDate, endDate)) if startDate before endDate =>
+    try {
+      stringToSqlDates(startString, endString) match {
+        case Some((startDate, endDate)) if startDate before endDate =>
           val events = DB.searchForEvent(startDate, endDate, searchTerm.replace("_", " "))
 
           log.debug(s"Sending user ${events.length} events")
@@ -54,8 +55,13 @@ class Application extends Controller {
           Ok(
             stringifyJson(
               eventsToJson(events)))
-      case None => errorJson("Incorrect date format")
-      case _ => errorJson("Start date must be before end date")
+        case None => errorJson("Incorrect date format")
+        case _ => errorJson("Start date must be before end date")
+      }
+    } catch {
+      case e: Throwable =>
+        log.error("Got error when giving user events", e)
+        errorJson("Error from server")
     }
   }
 
