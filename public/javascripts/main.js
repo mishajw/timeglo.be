@@ -336,11 +336,7 @@ function Graph() {
             notify("Found too many events, only showing some", "warning");
         }
 
-        $infobox.html(<p>Welcome to timeglobe!</p>
-        <p>Put in some dates to see what was going on across the globe in that period or use the search bar to narrow it down to events from the period containing that term. </p>
-        <p>Click the circles to get details of the events in that place.</p>
-        <p>Interested in the <a href="https://timeglo.be/1799/1816/napoleon">Napoleonic Wars?</a> How about the <a href="https://timeglo.be/1551/1616/Japan">unification of Japan?</a> Or survey a world of Cold War tensions and struggles for independence and civil rights in <a href="https://timeglo.be/1962/1965">1962-5</a>?</p>
-        <p>Whatever you're looking for, happy exploring!</p>);
+        $infobox.html("oops");
 
         var topojsonObject = {
             type: "Topology",
