@@ -232,11 +232,7 @@ function Graph() {
 
         updateEvents();
     });
-
-    $searchBox.keypress(function(e) {
-        if (e.which == 13) $searchBox.click();
-    });
-
+    
     $(window).on("popstate", function () {
         location.reload();
     });
