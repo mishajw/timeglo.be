@@ -232,7 +232,7 @@ function Graph() {
 
         updateEvents();
     });
-    
+
     $(window).on("popstate", function () {
         location.reload();
     });
