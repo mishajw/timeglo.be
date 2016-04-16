@@ -10,10 +10,14 @@ body {
     margin-bottom: 20px;
     padding-bottom: 5px;
     text-align: center;
-    font-weight: bold;
 }
 
-#title-end {
+.title-start {
+    font-weight: bold;
+    color: #333;
+}
+.title-end {
+    font-weight: bold;
     color: rgb(44, 160, 44);
 }
 
