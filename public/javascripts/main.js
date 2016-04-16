@@ -326,6 +326,7 @@ function Graph() {
         svg.selectAll(".points").remove();
 
         if (events.length == 0) {
+            $("#intro-box").hide();
             $infobox.html("No events");
             notify("No events found", "danger");
             return;
@@ -336,8 +337,7 @@ function Graph() {
         } else {
             notify("Found too many events, only showing some", "warning");
         }
-        
-        $("#intro-box").show();
+
         $infobox.html("");
 
         var topojsonObject = {
