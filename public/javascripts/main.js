@@ -172,6 +172,7 @@ function Graph() {
         showSidebar();
 
         $("#infobox-container").scrollTop(0);
+        $("#intro-box").hide();
         $infobox.html(getText(d));
 
         $(".continue-button")
@@ -336,7 +337,8 @@ function Graph() {
             notify("Found too many events, only showing some", "warning");
         }
         
-        $infobox.html();
+        $("#intro-box").show();
+        $infobox.html("");
 
         var topojsonObject = {
             type: "Topology",
