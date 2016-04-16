@@ -346,7 +346,7 @@ function Graph() {
             type: "Topology",
             objects: {
                 events: {
-                    type: "MultiPoint",
+                    type: "Point",
                     coordinates: []
                 }
             },
@@ -407,42 +407,42 @@ function Graph() {
             };
 
             // Set the topojson object to have details for this event
-            topojsonObject.objects.events.coordinates = [[
+            topojsonObject.objects.events.coordinates = [
                 parseInt(group[0].location.long),
                 parseInt(group[0].location.lat),
                 // Inject into coordinates so we can get the data back later
                 eventObject
-            ]];
+            ];
 
             svg.append("path")
                 .datum(topojson.feature(topojsonObject, topojsonObject.objects.events))
                 .attr("class", "points")
                 .attr("id", eventObject.pointID)
                 .attr("fill", function(eo) {
-                    var timestamp = getAverageTimestamp(eo.geometry.coordinates[0][2].events);
+                    var timestamp = getAverageTimestamp(eo.geometry.coordinates[2].events);
                     var colour = (timestamp - minTimestamp) / (maxTimestamp - minTimestamp);
                     return scaleToTrafficLights(colour)
                 })
                 .attr("stroke", "white")
                 .attr("opacity", 0.9)
                 .on("click", function(e) {
-                    eventMouseClick(e.geometry.coordinates[0][2]);
+                    eventMouseClick(e.geometry.coordinates[2]);
                 })
                 .on("touchend", function(e) {
-                    eventMouseClick(e.geometry.coordinates[0][2]);
+                    eventMouseClick(e.geometry.coordinates[2]);
                 })
                 .on("mouseover", function(e) {
-                    eventMouseOver(e.geometry.coordinates[0][2]);
+                    eventMouseOver(e.geometry.coordinates[2]);
                 })
                 .on("mouseout", function(e) {
-                    eventMouseOut(e.geometry.coordinates[0][2]);
+                    eventMouseOut(e.geometry.coordinates[2]);
                 })
                 .attr("d", path.pointRadius(function(d) {
                     try {
                         var max = globeMaxEvents > globeDefaultMax ? globeMaxEvents : globeDefaultMax;
                         var minSize = events.length > globeBusyThreshold ? globeMinPointSizeBusy : globeMinPointSize;
                         var min = 1;
-                        var amount = d.geometry.coordinates[0][2].events.length;
+                        var amount = d.geometry.coordinates[2].events.length;
                         var amountScale = (amount - min) / (max - min);
                         var unscaledSize = ((amountScale) * (globeMaxPointSize - minSize)) + minSize;
                         return unscaledSize * Math.sqrt(parseFloat(globeZoom) * (globeSize / 400));
