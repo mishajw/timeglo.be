@@ -335,7 +335,7 @@ function Graph() {
         } else {
             notify("Found too many events, only showing some", "warning");
         }
-
+        
         $infobox.html(<p>"Welcome to timeglobe!"</p>
         <p>"Put in some dates to explore that period or use the search bar to narrow it down further."</p>
         <p>"Click the circles to get details of the events in that place."</p>
