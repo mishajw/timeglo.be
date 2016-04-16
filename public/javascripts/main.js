@@ -686,7 +686,7 @@ function Graph() {
         if (i < 0.5) {
             return d3.rgb(colorScale, (i * 2) * colorScale, 0);
         } else {
-            return d3.rgb((1 - i) * 2)) * colorScale, colorScale, 0);
+            return d3.rgb(((1 - i) * 2) * colorScale, colorScale, 0);
         }
     }
 
