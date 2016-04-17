@@ -333,7 +333,7 @@ function Graph() {
         }
 
         if (events.length < 7000) {
-            notify("Loaded " + events.length + " events");
+            notify("Loaded " + events.length + " event" + ((events.length > 1) ? "s" : ""));
         } else {
             notify("Found too many events, only showing some", "warning");
         }
