@@ -7,6 +7,7 @@ import backend.util.DB
 import org.json4s.ParserUtil.ParseException
 import org.json4s._
 import org.json4s.jackson.JsonMethods
+import org.postgresql.util.PSQLException
 import play.api.Logger
 import play.api.mvc._
 import backend._
@@ -36,9 +37,13 @@ class Application extends Controller {
   def respondIfDatesParse(result: Result, start: String, end: String): Result = {
     def isYear(d: String) = d.forall(c => c.isDigit || c == '-')
 
-    (isYear(start), isYear(end)) match {
-      case (true, true) => result
-      case _ => BadRequest(views.html.error("Not valid dates", 400))
+    try {
+      (isYear(start), isYear(end)) match {
+        case (true, true) => result
+        case _ => BadRequest(views.html.error("Not valid dates", 400))
+      }
+    } catch {
+      case e: PSQLException => errorJson("Dates out of range")
     }
   }
 
