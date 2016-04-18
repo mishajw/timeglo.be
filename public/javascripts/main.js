@@ -10,7 +10,10 @@ function Graph() {
         height = $container.height();
 
     // GLOBE VARS
-    var globeSize = Math.min(height, width) * 0.4;
+    var globeSize = function() {
+        return Math.min(height, width) * 0.4;
+    };
+
     var globeSea = undefined;
     var globeRotation = {x: parseInt(width) / 2, y: parseInt(height) * 0.7};
     var desGlobeRotation = {x: globeRotation.x, y: globeRotation.y};
@@ -272,7 +275,12 @@ function Graph() {
         svg.call(zoomListener)
     });
 
-    $(window).resize(updateTranslation);
+    $(window).resize(function() {
+        width = $container.width();
+        height = $container.height();
+
+        updateTranslation();
+    });
 
     function updateEvents() {
         var keywords = sanitise($searchBox.val());
@@ -320,7 +328,7 @@ function Graph() {
             svg.append("circle")
                 .attr("cx", getWidthMiddle())
                 .attr("cy", height * 0.5)
-                .attr("r", globeSize)
+                .attr("r", globeSize())
                 .attr("fill", "#EEE")
                 .attr("stroke", "#DDD")
                 .attr("stroke-width", "0.5");
@@ -447,7 +455,7 @@ function Graph() {
                         var amount = d.geometry.coordinates[2].events.length;
                         var amountScale = (amount - min) / (max - min);
                         var unscaledSize = ((amountScale) * (globeMaxPointSize - minSize)) + minSize;
-                        return unscaledSize * Math.sqrt(parseFloat(globeZoom) * (globeSize / 400));
+                        return unscaledSize * Math.sqrt(parseFloat(globeZoom) * (globeSize() / 400));
                     } catch (err) {
                         // Not a point
                         return 1;
@@ -490,8 +498,8 @@ function Graph() {
     function updateZoom() {
         if (globeZoom > globeZoomMax) { globeZoom = globeZoomMax; desGlobeZoom = globeZoomMax; }
         if (globeZoom < globeZoomMin) { globeZoom = globeZoomMin; desGlobeZoom = globeZoomMin; }
-        if (projection) projection.scale(globeZoom * globeSize);
-        if (globeSea) globeSea.attr("r", globeZoom * globeSize);
+        if (projection) projection.scale(globeZoom * globeSize());
+        if (globeSea) globeSea.attr("r", globeZoom * globeSize());
     }
 
     function getText(eventsObject) {
