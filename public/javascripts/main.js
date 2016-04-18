@@ -291,12 +291,16 @@ function Graph() {
 
         updateShareButtons(years[0], years[1], keywords);
 
+
+        $searchButton.prop("disabled", true);
         $.ajax("/search/1.1." + years[0] + "/31.12." + years[1] + "/" + keywords, {
             type: "GET",
             success: function(e) {
+                $searchButton.prop("disabled", false);
                 handleEvents(JSON.parse(e));
             },
             error: function(e) {
+                $searchButton.prop("disabled", false);
                 var errorMessage;
 
                 try {
