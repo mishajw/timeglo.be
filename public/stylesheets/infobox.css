@@ -3,10 +3,11 @@
     margin: 1em 0 0;
     -webkit-flex: 1 1 15em;
     -moz-flex: 1 1 15em;
+    display: -moz-groupbox;
     flex: 1 1 15em;
 }
 
-#infobox {
+#infobox, #intro-box {
     display: table;
     text-align: center;
     width: 100%;
