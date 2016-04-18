@@ -276,6 +276,7 @@ function Graph() {
     });
 
     $(window).resize(function() {
+        $container.height($(window).height());
         width = $container.width();
         height = $container.height();
 
