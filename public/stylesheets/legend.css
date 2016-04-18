@@ -16,7 +16,6 @@
 
 .legend-item {
     display: -webkit-box;
-    display: -moz-box;
 }
 
 .legend-symbol {
@@ -32,6 +31,8 @@
 
 .legend-symbol, .legend-description {
     padding: 0.2em;
+    display: -moz-inline-stack;
+    vertical-align: bottom;
 }
 
 #legend-symbol-color > div {
