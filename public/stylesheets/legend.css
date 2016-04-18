@@ -16,22 +16,20 @@
 
 .legend-item {
     display: -webkit-box;
-    display: -moz-box;
 }
-
 .legend-symbol {
     font-size: 0.8em;
     display: inline-block;
 }
-
 .legend-description {
     text-align: left;
     padding-top: 0.25em;
     padding-bottom: 0;
 }
-
 .legend-symbol, .legend-description {
     padding: 0.2em;
+    display: -moz-inline-stack;
+    vertical-align: bottom;
 }
 
 #legend-symbol-color > div {
