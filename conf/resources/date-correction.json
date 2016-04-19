@@ -39,7 +39,21 @@
 			"location": "Japan",
 			"search": "Hataya",
 			"newDate": "8.9.1600"
+		},{
+			"date": "2.11.2",
+			"location": "Brownsville, Cameron County, Texas",
+			"search": "successful effort",
+			"newDate": "2.11.1863"
+		}, {
+			"date": "1.1.6",
+			"location": "Nauru",
+			"search": "two attacks",
+			"newDate": "1.1.1940"
+		},{
+			"date": "1.1.8",
+			"location": "Bougainville",
+			"search": "unsuccessful",
+			"newDate": "1.1.1944"
 		}
-
 	]
 }
