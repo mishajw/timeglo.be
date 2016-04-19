@@ -243,10 +243,16 @@ function Graph() {
     function setReportButtons() {
         $(".report-button").on("click", function() {
             var index = parseInt($(this).attr("id").replace("report", ""));
-            var response = confirm(
-                "Do you want to flag this event as having an incorrect date or location?");
-
-            if (response) {
+            swal({
+                title: "Are you sure?",
+                text: "Only flag events if the date or location is incorrect",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Continue",
+                closeOnConfirm: false
+            }, function(){
+                swal("Flagged", "Thank you for flagging as incorrect, we'll fix this as soon as possible!", "success");
                 $.ajax("/report", {
                     method: "POST",
                     data: {
@@ -254,7 +260,7 @@ function Graph() {
                             JSON.stringify(infoboxEvents[index])
                     }
                 });
-            }
+            });
         });
     }
 
