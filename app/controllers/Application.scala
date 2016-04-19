@@ -37,13 +37,9 @@ class Application extends Controller {
   def respondIfDatesParse(result: Result, start: String, end: String): Result = {
     def isYear(d: String) = d.forall(c => c.isDigit || c == '-')
 
-    try {
-      (isYear(start), isYear(end)) match {
-        case (true, true) => result
-        case _ => BadRequest(views.html.error("Not valid dates", 400))
-      }
-    } catch {
-      case e: PSQLException => errorJson("Dates out of range")
+    (isYear(start), isYear(end)) match {
+      case (true, true) => result
+      case _ => BadRequest(views.html.error("Not valid dates", 400))
     }
   }
 
@@ -64,6 +60,7 @@ class Application extends Controller {
         case _ => errorJson("Start date must be before end date")
       }
     } catch {
+      case e: PSQLException => errorJson("Dates out of range")
       case e: Throwable =>
         log.error("Got error when giving user events", e)
         errorJson("Error from server")
