@@ -35,6 +35,7 @@ function Graph() {
     var minTimestamp;
     var continueCount = 0;
     var touchCount = 0;
+    var infoboxEvents = [];
 
     var lastNotify;
     var firstLoad = true;
@@ -178,6 +179,8 @@ function Graph() {
         $("#intro-box").hide();
         $infobox.html(getText(d));
 
+        setReportButtons();
+
         $(".continue-button")
             .click(function() {
                 var $this = $(this);
@@ -236,6 +239,24 @@ function Graph() {
 
         updateEvents();
     });
+
+    function setReportButtons() {
+        $(".report-button").on("click", function() {
+            var index = parseInt($(this).attr("id").replace("report", ""));
+            var response = confirm(
+                "Do you want to flag this event as having an incorrect date or location?");
+
+            if (response) {
+                $.ajax("/report", {
+                    method: "POST",
+                    data: {
+                        report:
+                            JSON.stringify(infoboxEvents[index])
+                    }
+                });
+            }
+        });
+    }
 
     //$(window).on("popstate", function (e) {
     window.addEventListener('popstate', function(e) {
@@ -518,6 +539,8 @@ function Graph() {
             }
         });
 
+        infoboxEvents = eventsObject.events;
+
         eventsObject.events.forEach(function(e, i) {
             if (i == 0)
                 fullText +=
@@ -535,6 +558,7 @@ function Graph() {
             fullText +=
                 "<div class='event-desc'>" +
                     formatDescription(e.desc, e.wikiPage) +
+                    "<a class='report-button' id='report" + i + "'>Flag as wrong</a>" +
                 "</div>";
 
             fullText += "</div>";

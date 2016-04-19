@@ -140,6 +140,8 @@ class Application extends Controller {
   }
 
   def report = Action(parse.tolerantFormUrlEncoded) { request =>
+    println(request.body)
+
     try {
       request.body.get("report").map(_.head) match {
         case Some(report) =>
