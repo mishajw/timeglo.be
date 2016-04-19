@@ -237,7 +237,9 @@ function Graph() {
         updateEvents();
     });
 
-    $(window).on("popstate", function () {
+    //$(window).on("popstate", function (e) {
+    window.addEventListener('popstate', function(e) {
+        if (!e.state) return;
         location.reload();
     });
 
@@ -727,7 +729,7 @@ function Graph() {
         var hasSearch = search && search != "";
 
         window.history.pushState(
-            undefined, "timeglo.be",
+            { flag: true }, "timeglo.be",
             "/" + start + "/" + end + (hasSearch ? "/" + search : ""));
 
         ga('send', 'pageview', location.pathname);
