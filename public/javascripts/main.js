@@ -553,12 +553,12 @@ function Graph() {
             fullText +=
                 "<div class='event-date'>" +
                     formatDate(e.date, e.datePrecision) +
+                    "<a class='report-button' id='report" + i + "'>Flag as wrong</a>" +
                 "</div>";
 
             fullText +=
                 "<div class='event-desc'>" +
                     formatDescription(e.desc, e.wikiPage) +
-                    "<a class='report-button' id='report" + i + "'>Flag as wrong</a>" +
                 "</div>";
 
             fullText += "</div>";
