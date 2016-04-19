@@ -50,11 +50,7 @@ object DateParser {
       .map(_.toInt)
       .toSeq
       .filter(_ <= Year.now().getValue)
-      .groupBy(identity)
-      .map { case (y, ys) => (y, ys.size) }
-      .toSeq
-      .sortBy { case (y, i) => (i, y) }
-      .map { case (y, _) => y }
+      .sorted
       .lastOption match {
         case Some(year) => Date(date, month, year)
         case None => Date(precision = NotPrecise)
