@@ -59,3 +59,10 @@
 #intro-box {
     text-align: center;
 }
+
+.report-button {
+    display: block;
+    white-space: nowrap;
+    font-size: 90%;
+    color: #CC0000;
+}
