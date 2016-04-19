@@ -307,6 +307,48 @@ object DB {
     }
   }
 
+  def correctDates(): Unit = {
+    val json = parse(Source.fromFile("conf/resources/date-correction.json").mkString)
+
+    implicit val formats = DefaultFormats
+    case class Correction(date: String, location: String, search: String, newDate: String)
+    case class DCCollection(corrections: Seq[Correction])
+
+    val corrections = json.extract[DCCollection].corrections
+
+    for (c <- corrections) {
+      log.debug(s"Performing modification: $c")
+
+      sql"""
+           UPDATE events
+           SET occurs = ${stringToSqlDate(c.newDate)}
+           WHERE
+             occurs = ${stringToSqlDate(c.date)} AND
+             (
+              id IN (
+                SELECT LED.event_id FROM
+                  located_events_db LED,
+                  locations L
+                WHERE
+                  LED.location_id = L.id AND
+                  L.name = ${c.location}
+              ) OR
+              id IN (
+                SELECT LEW.event_id FROM
+                  located_events_wiki LEW,
+                  geo_tags G,
+                  page P
+                WHERE
+                  LEW.location_id = G.gt_id AND
+                  P.page_id = G.gt_page_id AND
+                  P.page_title = ${c.location}
+              )
+            )
+
+         """.update.apply()
+    }
+  }
+
   private def resultsToLocatedEvent(r: WrappedResultSet): LocatedEvent =
     LocatedEvent(
       Event(

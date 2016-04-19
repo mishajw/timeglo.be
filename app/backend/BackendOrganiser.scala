@@ -29,6 +29,10 @@ object BackendOrganiser {
     log.info("Adding whitelisted")
     DB.addWhitelisted()
 
+    log.info("Performing manual corrections")
+    DB.correctLocations()
+    DB.correctDates()
+
     log.info("Done")
   }
 
