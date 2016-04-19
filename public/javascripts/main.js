@@ -729,7 +729,7 @@ function Graph() {
         var hasSearch = search && search != "";
 
         window.history.pushState(
-            { flag: true }, "timeglo.be",
+            { flag: true }, "timeglobe",
             "/" + start + "/" + end + (hasSearch ? "/" + search : ""));
 
         ga('send', 'pageview', location.pathname);
