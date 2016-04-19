@@ -6,6 +6,90 @@
       "long": 25,
       "newLat": -25.85,
       "newLong": 25.633333
+    },
+    {
+      "name": "Johannesburg",
+      "lat": 26,
+      "long": 28,
+      "newLat": -26.20439910888672,
+      "newLong": 28.04560089111328
+    },
+    {
+      "name": "Rustenburg City",
+      "lat": 25,
+      "long": 27,
+      "newLat": -25.6667,
+      "newLong": 27.25
+    },
+    {
+      "name": "Marabastad",
+      "lat": 25,
+      "long": 28,
+      "newLat": -25.740999221801758,
+      "newLong": 28.175899505615234
+    },
+    {
+      "name": "Lydenburg",
+      "lat": 25,
+      "long": 30,
+      "newLat": -25.09600067138672,
+      "newLong": 30.445999145507812
+    },
+    {
+      "name": "Hlobane",
+      "lat": 27,
+      "long": 30,
+      "newLat": -27.709999084472656,
+      "newLong": 30.999000549316406
+    },
+    {
+      "name": "Colenso",
+      "lat": 28,
+      "long": 29,
+      "newLat": -28.7367000579834,
+      "newLong": 29.826400756835938
+    },
+    {
+      "name": "Durban",
+      "lat": 29,
+      "long": 31,
+      "newLat": -29.88330078125,
+      "newLong": 31.049999237060547
+    },
+    {
+      "name": "Ingogo",
+      "lat": 27,
+      "long": 29,
+      "newLat": -27.577999114990234,
+      "newLong": 29.91200065612793
+    },
+    {
+      "name": "Ladysmith",
+      "lat": 28,
+      "long": 29,
+      "newLat": -28.55970001220703,
+      "newLong": 29.78059959411621
+    },
+    {
+      "name": "Bloubergstrand",
+      "lat": 33,
+      "long": 18,
+      "newLat": -33.79719924926758,
+      "newLong": 18.461999893188477
+    },
+    {
+      "name": "Kakamas",
+      "lat": 28,
+      "long": 20,
+      "newLat": -28.799999237060547,
+      "newLong": 20.649999618530273
+    },
+    {
+      "name": "Volksrust",
+      "lat": 27,
+      "long": 29,
+      "newLat": -27.36669921875,
+      "newLong": 29.88330078125
     }
   ]
 }
