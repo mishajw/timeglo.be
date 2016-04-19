@@ -12,7 +12,7 @@ object DateParser {
   private val rNumericDate = "(-?\\d+)-(\\d+)-(\\d+)".r
   private val rYearOnly =    "(-?\\d{1,4})".r
   private val rMonthDate =   "--(\\d+)-(\\d+)".r
-  private val rNumber =      "(\\d+)".r
+  private val rNumber =      "(\\d+)[ ,\\.\\-]+".r
   private val rYearAndBC =   "(\\d+)( BC)?".r
 
   private val months = backend.months.map(_.toLowerCase)
@@ -46,6 +46,7 @@ object DateParser {
 
   private def parseMonthDate(month: Int, date: Int)(implicit context: Context = Context("")): Date = {
     (rNumber findAllIn context.s.replace(",", ""))
+      .map(_ filter (_.isDigit))
       .map(_.toInt)
       .toSeq
       .filter(_ <= Year.now().getValue)
