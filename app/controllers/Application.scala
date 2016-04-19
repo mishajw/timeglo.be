@@ -138,4 +138,21 @@ class Application extends Controller {
       "error" -> JString(errorMsg))
     )))
   }
+
+  def report = Action(parse.tolerantFormUrlEncoded) { request =>
+    try {
+      request.body.get("report").map(_.head) match {
+        case Some(report) =>
+          log.info(s"Report received: $report")
+          Ok("Report received")
+        case None =>
+          log.info("Report sent without report")
+          BadRequest("Report not passed")
+      }
+    } catch {
+      case e: Throwable =>
+        log.error("Got error getting report", e)
+        errorJson("Error receiving report")
+    }
+  }
 }
