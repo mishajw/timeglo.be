@@ -85,6 +85,19 @@ object DB {
       """.update.apply()
   }
 
+  def resetSparql() = {
+    sql"""
+         DELETE FROM events
+         WHERE id IN (
+             SELECT event_id FROM located_events_db
+         );
+       """.update.apply()
+
+    sql"""
+         DELETE FROM locations;
+       """.update.apply()
+  }
+
   def dateRange: Option[(java.sql.Date, java.sql.Date)] = {
     sql"""
          SELECT
@@ -293,7 +306,7 @@ object DB {
     new java.sql.Date(cal.getTime.getTime)
   }
 
-  private def fromSqlDate(d: java.sql.Date, precisionRaw: String): Date = {
+  def fromSqlDate(d: java.sql.Date, precisionRaw: String): Date = {
     val precision = precisionRaw match {
       case "PreciseToYear" => PreciseToYear
       case "PreciseToMonth" => PreciseToMonth
