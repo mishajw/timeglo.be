@@ -1,0 +1,11 @@
+{
+  "corrections": [
+    {
+      "name": "Mahikeng",
+      "lat": 25,
+      "long": 25,
+      "newLat": -25.85,
+      "newLong": 25.633333
+    }
+  ]
+}

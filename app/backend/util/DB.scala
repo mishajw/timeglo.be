@@ -284,6 +284,29 @@ object DB {
     les map insertLocatedEvent
   }
 
+  def correctLocations(): Unit = {
+    val json = parse(Source.fromFile("conf/resources/location-correction.json").mkString)
+
+    implicit val formats = DefaultFormats
+    case class Correction(name: String,
+                          lat: Double, long: Double,
+                          newLat: Double, newLong: Double)
+    case class LCCollection(corrections: Seq[Correction])
+
+    val corrections = json.extract[LCCollection].corrections
+
+    for (c <- corrections) {
+      sql"""
+           UPDATE locations
+           SET latitude = ${c.newLat}, longitude = ${c.newLong}
+           WHERE
+             name = ${c.name} AND
+             (@ (latitude - ${c.lat})) < 2 AND
+             (@ (longitude - ${c.long})) < 2
+         """.update.apply()
+    }
+  }
+
   private def resultsToLocatedEvent(r: WrappedResultSet): LocatedEvent =
     LocatedEvent(
       Event(
