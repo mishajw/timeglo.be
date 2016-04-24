@@ -98,6 +98,18 @@ object DB {
        """.update.apply()
   }
 
+  def resetPersistent() = {
+    sql"""
+         DROP TABLE IF EXISTS report;
+
+         CREATE TABLE report (
+           id               SERIAL PRIMARY KEY,
+           contents         TEXT,
+           submitted        DATE
+         );
+       """.update.apply()
+  }
+
   def dateRange: Option[(java.sql.Date, java.sql.Date)] = {
     sql"""
          SELECT
@@ -164,6 +176,15 @@ object DB {
     }
 
     eventId
+  }
+
+  def insertReport(contents: String) = {
+    val dateNow = new java.sql.Date(Calendar.getInstance().getTime.getTime)
+
+    sql"""
+         INSERT INTO report (contents, submitted)
+         VALUES ($contents, $dateNow)
+       """.update.apply()
   }
 
   def getLocationForLink(link: String): Option[Long] = {

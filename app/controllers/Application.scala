@@ -140,6 +140,7 @@ class Application extends Controller {
     try {
       request.body.get("report").map(_.head) match {
         case Some(report) =>
+          DB insertReport report
           log.info(s"Report received: $report")
           Ok("Report received")
         case None =>
