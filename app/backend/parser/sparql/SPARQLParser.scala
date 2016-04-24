@@ -31,8 +31,7 @@ object SPARQLParser {
           getValue(desc)),
         Location(
           getValue(placeName),
-          parseCoords(getValue(lat), getValue(long)),
-          "")
+          parseCoords(getValue(lat), getValue(long)))
       )
     }).asInstanceOf[List[LocatedEvent]]
   }

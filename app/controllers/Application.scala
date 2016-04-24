@@ -2,21 +2,17 @@ package controllers
 
 import java.util.Calendar
 
-import backend.LocatedEvent
+import backend.{LocatedEvent, _}
 import backend.util.DB
-import org.json4s.ParserUtil.ParseException
 import org.json4s._
 import org.json4s.jackson.JsonMethods
 import org.postgresql.util.PSQLException
 import play.api.Logger
 import play.api.mvc._
-import backend._
 
 class Application extends Controller {
 
   private val log = Logger(getClass)
-
-  private val regexBadLocationType = "adm.+".r
 
   def index = Action {
     Ok(views.html.index())
@@ -116,11 +112,7 @@ class Application extends Controller {
         "location" -> JObject(List(
           "name" -> JString(le.location.name.replace("_", " ")),
           "lat" -> JDouble(le.location.coords.lat),
-          "long" -> JDouble(le.location.coords.long),
-          "type" -> JString(le.location.locationType match {
-            case regexBadLocationType() => ""
-            case s => s
-          })
+          "long" -> JDouble(le.location.coords.long)
         ))
       ))
     }).toList)

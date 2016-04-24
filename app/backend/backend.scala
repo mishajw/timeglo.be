@@ -15,7 +15,7 @@ package object backend {
     "October", "November", "December")
 
   case class Coords(lat: Double, long: Double)
-  case class Location(name: String, coords: Coords, locationType: String)
+  case class Location(name: String, coords: Coords)
 
   case class Event(date: Date, wikiPage: Option[String], desc: String)
   case class LocatedEvent(event: Event, location: Location)

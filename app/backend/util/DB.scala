@@ -378,7 +378,7 @@ object DB {
         r.string("description")),
       Location(
         r.string("name"),
-        Coords(r.double("latitude"), r.double("longitude")), ""))
+        Coords(r.double("latitude"), r.double("longitude"))))
 
   def toSqlDate(d: Date) = {
     val cal = Calendar.getInstance()
