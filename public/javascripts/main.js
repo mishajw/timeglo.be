@@ -559,7 +559,7 @@ function Graph() {
             fullText +=
                 "<div class='event-date'>" +
                     formatDate(e.date, e.datePrecision) +
-                    "<a class='report-button' id='report" + i + "'>Flag as wrong</a>" +
+                    "<a href='javascript:;' class='report-button' id='report" + i + "'>Flag as wrong</a>" +
                 "</div>";
 
             fullText +=
@@ -635,7 +635,7 @@ function Graph() {
 
         return descStart +
             "<span id='ellipsis" + continueCount + "'>...</span>" +
-            "<a class='continue-button' id='continue" + continueCount + "'>continue</a>" +
+            "<a href='javascript:;' class='continue-button' id='continue" + continueCount + "'>continue</a>" +
             "<span class='continue-text' id='hidden" + continueCount + "'>" + descEnd + "</span>"
     }
 
