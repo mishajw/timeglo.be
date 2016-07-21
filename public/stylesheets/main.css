@@ -4,6 +4,10 @@ body {
     height: 100%;
 }
 
+a {
+    cursor: pointer;
+}
+
 #main-title {
     font-size: 300%;
     margin-top: 0;
